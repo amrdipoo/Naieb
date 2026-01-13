@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -524,72 +524,6 @@
             gap: 15px;
             flex-wrap: wrap;
             justify-content: center;
-        }
-        
-        /* أنماط صفحة المستخدمين */
-        .user-card {
-            transition: all 0.3s;
-            border: 1px solid #dee2e6;
-        }
-        
-        .user-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .user-role-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        
-        .role-admin { background-color: #fee2e2; color: #dc2626; }
-        .role-assistant { background-color: #dbeafe; color: #2563eb; }
-        .role-coordinator { background-color: #f0fdf4; color: #16a34a; }
-        .role-viewer { background-color: #fef3c7; color: #d97706; }
-        
-        .user-status-indicator {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-        }
-        
-        .status-active { background-color: #10b981; }
-        .status-inactive { background-color: #ef4444; }
-        
-        /* أنماط صفحة الملف الشخصي */
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            margin: 0 auto 20px;
-            border: 5px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .activity-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #f1f1f1;
-        }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        
-        /* أنماط صفحة جميع الطلبات */
-        .filter-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
         }
     </style>
 </head>
@@ -1175,74 +1109,6 @@
                 </div>
             </div>
 
-            <!-- صفحة جميع الطلبات -->
-            <div id="allRequestsSection" class="page-section" style="display: none;">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-list me-2"></i>جميع الطلبات
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-4">
-                                    <div class="col-md-3 mb-2">
-                                        <input type="text" class="form-control" id="allRequestsSearch" 
-                                               placeholder="ابحث في جميع الطلبات...">
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <select class="form-select" id="allRequestsStatus">
-                                            <option value="">كل الحالات</option>
-                                            <option value="submitted">تم التقديم</option>
-                                            <option value="pending">انتظار الرد</option>
-                                            <option value="approved">موافقة</option>
-                                            <option value="rejected">غير موافقة</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <select class="form-select" id="allRequestsCategory">
-                                            <option value="">كل الهيئات</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 mb-2">
-                                        <select class="form-select" id="allRequestsSort">
-                                            <option value="newest">الأحدث أولاً</option>
-                                            <option value="oldest">الأقدم أولاً</option>
-                                            <option value="priority">حسب الأولوية</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>رقم الطلب</th>
-                                                <th>الرقم القومي</th>
-                                                <th>اسم مقدم الطلب</th>
-                                                <th>العنوان</th>
-                                                <th>الهيئة</th>
-                                                <th>التاريخ</th>
-                                                <th>الحالة</th>
-                                                <th>الإجراءات</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="allRequestsTableBody">
-                                            <!-- سيتم تعبئتها ديناميكيًا -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                                
-                                <div class="text-center py-3" id="allRequestsPagination">
-                                    <!-- سيتم تعبئتها ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- صفحة البحث المتقدم -->
             <div id="searchSection" class="page-section" style="display: none;">
                 <div class="row mb-4">
@@ -1572,140 +1438,6 @@
                 </div>
             </div>
 
-            <!-- صفحة المستخدمين -->
-            <div id="usersSection" class="page-section" style="display: none;">
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">
-                                    <i class="fas fa-users me-2"></i>إدارة المستخدمين
-                                </h5>
-                                <button class="btn btn-light btn-sm" id="addUserBtn">
-                                    <i class="fas fa-user-plus me-2"></i>إضافة مستخدم
-                                </button>
-                            </div>
-                            <div class="card-body">
-                                <div class="row mb-4">
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" id="usersSearch" 
-                                               placeholder="ابحث عن مستخدم...">
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-select" id="usersRoleFilter">
-                                            <option value="">كل الأدوار</option>
-                                            <option value="admin">مسؤول</option>
-                                            <option value="assistant">مساعد</option>
-                                            <option value="coordinator">منسق</option>
-                                            <option value="viewer">مستعرض</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-select" id="usersStatusFilter">
-                                            <option value="">كل الحالات</option>
-                                            <option value="active">نشط</option>
-                                            <option value="inactive">غير نشط</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="row g-3" id="usersGrid">
-                                    <!-- سيتم تعبئة المستخدمين ديناميكيًا -->
-                                </div>
-                                
-                                <div class="text-center mt-4" id="usersPagination">
-                                    <!-- سيتم تعبئتها ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- صفحة الملف الشخصي -->
-            <div id="profileSection" class="page-section" style="display: none;">
-                <div class="row">
-                    <div class="col-lg-4 mb-4">
-                        <div class="card shadow h-100">
-                            <div class="card-body text-center">
-                                <div class="profile-avatar">
-                                    <i class="fas fa-user-circle" id="profileAvatarIcon"></i>
-                                </div>
-                                <h4 class="mt-3" id="profileFullName">عضو مجلس النواب</h4>
-                                <p class="text-muted" id="profileRole">المسؤول</p>
-                                
-                                <div class="mt-4">
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">اسم المستخدم:</span>
-                                        <span class="fw-bold" id="profileUsername">admin</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">البريد الإلكتروني:</span>
-                                        <span class="fw-bold" id="profileEmail">mp@parliament.gov</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">رقم الهاتف:</span>
-                                        <span class="fw-bold" id="profilePhone">01012345678</span>
-                                    </div>
-                                    <div class="d-flex justify-content-between mb-2">
-                                        <span class="text-muted">تاريخ الانضمام:</span>
-                                        <span class="fw-bold" id="profileJoinDate">2023-01-01</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-4">
-                                    <button class="btn btn-primary w-100 mb-2" id="editProfileBtn">
-                                        <i class="fas fa-edit me-2"></i>تعديل الملف الشخصي
-                                    </button>
-                                    <button class="btn btn-outline-secondary w-100" id="changePasswordBtn">
-                                        <i class="fas fa-key me-2"></i>تغيير كلمة المرور
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-lg-8 mb-4">
-                        <div class="card shadow h-100">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-chart-line me-2"></i>إحصائيات المستخدم
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3 mb-4">
-                                    <div class="col-md-4">
-                                        <div class="text-center p-3 bg-primary text-white rounded">
-                                            <div class="stats-number" id="userTotalRequests">0</div>
-                                            <div class="stats-label">إجمالي الطلبات</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-center p-3 bg-success text-white rounded">
-                                            <div class="stats-number" id="userApprovedRequests">0</div>
-                                            <div class="stats-label">طلبات معتمدة</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="text-center p-3 bg-warning text-white rounded">
-                                            <div class="stats-number" id="userPendingRequests">0</div>
-                                            <div class="stats-label">طلبات قيد الانتظار</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <h6 class="mb-3">
-                                    <i class="fas fa-history me-2"></i>آخر الأنشطة
-                                </h6>
-                                <div class="list-group" id="userActivities">
-                                    <!-- سيتم تعبئة الأنشطة ديناميكيًا -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- صفحة الإعدادات -->
             <div id="settingsSection" class="page-section" style="display: none;">
                 <div class="row">
@@ -1879,127 +1611,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
                     <button type="button" class="btn btn-primary" id="agreeTermsBtn">أوافق على الشروط</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نموذج إضافة/تعديل المستخدم -->
-    <div class="modal fade" id="userModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="userModalTitle">إضافة مستخدم جديد</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="userForm">
-                        <div class="mb-3">
-                            <label for="modalFullName" class="form-label">الاسم الكامل</label>
-                            <input type="text" class="form-control" id="modalFullName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modalUsername" class="form-label">اسم المستخدم</label>
-                            <input type="text" class="form-control" id="modalUsername" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modalEmail" class="form-label">البريد الإلكتروني</label>
-                            <input type="email" class="form-control" id="modalEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="modalPhone" class="form-label">رقم الهاتف</label>
-                            <input type="tel" class="form-control" id="modalPhone">
-                        </div>
-                        <div class="mb-3">
-                            <label for="modalRole" class="form-label">الدور</label>
-                            <select class="form-select" id="modalRole" required>
-                                <option value="admin">مسؤول</option>
-                                <option value="assistant">مساعد</option>
-                                <option value="coordinator">منسق</option>
-                                <option value="viewer">مستعرض</option>
-                            </select>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="modalIsActive">
-                            <label class="form-check-label" for="modalIsActive">الحساب نشط</label>
-                        </div>
-                        <div class="mb-3" id="passwordFields">
-                            <label for="modalPassword" class="form-label">كلمة المرور</label>
-                            <input type="password" class="form-control" id="modalPassword" placeholder="اتركه فارغاً للحفاظ على كلمة المرور الحالية">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-primary" id="saveUserBtn">حفظ</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نموذج تغيير كلمة المرور -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning text-white">
-                    <h5 class="modal-title">تغيير كلمة المرور</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="changePasswordForm">
-                        <div class="mb-3">
-                            <label for="currentPassword" class="form-label">كلمة المرور الحالية</label>
-                            <input type="password" class="form-control" id="currentPassword" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="newPassword" class="form-label">كلمة المرور الجديدة</label>
-                            <input type="password" class="form-control" id="newPassword" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmNewPassword" class="form-label">تأكيد كلمة المرور الجديدة</label>
-                            <input type="password" class="form-control" id="confirmNewPassword" required>
-                        </div>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            يجب أن تتكون كلمة المرور من 6 أحرف على الأقل
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-warning" id="submitPasswordChangeBtn">تغيير كلمة المرور</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نموذج تعديل الملف الشخصي -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">تعديل الملف الشخصي</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editProfileForm">
-                        <div class="mb-3">
-                            <label for="editFullName" class="form-label">الاسم الكامل</label>
-                            <input type="text" class="form-control" id="editFullName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editEmail" class="form-label">البريد الإلكتروني</label>
-                            <input type="email" class="form-control" id="editEmail" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editPhone" class="form-label">رقم الهاتف</label>
-                            <input type="tel" class="form-control" id="editPhone">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
-                    <button type="button" class="btn btn-primary" id="saveProfileBtn">حفظ التغييرات</button>
                 </div>
             </div>
         </div>
@@ -2221,28 +1832,6 @@
                         email: 'assistant@parliament.gov',
                         phone: '01098765432',
                         role: 'assistant',
-                        isActive: true,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 3,
-                        username: 'coordinator1',
-                        password: '123456',
-                        fullName: 'سامي علي',
-                        email: 'coordinator@parliament.gov',
-                        phone: '01055555555',
-                        role: 'coordinator',
-                        isActive: true,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 4,
-                        username: 'viewer1',
-                        password: '123456',
-                        fullName: 'نورا حسن',
-                        email: 'viewer@parliament.gov',
-                        phone: '01044444444',
-                        role: 'viewer',
                         isActive: true,
                         createdAt: new Date().toISOString()
                     }
@@ -2548,33 +2137,17 @@
                 fullName: user.fullName,
                 role: user.role,
                 email: user.email,
-                phone: user.phone,
-                createdAt: user.createdAt,
                 loggedInAt: new Date().toISOString()
             };
             
             localStorage.setItem('currentUser', JSON.stringify(sessionData));
             currentUser = sessionData;
             
-            // تحديث وقت آخر دخول
-            updateUserLastLogin(user.id);
-            
             showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
             
             setTimeout(() => {
                 startApplication();
             }, 1500);
-        }
-
-        // تحديث وقت آخر دخول للمستخدم
-        function updateUserLastLogin(userId) {
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            const userIndex = users.findIndex(u => u.id === userId);
-            
-            if (userIndex !== -1) {
-                users[userIndex].lastLogin = new Date().toISOString();
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-            }
         }
 
         // عرض رسائل المصادقة
@@ -2655,15 +2228,13 @@
             loadUrgentRequests();
             
             // تهيئة صفحات جديدة
-            initAllRequestsPage();
             initSearchPage();
             initCategoriesPage();
             initReportsPage();
-            initUsersPage();
-            initProfilePage();
             initSettingsPage();
             
             const today = new Date().toISOString().split('T')[0];
+            $('#requestDate').val(today);
             
             checkUnreadNotifications();
             setInterval(checkNewRequests, 30000);
@@ -2683,8 +2254,6 @@
                 // إظهار/إخفاء الأزرار بناءً على الصلاحيات
                 if (currentUser.role !== 'admin') {
                     $('#usersLink').hide();
-                } else {
-                    $('#usersLink').show();
                 }
             }
         }
@@ -2709,11 +2278,6 @@
                 'viewer': 'fas fa-user'
             };
             return icons[role] || 'fas fa-user-circle';
-        }
-
-        // الحصول على لون الدور
-        function getRoleClass(role) {
-            return `role-${role}`;
         }
 
         // إعداد أحداث التطبيق الرئيسي
@@ -2814,22 +2378,6 @@
             });
         }
 
-        // إعداد صفحة جميع الطلبات
-        function initAllRequestsPage() {
-            populateCategorySelect('#allRequestsCategory');
-            
-            // البحث في جميع الطلبات
-            $('#allRequestsSearch').on('input', function() {
-                setTimeout(() => {
-                    renderAllRequestsTable();
-                }, 300);
-            });
-            
-            $('#allRequestsStatus, #allRequestsCategory, #allRequestsSort').change(function() {
-                renderAllRequestsTable();
-            });
-        }
-
         // إعداد صفحة البحث المتقدم
         function initSearchPage() {
             populateCategorySelect('#advCategory');
@@ -2870,42 +2418,6 @@
             });
         }
 
-        // إعداد صفحة المستخدمين
-        function initUsersPage() {
-            renderUsersGrid();
-            
-            // البحث في المستخدمين
-            $('#usersSearch').on('input', function() {
-                setTimeout(() => {
-                    renderUsersGrid();
-                }, 300);
-            });
-            
-            $('#usersRoleFilter, #usersStatusFilter').change(function() {
-                renderUsersGrid();
-            });
-            
-            // إضافة مستخدم جديد
-            $('#addUserBtn').click(function() {
-                openUserModal();
-            });
-        }
-
-        // إعداد صفحة الملف الشخصي
-        function initProfilePage() {
-            loadProfileData();
-            
-            // تعديل الملف الشخصي
-            $('#editProfileBtn').click(function() {
-                openEditProfileModal();
-            });
-            
-            // تغيير كلمة المرور
-            $('#changePasswordBtn').click(function() {
-                openChangePasswordModal();
-            });
-        }
-
         // إعداد صفحة الإعدادات
         function initSettingsPage() {
             loadSettings();
@@ -2928,6 +2440,511 @@
             Object.entries(categories).forEach(([key, category]) => {
                 select.append(`<option value="${key}">${category.name}</option>`);
             });
+        }
+
+        // تنفيذ البحث المتقدم
+        function executeAdvancedSearch() {
+            const nationalId = $('#advNationalId').val().trim();
+            const applicantName = $('#advApplicantName').val().trim();
+            const requestTitle = $('#advRequestTitle').val().trim();
+            const requestSummary = $('#advRequestSummary').val().trim();
+            const category = $('#advCategory').val();
+            const status = $('#advStatus').val();
+            const priority = $('#advPriority').val();
+            const dateFrom = $('#advDateFrom').val();
+            const dateTo = $('#advDateTo').val();
+            const hasFile = $('#hasFile').is(':checked');
+            const hasComments = $('#hasComments').is(':checked');
+            
+            let results = [...allRequests];
+            
+            // تطبيق الفلاتر
+            if (nationalId) {
+                results = results.filter(r => r.nationalId.includes(nationalId));
+            }
+            
+            if (applicantName) {
+                results = results.filter(r => r.applicantName.toLowerCase().includes(applicantName.toLowerCase()));
+            }
+            
+            if (requestTitle) {
+                results = results.filter(r => r.requestTitle.toLowerCase().includes(requestTitle.toLowerCase()));
+            }
+            
+            if (requestSummary) {
+                results = results.filter(r => r.requestSummary.toLowerCase().includes(requestSummary.toLowerCase()));
+            }
+            
+            if (category) {
+                results = results.filter(r => r.category === category);
+            }
+            
+            if (status) {
+                results = results.filter(r => r.status === status);
+            }
+            
+            if (priority) {
+                results = results.filter(r => r.priority === priority);
+            }
+            
+            if (dateFrom) {
+                results = results.filter(r => new Date(r.requestDate) >= new Date(dateFrom));
+            }
+            
+            if (dateTo) {
+                results = results.filter(r => new Date(r.requestDate) <= new Date(dateTo));
+            }
+            
+            if (hasFile) {
+                results = results.filter(r => r.file !== null);
+            }
+            
+            if (hasComments) {
+                results = results.filter(r => r.comments && r.comments.trim() !== '');
+            }
+            
+            renderAdvancedSearchResults(results);
+        }
+
+        // عرض نتائج البحث المتقدم
+        function renderAdvancedSearchResults(results) {
+            const container = $('#advancedSearchResults');
+            const count = $('#advancedResultsCount');
+            
+            count.text(results.length);
+            
+            if (results.length === 0) {
+                container.html(`
+                    <div class="text-center py-5 text-muted">
+                        <i class="fas fa-search fa-3x mb-3"></i>
+                        <h5>لا توجد نتائج للبحث</h5>
+                        <p>جرب معايير بحث مختلفة</p>
+                    </div>
+                `);
+                return;
+            }
+            
+            let html = '<div class="row g-3">';
+            
+            results.forEach(request => {
+                const category = categories[request.category];
+                const status = statuses[request.status];
+                const priorityBadge = request.priority === 'high' ? 'danger' : 
+                                      request.priority === 'medium' ? 'warning' : 'success';
+                const priorityText = request.priority === 'high' ? 'عاجل' : 
+                                     request.priority === 'medium' ? 'متوسط' : 'منخفض';
+                
+                html += `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card search-result-card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <span class="badge bg-${priorityBadge}">${priorityText}</span>
+                                    <small class="text-muted">${formatDate(request.requestDate)}</small>
+                                </div>
+                                
+                                <h6 class="card-title">${request.requestTitle}</h6>
+                                <p class="card-text small text-muted">
+                                    ${request.requestSummary.substring(0, 100)}${request.requestSummary.length > 100 ? '...' : ''}
+                                </p>
+                                
+                                <div class="mb-3">
+                                    <div class="fw-bold">${request.applicantName}</div>
+                                    <small class="text-muted">${request.nationalId}</small>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="category-badge ${getCategoryClass(request.category)}">
+                                        <i class="${category.icon} me-1"></i>${category.name}
+                                    </span>
+                                    <span class="status-badge ${getStatusClass(request.status)}">
+                                        ${status.name}
+                                    </span>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-outline-primary w-100" onclick="showRequestDetails(${request.id})">
+                                        <i class="fas fa-eye me-1"></i>عرض التفاصيل
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            container.html(html);
+        }
+
+        // إعادة تعيين البحث المتقدم
+        function resetAdvancedSearch() {
+            $('#advancedSearchForm')[0].reset();
+            $('#advancedSearchResults').html(`
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <h5>أدخل معايير البحث واضغط على زر "بحث"</h5>
+                    <p>سيظهر هنا نتائج البحث المتقدم</p>
+                </div>
+            `);
+            $('#advancedResultsCount').text('0');
+        }
+
+        // عرض شبكة الهيئات
+        function renderCategoriesGrid() {
+            const container = $('#categoriesGrid');
+            let html = '';
+            
+            Object.entries(categories).forEach(([key, category]) => {
+                const requestsCount = allRequests.filter(r => r.category === key).length;
+                const pendingCount = allRequests.filter(r => r.category === key && r.status === 'pending').length;
+                
+                html += `
+                    <div class="col-md-6 col-lg-3">
+                        <div class="card category-card h-100" onclick="showCategoryDetails('${key}')">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="stat-icon ${getCategoryClass(key)} me-3" style="background-color: ${category.bgColor}; color: ${category.color};">
+                                        <i class="${category.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">${category.name}</h5>
+                                        <small class="text-muted">${category.description}</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center">
+                                    <div class="col-6">
+                                        <div class="stats-number">${requestsCount}</div>
+                                        <div class="stats-label">إجمالي الطلبات</div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stats-number">${pendingCount}</div>
+                                        <div class="stats-label">قيد الانتظار</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+        }
+
+        // عرض تفاصيل الهيئة
+        function showCategoryDetails(categoryKey) {
+            const category = categories[categoryKey];
+            const categoryRequests = allRequests.filter(r => r.category === categoryKey);
+            
+            let html = `
+                <div class="modal fade" id="categoryDetailsModal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header text-white" style="background-color: ${category.color};">
+                                <h5 class="modal-title">
+                                    <i class="${category.icon} me-2"></i>${category.name}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body text-center">
+                                                <h6 class="text-muted mb-3">الهيئة الحكومية</h6>
+                                                <h4>${category.description}</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3">إحصائيات الهيئة</h6>
+                                                <div class="row text-center">
+                                                    <div class="col-4">
+                                                        <div class="stats-number">${categoryRequests.length}</div>
+                                                        <div class="stats-label">إجمالي الطلبات</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="stats-number">${categoryRequests.filter(r => r.status === 'pending').length}</div>
+                                                        <div class="stats-label">قيد الانتظار</div>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <div class="stats-number">${categoryRequests.filter(r => r.status === 'approved').length}</div>
+                                                        <div class="stats-label">تمت الموافقة</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <h6 class="mb-3">أخر الطلبات في هذه الهيئة</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>رقم الطلب</th>
+                                                <th>اسم مقدم الطلب</th>
+                                                <th>التاريخ</th>
+                                                <th>الحالة</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+            `;
+            
+            categoryRequests.slice(0, 5).forEach(request => {
+                const status = statuses[request.status];
+                html += `
+                    <tr>
+                        <td>#${request.id}</td>
+                        <td>${request.applicantName}</td>
+                        <td>${formatDate(request.requestDate)}</td>
+                        <td>
+                            <span class="status-badge ${getStatusClass(request.status)}">
+                                ${status.name}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                                <button type="button" class="btn btn-primary" onclick="showAllCategoryRequests('${categoryKey}')">
+                                    <i class="fas fa-list me-2"></i>عرض جميع الطلبات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('body').append(html);
+            $('#categoryDetailsModal').modal('show');
+            
+            // تنظيف النموذج بعد الإغلاق
+            $('#categoryDetailsModal').on('hidden.bs.modal', function() {
+                $(this).remove();
+            });
+        }
+
+        // عرض جميع طلبات الهيئة
+        function showAllCategoryRequests(categoryKey) {
+            $('#categoryDetailsModal').modal('hide');
+            activeFilters.category = categoryKey;
+            $('#categoryFilter').val(categoryKey);
+            showPage('dashboard');
+            performSearch();
+        }
+
+        // عرض إحصائيات الهيئات
+        function renderCategoryStatistics() {
+            const container = $('#categoryStats');
+            let html = '';
+            
+            Object.entries(categories).forEach(([key, category]) => {
+                const requests = allRequests.filter(r => r.category === key);
+                const total = requests.length;
+                const approved = requests.filter(r => r.status === 'approved').length;
+                const pending = requests.filter(r => r.status === 'pending').length;
+                const completionRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+                
+                html += `
+                    <div class="col-md-6 col-lg-3 mb-3">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="stat-icon ${getCategoryClass(key)} me-3" 
+                                         style="background-color: ${category.bgColor}; color: ${category.color};">
+                                        <i class="${category.icon}"></i>
+                                    </div>
+                                    <h6 class="mb-0">${category.name}</h6>
+                                </div>
+                                
+                                <div class="progress mb-2" style="height: 10px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: ${completionRate}%; background-color: ${category.color};">
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center small">
+                                    <div class="col-4">
+                                        <div class="fw-bold">${total}</div>
+                                        <div>إجمالي</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-bold">${approved}</div>
+                                        <div>مكتمل</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fw-bold">${pending}</div>
+                                        <div>انتظار</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+        }
+
+        // تحميل التقارير
+        function downloadReport(type) {
+            let reportData = '';
+            let fileName = '';
+            
+            switch(type) {
+                case 'monthly':
+                    reportData = generateMonthlyReport();
+                    fileName = 'تقرير_الأداء_الشهري.pdf';
+                    break;
+                case 'distribution':
+                    reportData = generateDistributionReport();
+                    fileName = 'تقرير_توزيع_الطلبات.pdf';
+                    break;
+                case 'delayed':
+                    reportData = generateDelayedReport();
+                    fileName = 'تقرير_الطلبات_المتأخرة.pdf';
+                    break;
+                case 'issues':
+                    reportData = generateIssuesReport();
+                    fileName = 'تقرير_المشكلات.pdf';
+                    break;
+            }
+            
+            showNotification(`تم تحميل التقرير: ${fileName}`, 'success');
+            
+            // إنشاء ملف PDF افتراضي
+            const dataStr = JSON.stringify(allRequests, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(reportData + '\n\n' + dataStr);
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', fileName);
+            linkElement.click();
+        }
+
+        // توليد تقرير شهري
+        function generateMonthlyReport() {
+            const now = new Date();
+            return `تقرير الأداء الشهري - ${now.toLocaleDateString('ar-EG')}\n\n` +
+                   `إجمالي الطلبات: ${allRequests.length}\n` +
+                   `طلبات جديدة هذا الشهر: ${allRequests.filter(r => {
+                       const requestDate = new Date(r.requestDate);
+                       return requestDate.getMonth() === now.getMonth() && 
+                              requestDate.getFullYear() === now.getFullYear();
+                   }).length}\n` +
+                   `طلبات قيد الانتظار: ${allRequests.filter(r => r.status === 'pending').length}\n` +
+                   `نسبة الإنجاز: ${Math.round((allRequests.filter(r => r.status === 'approved').length / allRequests.length) * 100)}%`;
+        }
+
+        // توليد تقرير توزيع
+        function generateDistributionReport() {
+            let report = `تقرير توزيع الطلبات - ${new Date().toLocaleDateString('ar-EG')}\n\n`;
+            
+            Object.entries(categories).forEach(([key, category]) => {
+                const requests = allRequests.filter(r => r.category === key);
+                report += `${category.name}: ${requests.length} طلب (${Math.round((requests.length / allRequests.length) * 100)}%)\n`;
+            });
+            
+            return report;
+        }
+
+        // توليد تقرير الطلبات المتأخرة
+        function generateDelayedReport() {
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            const delayedRequests = allRequests.filter(r => 
+                r.status === 'pending' && new Date(r.requestDate) < weekAgo
+            );
+            
+            return `تقرير الطلبات المتأخرة - ${new Date().toLocaleDateString('ar-EG')}\n\n` +
+                   `عدد الطلبات المتأخرة: ${delayedRequests.length}\n\n` +
+                   'قائمة الطلبات المتأخرة:\n' +
+                   delayedRequests.map(r => 
+                       `#${r.id} - ${r.applicantName} - ${r.requestTitle} - ${formatDate(r.requestDate)}`
+                   ).join('\n');
+        }
+
+        // توليد تقرير المشكلات
+        function generateIssuesReport() {
+            const rejectedRequests = allRequests.filter(r => r.status === 'rejected');
+            
+            return `تقرير المشكلات - ${new Date().toLocaleDateString('ar-EG')}\n\n` +
+                   `عدد الطلبات المرفوضة: ${rejectedRequests.length}\n\n` +
+                   'تحليل أسباب الرفض:\n' +
+                   rejectedRequests.map(r => 
+                       `#${r.id} - سبب الرفض: ${r.comments || 'لم يتم تحديد سبب'}`
+                   ).join('\n');
+        }
+
+        // تحميل الإعدادات
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('appSettings') || '{}');
+            
+            $('#emailNotifications').prop('checked', settings.emailNotifications !== false);
+            $('#smsNotifications').prop('checked', settings.smsNotifications !== false);
+            $('#soundNotifications').prop('checked', settings.soundNotifications !== false);
+            $('#exportFormat').val(settings.exportFormat || 'json');
+            $('#autoExport').prop('checked', settings.autoExport !== false);
+            $('#searchResultsPerPage').val(settings.searchResultsPerPage || '10');
+            $('#saveSearchHistory').prop('checked', settings.saveSearchHistory !== false);
+            $('#themeColor').val(settings.themeColor || 'blue');
+            $('#darkMode').prop('checked', settings.darkMode || false);
+        }
+
+        // حفظ الإعدادات
+        function saveSettings() {
+            const settings = {
+                emailNotifications: $('#emailNotifications').is(':checked'),
+                smsNotifications: $('#smsNotifications').is(':checked'),
+                soundNotifications: $('#soundNotifications').is(':checked'),
+                exportFormat: $('#exportFormat').val(),
+                autoExport: $('#autoExport').is(':checked'),
+                searchResultsPerPage: $('#searchResultsPerPage').val(),
+                saveSearchHistory: $('#saveSearchHistory').is(':checked'),
+                themeColor: $('#themeColor').val(),
+                darkMode: $('#darkMode').is(':checked'),
+                lastUpdated: new Date().toISOString()
+            };
+            
+            localStorage.setItem('appSettings', JSON.stringify(settings));
+            
+            showNotification('تم حفظ الإعدادات بنجاح', 'success');
+            
+            // تطبيق الإعدادات فورًا
+            applySettings(settings);
+        }
+
+        // تطبيق الإعدادات
+        function applySettings(settings) {
+            // تطبيق السمة الداكنة
+            if (settings.darkMode) {
+                $('body').addClass('dark-mode');
+                $('.sidebar').addClass('dark-sidebar');
+            } else {
+                $('body').removeClass('dark-mode');
+                $('.sidebar').removeClass('dark-sidebar');
+            }
+        }
+
+        // إعادة تعيين الإعدادات
+        function resetSettings() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع الإعدادات إلى القيم الافتراضية؟')) {
+                localStorage.removeItem('appSettings');
+                loadSettings();
+                showNotification('تمت إعادة تعيين الإعدادات', 'success');
+            }
         }
 
         // حفظ البيانات في التخزين المحلي
@@ -3132,95 +3149,6 @@
             renderPagination();
         }
 
-        // عرض جميع الطلبات
-        function renderAllRequestsTable() {
-            const searchTerm = $('#allRequestsSearch').val().toLowerCase();
-            const statusFilter = $('#allRequestsStatus').val();
-            const categoryFilter = $('#allRequestsCategory').val();
-            const sortBy = $('#allRequestsSort').val();
-            
-            let results = [...allRequests];
-            
-            // تطبيق الفلاتر
-            if (searchTerm) {
-                results = results.filter(request => {
-                    return request.nationalId.includes(searchTerm) ||
-                           request.applicantName.toLowerCase().includes(searchTerm) ||
-                           request.requestTitle.toLowerCase().includes(searchTerm) ||
-                           request.requestSummary.toLowerCase().includes(searchTerm);
-                });
-            }
-            
-            if (statusFilter) {
-                results = results.filter(request => request.status === statusFilter);
-            }
-            
-            if (categoryFilter) {
-                results = results.filter(request => request.category === categoryFilter);
-            }
-            
-            // تطبيق الترتيب
-            switch(sortBy) {
-                case 'newest':
-                    results.sort((a, b) => new Date(b.requestDate) - new Date(a.requestDate));
-                    break;
-                case 'oldest':
-                    results.sort((a, b) => new Date(a.requestDate) - new Date(b.requestDate));
-                    break;
-                case 'priority':
-                    const priorityOrder = { 'high': 3, 'medium': 2, 'low': 1 };
-                    results.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
-                    break;
-            }
-            
-            const tableBody = $('#allRequestsTableBody');
-            
-            if (results.length === 0) {
-                tableBody.html(`
-                    <tr>
-                        <td colspan="8" class="text-center py-5">
-                            <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">لا توجد نتائج</h5>
-                        </td>
-                    </tr>
-                `);
-                return;
-            }
-            
-            let html = '';
-            results.forEach(request => {
-                const category = categories[request.category];
-                const status = statuses[request.status];
-                
-                html += `
-                    <tr>
-                        <td class="fw-bold">#${request.id}</td>
-                        <td>${request.nationalId}</td>
-                        <td>${request.applicantName}</td>
-                        <td>${request.requestTitle}</td>
-                        <td>
-                            <span class="category-badge ${getCategoryClass(request.category)}">
-                                <i class="${category.icon} me-1"></i>${category.name}
-                            </span>
-                        </td>
-                        <td>${formatDate(request.requestDate)}</td>
-                        <td>
-                            <span class="status-badge ${getStatusClass(request.status)}">
-                                ${status.name}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="showRequestDetails(${request.id})">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tableBody.html(html);
-        }
-
         // عرض الترقيم
         function renderPagination() {
             const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
@@ -3394,469 +3322,522 @@
             $('#progressBar').css('width', completionRate + '%');
         }
 
-        // عرض شبكة المستخدمين
-        function renderUsersGrid() {
-            const searchTerm = $('#usersSearch').val().toLowerCase();
-            const roleFilter = $('#usersRoleFilter').val();
-            const statusFilter = $('#usersStatusFilter').val();
+        // إنشاء مخطط الفئات
+        function renderCategoryChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
             
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            
-            let filteredUsers = users.filter(user => {
-                // تطبيق البحث
-                if (searchTerm) {
-                    const matchesSearch = user.fullName.toLowerCase().includes(searchTerm) ||
-                                         user.username.toLowerCase().includes(searchTerm) ||
-                                         user.email.toLowerCase().includes(searchTerm);
-                    if (!matchesSearch) return false;
-                }
-                
-                // تطبيق فلتر الدور
-                if (roleFilter && user.role !== roleFilter) return false;
-                
-                // تطبيق فلتر الحالة
-                if (statusFilter) {
-                    if (statusFilter === 'active' && !user.isActive) return false;
-                    if (statusFilter === 'inactive' && user.isActive) return false;
-                }
-                
-                return true;
-            });
-            
-            const container = $('#usersGrid');
-            
-            if (filteredUsers.length === 0) {
-                container.html(`
-                    <div class="col-12 text-center py-5">
-                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">لا توجد نتائج</h5>
-                    </div>
-                `);
-                return;
+            if (categoryChart) {
+                categoryChart.destroy();
             }
             
-            let html = '';
-            filteredUsers.forEach(user => {
-                const roleClass = getRoleClass(user.role);
-                const roleName = getRoleName(user.role);
-                const statusClass = user.isActive ? 'status-active' : 'status-inactive';
-                const statusText = user.isActive ? 'نشط' : 'غير نشط';
-                const lastLogin = user.lastLogin ? formatDate(user.lastLogin) : 'لم يسجل دخول بعد';
-                
-                html += `
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card user-card h-100">
-                            <div class="card-body">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="user-avatar me-3">
-                                        <i class="${getUserIconByRole(user.role)}"></i>
-                                    </div>
-                                    <div>
-                                        <h6 class="mb-1">${user.fullName}</h6>
-                                        <p class="text-muted small mb-0">${user.username}</p>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <span class="user-role-badge ${roleClass}">
-                                        ${roleName}
-                                    </span>
-                                    <span class="float-end">
-                                        <span class="user-status-indicator ${statusClass}"></span>
-                                        ${statusText}
-                                    </span>
-                                </div>
-                                
-                                <div class="small text-muted mb-3">
-                                    <div class="mb-1">
-                                        <i class="fas fa-envelope me-2"></i>${user.email}
-                                    </div>
-                                    <div class="mb-1">
-                                        <i class="fas fa-phone me-2"></i>${user.phone || 'غير محدد'}
-                                    </div>
-                                    <div>
-                                        <i class="fas fa-calendar me-2"></i>${formatDate(user.createdAt)}
-                                    </div>
-                                </div>
-                                
-                                <div class="d-flex justify-content-between">
-                                    <button class="btn btn-sm btn-outline-primary" onclick="editUser(${user.id})">
-                                        <i class="fas fa-edit me-1"></i>تعديل
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})" ${user.id === currentUser.id ? 'disabled' : ''}>
-                                        <i class="fas fa-trash me-1"></i>حذف
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            const categoryData = Object.keys(categories).map(key => {
+                return allRequests.filter(r => r.category === key).length;
             });
             
-            container.html(html);
-        }
-
-        // تحميل بيانات الملف الشخصي
-        function loadProfileData() {
-            if (!currentUser) return;
+            const categoryColors = Object.values(categories).map(c => c.color);
+            const categoryLabels = Object.values(categories).map(c => c.name);
             
-            // تحديث البيانات في صفحة الملف الشخصي
-            $('#profileFullName').text(currentUser.fullName);
-            $('#profileRole').text(getRoleName(currentUser.role));
-            $('#profileUsername').text(currentUser.username);
-            $('#profileEmail').text(currentUser.email);
-            $('#profilePhone').text(currentUser.phone || 'غير محدد');
-            $('#profileJoinDate').text(formatDate(currentUser.createdAt));
-            
-            // تحديث الأيقونة
-            $('#profileAvatarIcon').removeClass().addClass(getUserIconByRole(currentUser.role));
-            
-            // تحديث الإحصائيات
-            updateUserStatistics();
-            
-            // تحديث الأنشطة
-            updateUserActivities();
-        }
-
-        // تحديث إحصائيات المستخدم
-        function updateUserStatistics() {
-            if (!currentUser) return;
-            
-            const userRequests = allRequests.filter(r => r.createdBy === currentUser.username);
-            const totalRequests = userRequests.length;
-            const approvedRequests = userRequests.filter(r => r.status === 'approved').length;
-            const pendingRequests = userRequests.filter(r => r.status === 'pending').length;
-            
-            $('#userTotalRequests').text(totalRequests);
-            $('#userApprovedRequests').text(approvedRequests);
-            $('#userPendingRequests').text(pendingRequests);
-        }
-
-        // تحديث أنشطة المستخدم
-        function updateUserActivities() {
-            const container = $('#userActivities');
-            
-            // جمع الأنشطة الخاصة بالمستخدم
-            const userActivities = [];
-            const userRequests = allRequests.filter(r => r.createdBy === currentUser.username);
-            
-            userRequests.forEach(request => {
-                userActivities.push({
-                    type: 'request',
-                    title: `طلب جديد #${request.id}`,
-                    description: request.requestTitle,
-                    date: request.createdAt,
-                    icon: 'fas fa-file-alt'
-                });
-                
-                if (request.updatedAt) {
-                    userActivities.push({
-                        type: 'update',
-                        title: `تحديث الطلب #${request.id}`,
-                        description: `تم تحديث الحالة إلى ${statuses[request.status].name}`,
-                        date: request.updatedAt,
-                        icon: 'fas fa-sync'
-                    });
-                }
-            });
-            
-            // ترتيب حسب التاريخ
-            userActivities.sort((a, b) => new Date(b.date) - new Date(a.date));
-            
-            // عرض أول 5 أنشطة
-            const recentActivities = userActivities.slice(0, 5);
-            
-            if (recentActivities.length === 0) {
-                container.html(`
-                    <div class="text-center py-3 text-muted">
-                        <i class="fas fa-history fa-2x mb-2"></i>
-                        <p class="mb-0">لا توجد أنشطة حالياً</p>
-                    </div>
-                `);
-                return;
-            }
-            
-            let html = '';
-            recentActivities.forEach(activity => {
-                const timeAgo = getTimeAgo(activity.date);
-                
-                html += `
-                    <div class="activity-item">
-                        <div class="d-flex align-items-center">
-                            <div class="stat-icon me-3" style="background-color: #e9ecef; color: #495057;">
-                                <i class="${activity.icon}"></i>
-                            </div>
-                            <div class="flex-grow-1">
-                                <h6 class="mb-1">${activity.title}</h6>
-                                <p class="mb-0 small text-muted">${activity.description}</p>
-                            </div>
-                            <div class="text-muted small">${timeAgo}</div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.html(html);
-        }
-
-        // فتح نموذج إضافة/تعديل المستخدم
-        function openUserModal(userId = null) {
-            const modal = $('#userModal');
-            const title = $('#userModalTitle');
-            const passwordFields = $('#passwordFields');
-            
-            if (userId) {
-                // وضع التعديل
-                title.text('تعديل المستخدم');
-                passwordFields.hide();
-                
-                const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-                const user = users.find(u => u.id === userId);
-                
-                if (user) {
-                    $('#modalFullName').val(user.fullName);
-                    $('#modalUsername').val(user.username);
-                    $('#modalEmail').val(user.email);
-                    $('#modalPhone').val(user.phone || '');
-                    $('#modalRole').val(user.role);
-                    $('#modalIsActive').prop('checked', user.isActive);
-                    
-                    // تخزين معرف المستخدم
-                    modal.data('userId', userId);
-                }
-            } else {
-                // وضع الإضافة
-                title.text('إضافة مستخدم جديد');
-                passwordFields.show();
-                modal.removeData('userId');
-                
-                // إعادة تعيين النموذج
-                $('#userForm')[0].reset();
-            }
-            
-            modal.modal('show');
-            
-            // إعداد حدث الحفظ
-            $('#saveUserBtn').off('click').on('click', function() {
-                saveUser(userId);
-            });
-        }
-
-        // حفظ المستخدم
-        function saveUser(userId) {
-            const fullName = $('#modalFullName').val().trim();
-            const username = $('#modalUsername').val().trim();
-            const email = $('#modalEmail').val().trim();
-            const phone = $('#modalPhone').val().trim();
-            const role = $('#modalRole').val();
-            const isActive = $('#modalIsActive').is(':checked');
-            const password = $('#modalPassword').val();
-            
-            if (!fullName || !username || !email || !role) {
-                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
-                return;
-            }
-            
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showNotification('الرجاء إدخال بريد إلكتروني صحيح', 'error');
-                return;
-            }
-            
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            
-            if (userId) {
-                // تحديث مستخدم موجود
-                const userIndex = users.findIndex(u => u.id === userId);
-                if (userIndex !== -1) {
-                    users[userIndex].fullName = fullName;
-                    users[userIndex].username = username;
-                    users[userIndex].email = email;
-                    users[userIndex].phone = phone;
-                    users[userIndex].role = role;
-                    users[userIndex].isActive = isActive;
-                    
-                    // تحديث كلمة المرور إذا تم إدخالها
-                    if (password) {
-                        users[userIndex].password = password;
+            categoryChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: categoryLabels,
+                    datasets: [{
+                        data: categoryData,
+                        backgroundColor: categoryColors,
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'left',
+                            rtl: true,
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+                                }
+                            }
+                        }
                     }
                 }
-            } else {
-                // إضافة مستخدم جديد
-                if (!password) {
-                    showNotification('الرجاء إدخال كلمة مرور', 'error');
-                    return;
-                }
-                
-                // التحقق من عدم تكرار اسم المستخدم
-                if (users.some(u => u.username === username)) {
-                    showNotification('اسم المستخدم مستخدم مسبقًا', 'error');
-                    return;
-                }
-                
-                const newUser = {
-                    id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
-                    username: username,
-                    password: password,
-                    fullName: fullName,
-                    email: email,
-                    phone: phone,
-                    role: role,
-                    isActive: isActive,
-                    createdAt: new Date().toISOString(),
-                    lastLogin: null
-                };
-                
-                users.push(newUser);
-            }
+            });
             
-            localStorage.setItem('systemUsers', JSON.stringify(users));
-            $('#userModal').modal('hide');
+            // تحديث وسوم الفئات
+            const legendContainer = $('#categoryLegend');
+            let legendHtml = '<h6 class="mb-3">توزيع الطلبات</h6>';
             
-            showNotification(`تم ${userId ? 'تحديث' : 'إضافة'} المستخدم بنجاح`, 'success');
+            Object.entries(categories).forEach(([key, category]) => {
+                const count = allRequests.filter(r => r.category === key).length;
+                const percentage = allRequests.length > 0 ? Math.round((count / allRequests.length) * 100) : 0;
+                
+                legendHtml += `
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="badge p-2 me-2" style="background-color: ${category.bgColor}; color: ${category.color};">
+                            <i class="${category.icon}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <span class="small">${category.name}</span>
+                                <span class="small fw-bold">${count}</span>
+                            </div>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: ${percentage}%; background-color: ${category.color};">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
             
-            // تحديث شبكة المستخدمين
-            renderUsersGrid();
+            legendContainer.html(legendHtml);
         }
 
-        // تعديل المستخدم
-        function editUser(userId) {
-            openUserModal(userId);
-        }
-
-        // حذف المستخدم
-        function deleteUser(userId) {
-            if (userId === currentUser.id) {
-                showNotification('لا يمكنك حذف حسابك الخاص', 'error');
+        // تحميل الطلبات العاجلة
+        function loadUrgentRequests() {
+            const container = $('#urgentRequests');
+            
+            const urgentRequests = allRequests.filter(r => 
+                r.priority === 'high' && r.status === 'pending'
+            ).slice(0, 5);
+            
+            if (urgentRequests.length === 0) {
+                container.html(`
+                    <div class="text-center py-3 text-muted">
+                        <i class="fas fa-check-circle fa-2x mb-2"></i>
+                        <p class="mb-0">لا توجد طلبات عاجلة حالياً</p>
+                    </div>
+                `);
                 return;
             }
             
-            if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
-                const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-                const filteredUsers = users.filter(u => u.id !== userId);
+            let html = '';
+            urgentRequests.forEach(request => {
+                const category = categories[request.category];
+                const daysAgo = Math.floor((new Date() - new Date(request.requestDate)) / (1000 * 60 * 60 * 24));
                 
-                localStorage.setItem('systemUsers', JSON.stringify(filteredUsers));
-                
-                showNotification('تم حذف المستخدم بنجاح', 'success');
-                
-                // تحديث شبكة المستخدمين
-                renderUsersGrid();
-            }
+                html += `
+                    <div class="alert alert-warning alert-dismissible fade show mb-2" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="${category.icon} fa-lg"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="alert-heading mb-1">${request.requestTitle}</h6>
+                                <p class="mb-1 small">${request.applicantName}</p>
+                                <p class="mb-0 small">
+                                    <i class="fas fa-clock me-1"></i>
+                                    منذ ${daysAgo} يوم
+                                </p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
         }
 
-        // فتح نموذج تعديل الملف الشخصي
-        function openEditProfileModal() {
-            $('#editFullName').val(currentUser.fullName);
-            $('#editEmail').val(currentUser.email);
-            $('#editPhone').val(currentUser.phone || '');
+        // فتح نموذج الطلب الجديد
+        function openNewRequestModal() {
+            const modalHtml = `
+                <div class="modal fade" id="newRequestModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">
+                                    <i class="fas fa-plus-circle me-2"></i>طلب جديد
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="newRequestForm">
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="newNationalId" class="form-label fw-bold">
+                                                <i class="fas fa-id-card me-2"></i>الرقم القومي
+                                            </label>
+                                            <input type="text" class="form-control" id="newNationalId" 
+                                                   placeholder="14 رقم" maxlength="14" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="newApplicantName" class="form-label fw-bold">
+                                                <i class="fas fa-user me-2"></i>اسم مقدم الطلب
+                                            </label>
+                                            <input type="text" class="form-control" id="newApplicantName" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label for="newCategory" class="form-label fw-bold">
+                                                <i class="fas fa-layer-group me-2"></i>الهيئة الحكومية
+                                            </label>
+                                            <select class="form-select" id="newCategory" required>
+                                                <option value="">اختر الهيئة</option>
+                                                ${Object.entries(categories).map(([key, cat]) => 
+                                                    `<option value="${key}">${cat.name}</option>`
+                                                ).join('')}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="newPriority" class="form-label fw-bold">
+                                                <i class="fas fa-exclamation-circle me-2"></i>الأولوية
+                                            </label>
+                                            <select class="form-select" id="newPriority" required>
+                                                <option value="low">منخفض</option>
+                                                <option value="medium">متوسط</option>
+                                                <option value="high">عاجل</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="newRequestTitle" class="form-label fw-bold">
+                                            <i class="fas fa-heading me-2"></i>عنوان الطلب
+                                        </label>
+                                        <input type="text" class="form-control" id="newRequestTitle" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="newRequestSummary" class="form-label fw-bold">
+                                            <i class="fas fa-file-alt me-2"></i>تفاصيل الطلب
+                                        </label>
+                                        <textarea class="form-control" id="newRequestSummary" rows="4" required></textarea>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label for="newFile" class="form-label fw-bold">
+                                            <i class="fas fa-paperclip me-2"></i>إرفاق ملف (اختياري)
+                                        </label>
+                                        <input type="file" class="form-control" id="newFile">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                                <button type="button" class="btn btn-primary" id="submitNewRequestBtn">
+                                    <i class="fas fa-save me-2"></i>حفظ الطلب
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
             
-            $('#editProfileModal').modal('show');
+            $('body').append(modalHtml);
+            $('#newRequestModal').modal('show');
             
-            // إعداد حدث الحفظ
-            $('#saveProfileBtn').off('click').on('click', function() {
-                saveProfileChanges();
+            // إضافة حدث لحفظ الطلب
+            $('#submitNewRequestBtn').off('click').on('click', function() {
+                saveNewRequest();
+            });
+            
+            // تنظيف النموذج بعد الإغلاق
+            $('#newRequestModal').on('hidden.bs.modal', function() {
+                $(this).remove();
             });
         }
 
-        // حفظ تغييرات الملف الشخصي
-        function saveProfileChanges() {
-            const fullName = $('#editFullName').val().trim();
-            const email = $('#editEmail').val().trim();
-            const phone = $('#editPhone').val().trim();
+        // حفظ الطلب الجديد
+        function saveNewRequest() {
+            const nationalId = $('#newNationalId').val().trim();
+            const applicantName = $('#newApplicantName').val().trim();
+            const category = $('#newCategory').val();
+            const priority = $('#newPriority').val();
+            const requestTitle = $('#newRequestTitle').val().trim();
+            const requestSummary = $('#newRequestSummary').val().trim();
             
-            if (!fullName || !email) {
+            // التحقق من البيانات
+            if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+                showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
+                return;
+            }
+            
+            if (!applicantName || !category || !requestTitle || !requestSummary) {
                 showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
                 return;
             }
             
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showNotification('الرجاء إدخال بريد إلكتروني صحيح', 'error');
-                return;
-            }
+            const newId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
             
-            // تحديث بيانات المستخدم
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            const newRequest = {
+                id: newId,
+                nationalId: nationalId,
+                applicantName: applicantName,
+                requestTitle: requestTitle,
+                requestSummary: requestSummary,
+                requestDate: new Date().toISOString().split('T')[0],
+                category: category,
+                status: 'submitted',
+                file: null,
+                comments: '',
+                priority: priority,
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser ? currentUser.username : 'system'
+            };
             
-            if (userIndex !== -1) {
-                users[userIndex].fullName = fullName;
-                users[userIndex].email = email;
-                users[userIndex].phone = phone;
-                
-                localStorage.setItem('systemUsers', JSON.stringify(users));
-                
-                // تحديث بيانات الجلسة
-                currentUser.fullName = fullName;
-                currentUser.email = email;
-                currentUser.phone = phone;
-                
-                localStorage.setItem('currentUser', JSON.stringify(currentUser));
-                
-                // تحديث الواجهة
-                updateUserInterface();
-                loadProfileData();
-                
-                $('#editProfileModal').modal('hide');
-                showNotification('تم تحديث الملف الشخصي بنجاح', 'success');
-            }
+            allRequests.unshift(newRequest);
+            saveDataToLocalStorage();
+            
+            $('#newRequestModal').modal('hide');
+            showNotification('تم إضافة الطلب بنجاح', 'success');
+            
+            // تحديث البيانات
+            refreshData();
+            
+            // إضافة للأنشطة
+            addActivity('طلب جديد', `تم إضافة طلب جديد #${newId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
         }
 
-        // فتح نموذج تغيير كلمة المرور
-        function openChangePasswordModal() {
-            $('#currentPassword').val('');
-            $('#newPassword').val('');
-            $('#confirmNewPassword').val('');
+        // عرض تفاصيل الطلب
+        function showRequestDetails(requestId) {
+            const request = allRequests.find(r => r.id === requestId);
+            if (!request) return;
             
-            $('#changePasswordModal').modal('show');
+            const category = categories[request.category];
+            const status = statuses[request.status];
             
-            // إعداد حدث الحفظ
-            $('#submitPasswordChangeBtn').off('click').on('click', function() {
-                changePassword();
+            const modalHtml = `
+                <div class="modal fade" id="requestDetailsModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header text-white" style="background-color: ${category.color};">
+                                <h5 class="modal-title">
+                                    <i class="${category.icon} me-2"></i>تفاصيل الطلب #${request.id}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-muted mb-3">معلومات مقدم الطلب</h6>
+                                                <div class="mb-2">
+                                                    <strong>الاسم:</strong> ${request.applicantName}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>الرقم القومي:</strong> ${request.nationalId}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>تاريخ الطلب:</strong> ${formatDate(request.requestDate)}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>الأولوية:</strong> 
+                                                    <span class="badge bg-${request.priority === 'high' ? 'danger' : request.priority === 'medium' ? 'warning' : 'success'}">
+                                                        ${request.priority === 'high' ? 'عاجل' : request.priority === 'medium' ? 'متوسط' : 'منخفض'}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card h-100">
+                                            <div class="card-body">
+                                                <h6 class="card-title text-muted mb-3">معلومات الطلب</h6>
+                                                <div class="mb-2">
+                                                    <strong>الهيئة:</strong>
+                                                    <span class="category-badge ${getCategoryClass(request.category)}">
+                                                        <i class="${category.icon} me-1"></i>${category.name}
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>الحالة:</strong>
+                                                    <span class="status-badge ${getStatusClass(request.status)}">
+                                                        <i class="${status.icon} me-1"></i>${status.name}
+                                                    </span>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>تاريخ الإنشاء:</strong> ${formatDate(request.createdAt)}
+                                                </div>
+                                                <div class="mb-2">
+                                                    <strong>أنشئ بواسطة:</strong> ${request.createdBy || 'المسؤول'}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-muted mb-3">محتوى الطلب</h6>
+                                        <h5>${request.requestTitle}</h5>
+                                        <p class="mt-3">${request.requestSummary}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-muted mb-3">المتابعة والتعليقات</h6>
+                                        <div class="mb-3">
+                                            <label for="updateComments" class="form-label">تحديث الحالة وإضافة تعليق</label>
+                                            <textarea class="form-control" id="updateComments" rows="3" 
+                                                      placeholder="أدخل تعليق أو تحديث عن حالة الطلب...">${request.comments || ''}</textarea>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="updateStatus" class="form-label">تحديث الحالة</label>
+                                            <select class="form-select" id="updateStatus">
+                                                <option value="submitted" ${request.status === 'submitted' ? 'selected' : ''}>تم التقديم</option>
+                                                <option value="pending" ${request.status === 'pending' ? 'selected' : ''}>انتظار الرد</option>
+                                                <option value="approved" ${request.status === 'approved' ? 'selected' : ''}>موافقة</option>
+                                                <option value="rejected" ${request.status === 'rejected' ? 'selected' : ''}>غير موافقة</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <button class="btn btn-primary" onclick="updateRequestDetails(${request.id})">
+                                            <i class="fas fa-save me-2"></i>حفظ التحديثات
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('body').append(modalHtml);
+            $('#requestDetailsModal').modal('show');
+            
+            // تنظيف النموذج بعد الإغلاق
+            $('#requestDetailsModal').on('hidden.bs.modal', function() {
+                $(this).remove();
             });
         }
 
-        // تغيير كلمة المرور
-        function changePassword() {
-            const currentPassword = $('#currentPassword').val();
-            const newPassword = $('#newPassword').val();
-            const confirmNewPassword = $('#confirmNewPassword').val();
+        // تحديث تفاصيل الطلب
+        function updateRequestDetails(requestId) {
+            const requestIndex = allRequests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) return;
             
-            if (!currentPassword || !newPassword || !confirmNewPassword) {
-                showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
-                return;
+            const newComments = $('#updateComments').val().trim();
+            const newStatus = $('#updateStatus').val();
+            
+            allRequests[requestIndex].comments = newComments;
+            allRequests[requestIndex].status = newStatus;
+            allRequests[requestIndex].updatedAt = new Date().toISOString();
+            allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
+            
+            saveDataToLocalStorage();
+            $('#requestDetailsModal').modal('hide');
+            
+            showNotification('تم تحديث حالة الطلب بنجاح', 'success');
+            
+            // تحديث البيانات
+            refreshData();
+            
+            // إضافة للأنشطة
+            addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+        }
+
+        // تحديث حالة الطلب مباشرة
+        function updateRequestStatus(requestId, newStatus) {
+            const requestIndex = allRequests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) return;
+            
+            allRequests[requestIndex].status = newStatus;
+            allRequests[requestIndex].updatedAt = new Date().toISOString();
+            allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
+            
+            saveDataToLocalStorage();
+            showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name}`, 'success');
+            
+            // تحديث البيانات
+            refreshData();
+            
+            // إضافة للأنشطة
+            addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+        }
+
+        // تعديل الطلب
+        function editRequest(requestId) {
+            // في هذا المثال، سنقوم بفتح تفاصيل الطلب للتحرير
+            showRequestDetails(requestId);
+        }
+
+        // تحديث البيانات
+        function refreshData() {
+            renderRequestsTable();
+            updateStatistics();
+            renderCategoryChart();
+            loadUrgentRequests();
+            updateActiveFiltersDisplay();
+            
+            // تحديث المخططات الأخرى إذا كانت موجودة
+            if (monthlyChart) {
+                updateMonthlyChart();
+            }
+        }
+
+        // تصدير البيانات
+        function exportData() {
+            const exportFormat = localStorage.getItem('exportFormat') || 'json';
+            let dataStr, fileName, mimeType;
+            
+            switch(exportFormat) {
+                case 'csv':
+                    dataStr = convertToCSV(allRequests);
+                    fileName = 'طلبات_المواطنين.csv';
+                    mimeType = 'text/csv;charset=utf-8;';
+                    break;
+                case 'excel':
+                    dataStr = convertToExcel(allRequests);
+                    fileName = 'طلبات_المواطنين.xls';
+                    mimeType = 'application/vnd.ms-excel;charset=utf-8;';
+                    break;
+                case 'pdf':
+                    // في الواقع، نحتاج لمكتبة لإنشاء PDF
+                    // هنا سنستخدم JSON كبديل
+                    dataStr = JSON.stringify(allRequests, null, 2);
+                    fileName = 'طلبات_المواطنين.pdf';
+                    mimeType = 'application/json;charset=utf-8;';
+                    break;
+                default: // json
+                    dataStr = JSON.stringify(allRequests, null, 2);
+                    fileName = 'طلبات_المواطنين.json';
+                    mimeType = 'application/json;charset=utf-8;';
+                    break;
             }
             
-            if (newPassword.length < 6) {
-                showNotification('كلمة المرور الجديدة يجب أن تتكون من 6 أحرف على الأقل', 'error');
-                return;
-            }
+            const dataUri = 'data:' + mimeType + ',' + encodeURIComponent(dataStr);
             
-            if (newPassword !== confirmNewPassword) {
-                showNotification('كلمات المرور غير متطابقة', 'error');
-                return;
-            }
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', fileName);
+            linkElement.click();
             
-            // التحقق من كلمة المرور الحالية
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            showNotification(`تم تصدير البيانات كملف ${fileName}`, 'success');
+        }
+
+        // التحويل إلى CSV
+        function convertToCSV(data) {
+            const headers = ['ID', 'الرقم القومي', 'اسم مقدم الطلب', 'عنوان الطلب', 'الهيئة', 'الحالة', 'التاريخ', 'الأولوية'];
+            const rows = data.map(item => [
+                item.id,
+                item.nationalId,
+                item.applicantName,
+                item.requestTitle,
+                categories[item.category].name,
+                statuses[item.status].name,
+                item.requestDate,
+                item.priority === 'high' ? 'عاجل' : item.priority === 'medium' ? 'متوسط' : 'منخفض'
+            ]);
             
-            if (userIndex === -1) {
-                showNotification('حدث خطأ في التحقق من المستخدم', 'error');
-                return;
-            }
-            
-            if (users[userIndex].password !== currentPassword) {
-                showNotification('كلمة المرور الحالية غير صحيحة', 'error');
-                return;
-            }
-            
-            // تحديث كلمة المرور
-            users[userIndex].password = newPassword;
-            localStorage.setItem('systemUsers', JSON.stringify(users));
-            
-            $('#changePasswordModal').modal('hide');
-            showNotification('تم تغيير كلمة المرور بنجاح', 'success');
+            return [headers, ...rows].map(row => 
+                row.map(cell => `"${cell}"`).join(',')
+            ).join('\n');
+        }
+
+        // التحويل إلى Excel (مبسط)
+        function convertToExcel(data) {
+            return convertToCSV(data); // استخدام CSV كبديل بسيط
         }
 
         // تسجيل الخروج
@@ -3885,24 +3866,275 @@
                 $('#floatingAddBtn').hide();
             }
             
-            // تحديث البيانات في الصفحة المطلوبة
-            switch(pageId) {
-                case 'allRequests':
-                    renderAllRequestsTable();
-                    break;
-                case 'users':
-                    renderUsersGrid();
-                    break;
-                case 'profile':
-                    loadProfileData();
-                    break;
-                case 'reports':
-                    updateReportsPage();
-                    break;
+            // تحديث المخططات إذا لزم الأمر
+            if (pageId === 'reports') {
+                updateReportsPage();
             }
         }
 
-        // الوظائف الأخرى من الكود السابق تبقى كما هي...
+        // تحديث صفحة التقارير
+        function updateReportsPage() {
+            updateMonthlyChart();
+            updatePerformanceIndicators();
+            updateActivityTimeline();
+        }
+
+        // تحديث المخطط الشهري
+        function updateMonthlyChart() {
+            const ctx = document.getElementById('monthlyChart');
+            if (!ctx) return;
+            
+            if (monthlyChart) {
+                monthlyChart.destroy();
+            }
+            
+            const now = new Date();
+            const months = [];
+            const counts = [];
+            
+            // جمع بيانات آخر 6 أشهر
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthName = date.toLocaleDateString('ar-EG', { month: 'long' });
+                months.push(monthName);
+                
+                const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+                const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                
+                const monthCount = allRequests.filter(r => {
+                    const requestDate = new Date(r.requestDate);
+                    return requestDate >= monthStart && requestDate <= monthEnd;
+                }).length;
+                
+                counts.push(monthCount);
+            }
+            
+            monthlyChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'عدد الطلبات',
+                        data: counts,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            rtl: true,
+                            labels: {
+                                font: {
+                                    family: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // تحديث مؤشرات الأداء
+        function updatePerformanceIndicators() {
+            // متوسط وقت المعالجة
+            const completedRequests = allRequests.filter(r => r.status === 'approved' && r.requestDate && r.updatedAt);
+            let totalDays = 0;
+            
+            completedRequests.forEach(r => {
+                const start = new Date(r.requestDate);
+                const end = new Date(r.updatedAt || r.createdAt);
+                const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+                totalDays += days;
+            });
+            
+            const avgProcessingTime = completedRequests.length > 0 ? 
+                Math.round(totalDays / completedRequests.length) : 0;
+            
+            $('#avgProcessingTime').text(avgProcessingTime);
+            
+            // معدل الرضا (بافتراض أن الطلبات المكتملة هي راضية)
+            const satisfactionRate = allRequests.length > 0 ? 
+                Math.round((completedRequests.length / allRequests.length) * 100) : 0;
+            
+            $('#satisfactionRate').text(satisfactionRate + '%');
+            
+            // معدل الاستجابة (طلبات تم الرد عليها خلال 3 أيام)
+            const respondedRequests = allRequests.filter(r => {
+                if (!r.updatedAt) return false;
+                const start = new Date(r.requestDate);
+                const response = new Date(r.updatedAt);
+                const days = Math.ceil((response - start) / (1000 * 60 * 60 * 24));
+                return days <= 3;
+            });
+            
+            const responseRate = allRequests.length > 0 ? 
+                Math.round((respondedRequests.length / allRequests.length) * 100) : 0;
+            
+            $('#responseRate').text(responseRate + '%');
+            
+            // متوسط أيام الإنجاز
+            $('#completionDays').text(avgProcessingTime);
+        }
+
+        // تحديث سجل الأنشطة
+        function updateActivityTimeline() {
+            const container = $('#activityTimeline');
+            
+            // جمع الأنشطة من مختلف المصادر
+            let activities = [];
+            
+            // إضافة أنشطة الطلبات
+            allRequests.forEach(request => {
+                activities.push({
+                    type: 'request',
+                    title: `طلب جديد #${request.id}`,
+                    description: `${request.applicantName} - ${request.requestTitle}`,
+                    date: request.createdAt,
+                    icon: 'fas fa-file-alt'
+                });
+                
+                if (request.updatedAt) {
+                    activities.push({
+                        type: 'update',
+                        title: `تحديث الطلب #${request.id}`,
+                        description: `تم تحديث حالة الطلب إلى ${statuses[request.status].name}`,
+                        date: request.updatedAt,
+                        icon: 'fas fa-sync'
+                    });
+                }
+            });
+            
+            // إضافة أنشطة النظام
+            const systemActivities = JSON.parse(localStorage.getItem('systemActivities') || '[]');
+            activities = activities.concat(systemActivities);
+            
+            // ترتيب حسب التاريخ
+            activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            // عرض أول 10 أنشطة
+            const recentActivities = activities.slice(0, 10);
+            
+            let html = '';
+            recentActivities.forEach(activity => {
+                const timeAgo = getTimeAgo(activity.date);
+                
+                html += `
+                    <div class="timeline-item">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="stat-icon me-3" style="background-color: #e9ecef; color: #495057;">
+                                        <i class="${activity.icon}"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">${activity.title}</h6>
+                                        <small class="text-muted">${timeAgo}</small>
+                                    </div>
+                                </div>
+                                <p class="mb-0 small">${activity.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.html(html);
+        }
+
+        // إضافة نشاط للنظام
+        function addActivity(title, description) {
+            const activities = JSON.parse(localStorage.getItem('systemActivities') || '[]');
+            
+            activities.unshift({
+                type: 'system',
+                title: title,
+                description: description,
+                date: new Date().toISOString(),
+                icon: 'fas fa-history'
+            });
+            
+            // الاحتفاظ بحد أقصى 50 نشاط
+            if (activities.length > 50) {
+                activities.length = 50;
+            }
+            
+            localStorage.setItem('systemActivities', JSON.stringify(activities));
+        }
+
+        // التحقق من الطلبات الجديدة
+        function checkNewRequests() {
+            const lastCheck = localStorage.getItem('lastRequestCheck') || new Date().toISOString();
+            const newRequests = allRequests.filter(r => new Date(r.createdAt) > new Date(lastCheck));
+            
+            if (newRequests.length > 0) {
+                showNotification(`لديك ${newRequests.length} طلب جديد`, 'info');
+                
+                // تحديث آخر فحص
+                localStorage.setItem('lastRequestCheck', new Date().toISOString());
+                
+                // تحديث الإحصائيات
+                updateStatistics();
+            }
+        }
+
+        // التحقق من الإشعارات غير المقروءة
+        function checkUnreadNotifications() {
+            // تنفيذ منطق التحقق من الإشعارات
+            // يمكن إضافة المزيد من المنطق هنا
+        }
+
+        // عرض إشعار
+        function showNotification(message, type) {
+            const notification = `
+                <div class="toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info'} border-0 position-fixed top-0 end-0 m-3" 
+                     role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1060;">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'} me-2"></i>
+                            ${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                </div>
+            `;
+            
+            $('#notificationContainer').append(notification);
+            
+            const toastElement = $('#notificationContainer .toast:last-child');
+            const toast = new bootstrap.Toast(toastElement[0]);
+            toast.show();
+            
+            // إزالة الإشعار بعد إخفائه
+            toastElement.on('hidden.bs.toast', function() {
+                $(this).remove();
+            });
+        }
+
+        // الحصول على اسم الفئة
+        function getCategoryClass(category) {
+            return `category-${category}`;
+        }
+
+        // الحصول على اسم الحالة
+        function getStatusClass(status) {
+            return `status-${status}`;
+        }
 
         // تنسيق التاريخ
         function formatDate(dateString) {
@@ -3948,23 +4180,23 @@
             return `الآن`;
         }
 
-        // الحصول على اسم الفئة
-        function getCategoryClass(category) {
-            return `category-${category}`;
+        // تحويل الأولوية للنص العربي
+        function getPriorityText(priority) {
+            switch(priority) {
+                case 'high': return 'عاجل';
+                case 'medium': return 'متوسط';
+                case 'low': return 'منخفض';
+                default: return 'غير محدد';
+            }
         }
 
-        // الحصول على اسم الحالة
-        function getStatusClass(status) {
-            return `status-${status}`;
-        }
-
-        // تعريف الدوال للاستخدام العام
+        // تعريف دالة الحصول على اسم الدور للاستخدام العام
+        window.getRoleName = getRoleName;
+        window.getUserIconByRole = getUserIconByRole;
         window.showRequestDetails = showRequestDetails;
         window.updateRequestStatus = updateRequestStatus;
         window.editRequest = editRequest;
         window.selectSearchResult = selectSearchResult;
-        window.editUser = editUser;
-        window.deleteUser = deleteUser;
         window.showCategoryDetails = showCategoryDetails;
         window.showAllCategoryRequests = showAllCategoryRequests;
 
