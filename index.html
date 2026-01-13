@@ -448,7 +448,7 @@
                                     <option value="submitted">تم التقديم</option>
                                     <option value="pending">انتظار الرد</option>
                                     <option value="approved">موافقة</option>
-                                    <option value="rejected">غير موافقة</option>
+                                    <option value="rejected">مرفوض</option>
                                 </select>
                             </div>
                             <div class="col-md-4 mb-2">
@@ -905,7 +905,7 @@
                 icon: 'fas fa-check-circle'
             },
             'rejected': {
-                name: 'غير موافقة',
+                name: 'مرفوض',
                 color: '#ef4444',
                 bgColor: '#fee2e2',
                 icon: 'fas fa-times-circle'
@@ -1463,7 +1463,7 @@
                                         </a></li>
                                     <li><a class="dropdown-item change-status-dropdown" href="#" 
                                            data-id="${request.id}" data-status="rejected">
-                                           <i class="fas fa-times-circle text-danger me-2"></i>غير موافقة
+                                           <i class="fas fa-times-circle text-danger me-2"></i>مرفوض
                                         </a></li>
                                 </ul>
                             </div>
@@ -1604,7 +1604,7 @@
                                     </button>
                                     <button type="button" class="btn btn-danger change-status-btn" 
                                             data-status="rejected">
-                                        <i class="fas fa-times me-2"></i>غير موافقة
+                                        <i class="fas fa-times me-2"></i>مرفوض
                                     </button>
                                 </div>
                                 <div class="mt-2">
