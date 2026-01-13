@@ -1,759 +1,304 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام متابعة طلبات المواطنين - عضو مجلس النواب</title>
+    <title>تحميل النظام...</title>
     
-    <!-- CSS الأساسي فقط - بدون تفاصيل -->
+    <!-- CSS مخفي -->
     <style>
-        /* أنماط أساسية فقط */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-        }
-        
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background: #f8f9fa;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        #app-loader {
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             color: white;
+            overflow: hidden;
+        }
+        
+        .loader {
             text-align: center;
         }
         
-        .loader-logo {
+        .loader-icon {
             font-size: 4rem;
-            margin-bottom: 2rem;
-            animation: pulse 2s infinite;
+            margin-bottom: 20px;
+            animation: spin 2s linear infinite;
         }
         
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.05); }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
         .loader-text {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
         }
         
         .loader-subtext {
             opacity: 0.8;
-            margin-bottom: 2rem;
+            font-size: 0.9rem;
         }
         
-        .loader-spinner {
-            width: 50px;
-            height: 50px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s linear infinite;
+        .progress-bar {
+            width: 300px;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            margin: 20px auto;
+            border-radius: 2px;
+            overflow: hidden;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        #error-container {
-            display: none;
-            padding: 2rem;
-            text-align: center;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            max-width: 500px;
-            margin: 2rem auto;
-        }
-        
-        .error-icon {
-            font-size: 3rem;
-            color: #dc3545;
-            margin-bottom: 1rem;
-        }
-        
-        /* حماية إضافية */
-        #protection-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
+        .progress {
             height: 100%;
-            background: rgba(0,0,0,0.95);
-            color: white;
+            background: white;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        #error-message {
             display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 999999;
-            text-align: center;
-            padding: 2rem;
+            background: rgba(255,0,0,0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid rgba(255,0,0,0.3);
+        }
+        
+        /* حماية ضد النسخ */
+        .no-select {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
     </style>
 </head>
-<body>
-    <!-- شاشة التحميل الأولية فقط -->
-    <div id="app-loader">
-        <div class="loader-logo">
-            <i class="fas fa-hands-helping"></i>
-        </div>
-        <div class="loader-text">نظام متابعة طلبات المواطنين</div>
+<body class="no-select">
+    <div class="loader">
+        <div class="loader-icon">⚙️</div>
+        <div class="loader-text">جاري تحميل نظام متابعة الطلبات</div>
         <div class="loader-subtext">عضو مجلس النواب</div>
-        <div class="loader-spinner"></div>
-        <div class="loader-subtext" style="margin-top: 2rem; font-size: 0.9rem;">
-            جاري التحقق من الصلاحيات وتحميل النظام...
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
         </div>
-    </div>
-    
-    <!-- حاوية التطبيق الرئيسية (سيتم إخفاؤها في Shadow DOM) -->
-    <div id="app-container" style="display: none;"></div>
-    
-    <!-- حاوية الأخطاء -->
-    <div id="error-container">
-        <div class="error-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <h3 id="error-title">حدث خطأ</h3>
-        <p id="error-message">تعذر تحميل النظام. يرجى المحاولة مرة أخرى.</p>
-        <button id="retry-btn" class="btn btn-primary mt-3">إعادة المحاولة</button>
-    </div>
-    
-    <!-- طبقة حماية -->
-    <div id="protection-overlay">
-        <div>
-            <h2 style="color: #ff4444; margin-bottom: 1rem;">⚠️ تم اكتشاف محاولة اختراق</h2>
-            <p>تم إيقاف النظام لأسباب أمنية.</p>
-            <p>يرجى إعادة تحميل الصفحة.</p>
-            <button onclick="location.reload()" class="btn btn-light mt-3">إعادة التحميل</button>
-        </div>
+        
+        <div id="error-message"></div>
     </div>
 
-    <!-- مكتبات خارجية فقط -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- NO VISIBLE CODE HERE -->
     
-    <!-- محمل النظام المحمي -->
+    <!-- مكتبات أساسية فقط -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- النظام المحمّل ديناميكياً -->
     <script>
-        // ===================== نظام الحماية الرئيسي =====================
-        (function() {
-            'use strict';
-            
-            // المفاتيح والمتغيرات المحمية
-            const SYSTEM_KEY = 'CITIZEN_SYSTEM_V1_' + window.location.hostname;
-            const ALLOWED_DOMAINS = ['localhost', '127.0.0.1', 'parliament.gov', 'gov.eg'];
-            const ENCRYPTION_KEY = btoa(SYSTEM_KEY).substring(0, 32);
-            
-            // نظام مراقبة السلوك
-            class SecurityMonitor {
-                constructor() {
-                    this.detectedThreats = [];
-                    this.securityLevel = 0;
-                    this.init();
+        // ==================== نظام التحميل الآمن ====================
+        
+        // المفاتيح والأسرار
+        const SYSTEM_SECRET = btoa('SYSTEM_V1_' + window.location.hostname);
+        const ENCRYPTION_KEY = 'XyZ123_' + SYSTEM_SECRET.substring(0, 20);
+        
+        // حالة النظام
+        let systemState = {
+            isLoaded: false,
+            securityLevel: 0,
+            errors: []
+        };
+        
+        // 1. منع الوصول المباشر للكود
+        Object.defineProperty(window, 'SYSTEM_CODE', {
+            value: null,
+            writable: false,
+            configurable: false,
+            enumerable: false
+        });
+        
+        // 2. تشفير/فك تشفير النصوص
+        function encryptText(text) {
+            let result = '';
+            for (let i = 0; i < text.length; i++) {
+                result += String.fromCharCode(text.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length));
+            }
+            return btoa(result);
+        }
+        
+        function decryptText(encrypted) {
+            try {
+                const decoded = atob(encrypted);
+                let result = '';
+                for (let i = 0; i < decoded.length; i++) {
+                    result += String.fromCharCode(decoded.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length));
                 }
+                return result;
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        // 3. الكود المشفر الرئيسي (سيتم فك تشفيره وتنفيذه)
+        const ENCRYPTED_SYSTEM = `
+        Ly8gPT09PT09PT09PT09PT09PT09PT09PT09PSBOR0hZVEUgU1lTVEVNID09PT09PT09PT09PT09PT09PT09PT09PT0K
+        Ly8gVXNlIDogZXh0cmVtZS1wcm90ZWN0aW9uCnZhciBwcm90ZWN0ZWRTdGF0ZSA9IHsKICAgIGlzQWN0aXZlOiBm
+        YWxzZSwKICAgIHVzZXJEYXRhOiBudWxsLAogICAgc2Vzc2lvbklkOiAnJwp9OwoKLy8gSGlkZSBmdW5jdGlvbnMKa
+        WYgKCF3aW5kb3cucHJvdGVjdGVkU3lzdGVtKSB7CiAgICB3aW5kb3cucHJvdGVjdGVkU3lzdGVtID0gewogICAgICAgIGluaXQ6IGZ1bmN0aW9uKCkgewogICAgICAgICAgICB0aGlzLnNldHVwU2VjdXJpdHkoKTsKICAgICAgICAgICAgdGhpcy5sb2FkVUlDb21wb25lbnRzKCk7CiAgICAgICAgICAgIHRoaXMuc2V0dXBJbnRlcmFjdGlvbnMoKTsKICAgICAgICB9LAoKICAgICAgICBzZXR1cFNlY3VyaXR5OiBmdW5jdGlvbigpIHsKICAgICAgICAgICAgLy8gUHJvdGVjdGlvbiBzeXN0ZW0KICAgICAgICAgICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignY29udGV4dG1lbnUnLCBmdW5jdGlvbihlKSB7CiAgICAgICAgICAgICAgICBlLnByZXZlbnREZWZhdWx0KCk7CiAgICAgICAgICAgICAgICB0aGlzLnNob3dUb2FzdCgn4pqUIOaOiOavjyDZh9mI2YjYp9isINin2YTYtNmG2Yog2KjZhtmK2Yog2KfZhNi02KfZhdmK2K8nKTsKICAgICAgICAgICAgfS5iaW5kKHRoaXMpKTsKCiAgICAgICAgICAgIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoJ2tleWRvd24nLCBmdW5jdGlvbihlKSB7CiAgICAgICAgICAgICAgICAvLyBGMTIKICAgICAgICAgICAgICAgIGlmIChlLmtleUNvZGUgPT09IDEyMykgewogICAgICAgICAgICAgICAgICAgIGUucHJldmVudERlZmF1bHQoKTsKICAgICAgICAgICAgICAgICAgICB0aGlzLnNob3dUb2FzdCgn4pqUINio2KfYrdmG2KcgRjEyINmH2YjZiNin2Kwg2KfZhNi02YbZiiDYqNmG2YrZiiDYp9mE2LTYp9mF2YrYrycpOwogICAgICAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIC8vIEN0cmwrVQogICAgICAgICAgICAgICAgaWYgKGUuY3RybEtleSAmJiBlLmtleUNvZGUgPT09IDg1KSB7CiAgICAgICAgICAgICAgICAgICAgZS5wcmV2ZW50RGVmYXVsdCgpOwogICAgICAgICAgICAgICAgICAgIHRoaXMuc2hvd1RvYXN0KCfimpQg2KjYp9it2YbZpyBDdHJsK1Ug2YfZiNmI2KfYrCDYp9mE2LTZhtmKINio2YbZitmKINin2YTYtNin2YXZitivJyk7CiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgLy8gQ3RybCtTaGlmdCtJCiAgICAgICAgICAgICAgICBpZiAoZS5jdHJsS2V5ICYmIGUuc2hpZnRLZXkgJiYgZS5rZXlDb2RlID09PSA3MykgewogICAgICAgICAgICAgICAgICAgIGUucHJldmVudERlZmF1bHQoKTsKICAgICAgICAgICAgICAgICAgICB0aGlzLnNob3dUb2FzdCgn4pqUINio2KfYrdmG2acgQ3RybCtTaGlmdCtJINmH2YjZiNin2Kwg2KfZhNi02YbZiiDYqNmG2YrZiiDYp9mE2LTYp9mF2YrYrycpOwogICAgICAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfS5iaW5kKHRoaXMpKTsKICAgICAgICB9LAoKICAgICAgICBsb2FkVUlDb21wb25lbnRzOiBmdW5jdGlvbigpIHsKICAgICAgICAgICAgLy8gQ3JlYXRlIG1haW4gY29udGFpbmVyCiAgICAgICAgICAgIGRvY3VtZW50LmJvZHkuaW5uZXJIVE1MID0gJyc7CiAgICAgICAgICAgIAogICAgICAgICAgICBjb25zdCBhcHBDb250YWluZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTsKICAgICAgICAgICAgYXBwQ29udGFpbmVyLmlkID0gJ3Byb3RlY3RlZC1hcHAnOwogICAgICAgICAgICBhcHBDb250YWluZXIuc3R5bGUuY3NzVGV4dCA9ICcKICAgICAgICAgICAgICAgIHdpZHRoOiAxMDAlOwogICAgICAgICAgICAgICAgaGVpZ2h0OiAxMDB2aDsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQ6ICNmOGZhZmM7CiAgICAgICAgICAgICAgICBmb250LWZhbWlseTogIlNlZ29lIFVJIiwgc2Fucy1zZXJpZjsKICAgICAgICAgICAgJzsKICAgICAgICAgICAgCiAgICAgICAgICAgIGRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoYXBwQ29udGFpbmVyKTsKICAgICAgICAgICAgCiAgICAgICAgICAgIC8vIEFkZCBBcHAgQ29udGVudAogICAgICAgICAgICBhcHBDb250YWluZXIuaW5uZXJIVE1MID0gYHtpKGYoJ0wvdyAvUyB8Ly9mIC8vbyAvL2MgLy9sIC8vYSAvL3QgLy9lIC8vZCAvL20vZycpfSgmKCdJJykpfSgnUScpYCArICcKICAgICAgICAgICAgPGRpdiBzdHlsZT0icG9zaXRpb246IGZpeGVkOyB0b3A6IDA7IHJpZ2h0OiAwOyB3aWR0aDogMjUwcHg7IGhlaWdodDogMTAwdmg7IGJhY2tncm91bmQ6IGxpbmVhci1ncmFkaWVudCgxODBkZWcsICMxZTNhOGEgMCUsICMxZTQwYWYgMTAwJSk7IGNvbG9yOiB3aGl0ZTsgcGFkZGluZzogMjBweDsiPgogICAgICAgICAgICAgICAgPGgyIHN0eWxlPSJtYXJnaW4tYm90dG9tOiAzMHB4OyB0ZXh0LWFsaWduOiBjZW50ZXI7Ij7Yp9mE2LTYp9mF2Yog2KfZhNix2KjZitipPC9oMj4KICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9Im1hcmdpbi1ib3R0b206IDIwcHg7IHBhZGRpbmc6IDEwcHg7IGJhY2tncm91bmQ6IHJnYmEoMjU1LDI1NSwyNTUsMC4xKTsgYm9yZGVyLXJhZGl1czogMTBweDsiPgogICAgICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9ImZvbnQtc2l6ZTogMTRweDsgZm9udC13ZWlnaHQ6IGJvbGQ7Ij7Yp9mE2LTYp9mF2Yog2KfZhNix2KjZitipPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPGRpdiBzdHlsZT0iZm9udC1zaXplOiAxMnB4OyBvcGFjaXR5OiAwLjc7Ij7Zhdi12YjZhNmF2KfZhSDYqNio2KfYqSDYqNio2KfYr9ipPC9kaXY+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxidXR0b24gb25jbGljaz0icHJvdGVjdGVkU3lzdGVtLmxvZ291dCgpIiBzdHlsZT0id2lkdGg6IDEwMCU7IHBhZGRpbmc6IDEwcHg7IGJhY2tncm91bmQ6IHJnYmEoMjU1LDI1NSwyNTUsMC4yKTsgY29sb3I6IHdoaXRlOyBib3JkZXI6IG5vbmU7IGJvcmRlci1yYWRpdXM6IDVweDsgbWFyZ2luLXRvcDogMjBweDsgY3Vyc29yOiBwb2ludGVyOyI+CiAgICAgICAgICAgICAgICAgICAg2KfZhNi02KfZhdin2YbYr9in2YYg2KfZhNmF2YTYr9mK2KkKICAgICAgICAgICAgICAgIDwvYnV0dG9uPgogICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgPGRpdiBzdHlsZT0ibWFyZ2luLXJpZ2h0OiAyNTBweDsgcGFkZGluZzogMzBweDsiPgogICAgICAgICAgICAgICAgPGgxIHN0eWxlPSJjb2xvcjogIzFlM2E4YTsiPtin2YTZhdmE2K/ZitipINin2YTYtNin2YXYpyDYp9mE2LHYqNmK2Kk8L2gxPgogICAgICAgICAgICAgICAgPHAgc3R5bGU9ImNvbG9yOiAjNmI3MjgwOyBtYXJnaW4tYm90dG9tOiAzMHB4OyI+2KfZhNi52YbYp9mE2Kkg2KfZhNmF2YTYr9mK2Kkg2KfZhNi12YjZitivINin2YTYtNin2YXYpyDYp9mE2LHYqNmK2Kk8L3A+CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9ImRpc3BsYXk6IGdyaWQ7IGdyaWQtdGVtcGxhdGUtY29sdW1uczogcmVwZWF0KGF1dG8tZml0LCBtaW5tYXgoMjUwcHgsIDFmcikpOyBnYXA6IDIwcHg7Ij4KICAgICAgICAgICAgICAgICAgICA8ZGl2IHN0eWxlPSJiYWNrZ3JvdW5kOiB3aGl0ZTsgcGFkZGluZzogMjBweDsgYm9yZGVyLXJhZGl1czogMTBweDsgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwwLDAsMC4xKTsiPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IHN0eWxlPSJmb250LXNpemU6IDJyZW07IGZvbnQtd2VpZ2h0OiBib2xkOyBjb2xvcjogIzFlM2E4YTsiPjEsMjU3PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9ImNvbG9yOiAjNmI3MjgwOyI+2KfZhNi02KfZhdin2YLYudmG2KfYjCDYp9mE2LHYqNmK2Kk8L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICA8ZGl2IHN0eWxlPSJiYWNrZ3JvdW5kOiB3aGl0ZTsgcGFkZGluZzogMjBweDsgYm9yZGVyLXJhZGl1czogMTBweDsgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwwLDAsMC4xKTsiPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IHN0eWxlPSJmb250LXNpemU6IDJyZW07IGZvbnQtd2VpZ2h0OiBib2xkOyBjb2xvcjogIzFlM2E4YTsiPjQ4PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9ImNvbG9yOiAjNmI3MjgwOyI+2KfZhNi02KfZhdin2YLYudmG2KfYjCDZiNin2LXYsdin2YrYqTwvZGl2PgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgIDwvZGl2Pic7CiAgICAgICAgfSwKCiAgICAgICAgc2V0dXBJbnRlcmFjdGlvbnM6IGZ1bmN0aW9uKCkgewogICAgICAgICAgICAvLyBTZXR1cCBldmVudCBsaXN0ZW5lcnMKICAgICAgICAgICAgY29uc29sZS5sb2coJ1N5c3RlbSBpbml0aWFsaXplZCcpOwogICAgICAgIH0sCgogICAgICAgIHNob3dUb2FzdDogZnVuY3Rpb24obWVzc2FnZSkgewogICAgICAgICAgICBjb25zdCB0b2FzdCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpOwogICAgICAgICAgICB0b2FzdC5zdHlsZS5jc3NUZXh0ID0gJwogICAgICAgICAgICAgICAgcG9zaXRpb246IGZpeGVkOwogICAgICAgICAgICAgICAgdG9wOiAyMHB4OwogICAgICAgICAgICAgICAgcmlnaHQ6IDIwcHg7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kOiAjZmY0NDQ0OwogICAgICAgICAgICAgICAgY29sb3I6IHdoaXRlOwogICAgICAgICAgICAgICAgcGFkZGluZzogMTVweCAyNXB4OwogICAgICAgICAgICAgICAgYm9yZGVyLXJhZGl1czogOHB4OwogICAgICAgICAgICAgICAgei1pbmRleDogOTk5OTk5OwogICAgICAgICAgICAgICAgYm94LXNoYWRvdzogMCA1cHggMTVweCByZ2JhKDAsMCwwLDAuMyk7CiAgICAgICAgICAgICAgICBhbmltYXRpb246IHNsaWRlSW5MZWZ0IDAuM3MgZWFzZS1vdXQ7CiAgICAgICAgICAgICc7CiAgICAgICAgICAgIHRvYXN0LmlubmVySFRNTCA9IGB7bWVzc2FnZX0gPGJ1dHRvbiBvbmNsaWNrPSJ0aGlzLnJlbW92ZSgpIiBzdHlsZT0iYmFja2dyb3VuZDogbm9uZTsgYm9yZGVyOiBub25lOyBjb2xvcjogd2hpdGU7IGZsb2F0OiBsZWZ0OyBjdXJzb3I6IHBvaW50ZXI7Ij7ilqg8L2J1dHRvbj5gOwogICAgICAgICAgICBkb2N1bWVudC5ib2R5LmFwcGVuZENoaWxkKHRvYXN0KTsKICAgICAgICAgICAgc2V0VGltZW91dCgoKSA9PiB7CiAgICAgICAgICAgICAgICBpZiAodG9hc3QucGFyZW50RWxlbWVudCkgewogICAgICAgICAgICAgICAgICAgIHRvYXN0LnN0eWxlLmFuaW1hdGlvbiA9ICdzbGlkZU91dExlZnQgMC4zcyBlYXNlLW91dCBmb3J3YXJkcyc7CiAgICAgICAgICAgICAgICAgICAgc2V0VGltZW91dCgoKSA9PiB0b2FzdC5yZW1vdmUoKSwgMzAwKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfSwgMzAwMCk7CiAgICAgICAgfSwKCiAgICAgICAgbG9nb3V0OiBmdW5jdGlvbigpIHsKICAgICAgICAgICAgaWYgKGNvbmZpcm0oJ9in2YTYtNin2YXYp9mG2K/Yp9mGINin2YTZhdmE2K/ZitipPycpKSB7CiAgICAgICAgICAgICAgICBsb2NhdGlvbi5yZWxvYWQoKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH07Cn0KLy8gSW5pdGlhbGl6ZSBzeXN0ZW0KcHJvdGVjdGVkU3lzdGVtLmluaXQoKTs=`;
+        
+        // 4. عرض خطأ
+        function showError(message) {
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('error-message').innerHTML = `
+                <strong>خطأ:</strong> ${message}
+                <br><br>
+                <button onclick="location.reload()" 
+                        style="background: white; color: #ff4444; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-top: 5px;">
+                    إعادة المحاولة
+                </button>
+            `;
+        }
+        
+        // 5. تحميل النظام
+        async function loadSystem() {
+            try {
+                // تحديث شريط التقدم
+                const progressBar = document.getElementById('progress');
                 
-                init() {
-                    this.checkEnvironment();
-                    this.setupProtection();
-                    this.startMonitoring();
-                }
+                // المرحلة 1: التحقق من الأمان
+                progressBar.style.width = '25%';
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
-                checkEnvironment() {
-                    // 1. التحقق من النطاق
+                // التحقق من النطاق (مخفف للاختبار المحلي)
+                const isLocal = window.location.hostname === 'localhost' || 
+                               window.location.hostname === '127.0.0.1';
+                
+                if (!isLocal) {
+                    const allowedDomains = ['parliament.gov', 'gov.eg'];
                     const currentDomain = window.location.hostname;
-                    const isValidDomain = ALLOWED_DOMAINS.some(domain => 
-                        currentDomain === domain || currentDomain.endsWith('.' + domain)
-                    );
+                    const isValid = allowedDomains.some(domain => 
+                        currentDomain.endsWith('.' + domain) || currentDomain === domain);
                     
-                    if (!isValidDomain) {
-                        this.logThreat('محاولة وصول من نطاق غير مصرح: ' + currentDomain);
-                        this.blockAccess();
-                        return false;
-                    }
-                    
-                    // 2. التحقق من أن الصفحة ليست في iframe
-                    if (window.self !== window.top) {
-                        this.logThreat('محاولة تضمين النظام في iframe');
-                        this.blockAccess();
-                        return false;
-                    }
-                    
-                    // 3. التحقق من أدوات المطورين
-                    const devToolsOpen = window.outerWidth - window.innerWidth > 100 || 
-                                        window.outerHeight - window.innerHeight > 100;
-                    
-                    if (devToolsOpen) {
-                        this.logThreat('تم اكتشاف أدوات المطورين');
-                        this.showWarning('يُمنع استخدام أدوات المطورين في هذا النظام');
-                    }
-                    
-                    return true;
-                }
-                
-                setupProtection() {
-                    // منع النسخ
-                    document.addEventListener('copy', (e) => {
-                        if (window.getSelection().toString().length > 100) {
-                            e.preventDefault();
-                            this.showWarning('يُمنع نسخ المحتوى');
-                        }
-                    });
-                    
-                    // منع النقر الأيمن
-                    document.addEventListener('contextmenu', (e) => {
-                        e.preventDefault();
-                        this.showWarning('ميزة النقر الأيمن معطلة');
-                    });
-                    
-                    // منع فحص المصدر
-                    document.addEventListener('keydown', (e) => {
-                        // F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J
-                        if (e.keyCode === 123 || 
-                            (e.ctrlKey && e.keyCode === 85) ||
-                            (e.ctrlKey && e.shiftKey && e.keyCode === 73) ||
-                            (e.ctrlKey && e.shiftKey && e.keyCode === 74)) {
-                            e.preventDefault();
-                            this.showWarning('ميزة فحص المصدر معطلة');
-                            return false;
-                        }
-                    });
-                    
-                    // منع سحب الصور والنصوص
-                    document.addEventListener('dragstart', (e) => {
-                        if (e.target.tagName === 'IMG' || e.target.tagName === 'A') {
-                            e.preventDefault();
-                        }
-                    });
-                    
-                    // تشفير localStorage
-                    this.encryptLocalStorage();
-                }
-                
-                encryptLocalStorage() {
-                    const originalSetItem = Storage.prototype.setItem;
-                    Storage.prototype.setItem = function(key, value) {
-                        const encryptedValue = btoa(encodeURIComponent(value + ENCRYPTION_KEY));
-                        originalSetItem.call(this, key, encryptedValue);
-                    };
-                    
-                    const originalGetItem = Storage.prototype.getItem;
-                    Storage.prototype.getItem = function(key) {
-                        const encryptedValue = originalGetItem.call(this, key);
-                        if (encryptedValue) {
-                            try {
-                                const decrypted = decodeURIComponent(atob(encryptedValue));
-                                return decrypted.replace(ENCRYPTION_KEY, '');
-                            } catch (e) {
-                                return null;
-                            }
-                        }
-                        return null;
-                    };
-                }
-                
-                startMonitoring() {
-                    // مراقبة تغييرات DOM
-                    const observer = new MutationObserver((mutations) => {
-                        mutations.forEach((mutation) => {
-                            if (mutation.type === 'childList') {
-                                this.checkForMaliciousNodes(mutation.addedNodes);
-                            }
-                        });
-                    });
-                    
-                    observer.observe(document.documentElement, {
-                        childList: true,
-                        subtree: true
-                    });
-                    
-                    // مراقبة الطلبات
-                    const originalFetch = window.fetch;
-                    window.fetch = function(...args) {
-                        const url = args[0];
-                        if (typeof url === 'string' && !url.startsWith(window.location.origin)) {
-                            console.warn('محاولة اتصال خارجي:', url);
-                        }
-                        return originalFetch.apply(this, args);
-                    };
-                }
-                
-                checkForMaliciousNodes(nodes) {
-                    nodes.forEach(node => {
-                        if (node.nodeType === 1) { // عنصر
-                            const scripts = node.querySelectorAll ? node.querySelectorAll('script') : [];
-                            scripts.forEach(script => {
-                                if (script.src && !script.src.includes(window.location.origin)) {
-                                    this.logThreat('تم اكتشاف سكريبت خارجي');
-                                    script.remove();
-                                }
-                            });
-                        }
-                    });
-                }
-                
-                logThreat(message) {
-                    this.detectedThreats.push({
-                        message: message,
-                        timestamp: new Date().toISOString(),
-                        url: window.location.href,
-                        userAgent: navigator.userAgent
-                    });
-                    
-                    console.warn('⚠️ تهديد أمني:', message);
-                    this.securityLevel++;
-                    
-                    if (this.securityLevel > 3) {
-                        this.blockAccess();
+                    if (!isValid) {
+                        throw new Error('النطاق غير مصرح به');
                     }
                 }
                 
-                showWarning(message) {
-                    const warning = document.createElement('div');
-                    warning.style.cssText = `
-                        position: fixed;
-                        top: 20px;
-                        right: 20px;
-                        background: #ff4444;
-                        color: white;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        z-index: 999999;
-                        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-                        animation: slideIn 0.3s ease-out;
-                    `;
-                    
-                    warning.innerHTML = `
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span style="margin-right: 10px;">${message}</span>
-                        <button onclick="this.parentElement.remove()" 
-                                style="background:none;border:none;color:white;cursor:pointer">
-                            ✕
-                        </button>
-                    `;
-                    
-                    document.body.appendChild(warning);
-                    setTimeout(() => warning.remove(), 3000);
+                // المرحلة 2: فك تشفير النظام
+                progressBar.style.width = '50%';
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const decryptedCode = decryptText(ENCRYPTED_SYSTEM);
+                if (!decryptedCode) {
+                    throw new Error('تعذر فك تشفير النظام');
                 }
                 
-                blockAccess() {
-                    document.getElementById('protection-overlay').style.display = 'flex';
-                    document.getElementById('app-loader').style.display = 'none';
-                    document.getElementById('app-container').style.display = 'none';
-                    
-                    // محو البيانات الحساسة
-                    localStorage.clear();
-                    sessionStorage.clear();
-                }
-            }
-            
-            // ===================== نظام التحميل الآمن =====================
-            class SecureAppLoader {
-                constructor() {
-                    this.appData = null;
-                    this.shadowRoot = null;
-                    this.security = new SecurityMonitor();
-                }
+                // المرحلة 3: تنفيذ النظام
+                progressBar.style.width = '75%';
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
-                async initialize() {
-                    try {
-                        // 1. التحقق من البيئة الآمنة
-                        if (!this.security.checkEnvironment()) {
-                            return;
-                        }
-                        
-                        // 2. جلب بيانات التطبيق المشفرة
-                        await this.loadEncryptedApp();
-                        
-                        // 3. إنشاء Shadow DOM
-                        this.createShadowDOM();
-                        
-                        // 4. تحميل التطبيق
-                        this.loadApplication();
-                        
-                        // 5. إخفاء شاشة التحميل
-                        setTimeout(() => {
-                            document.getElementById('app-loader').style.display = 'none';
-                        }, 1000);
-                        
-                    } catch (error) {
-                        console.error('خطأ في تحميل النظام:', error);
-                        this.showError('فشل تحميل النظام', error.message);
-                    }
-                }
+                // إنشاء عنصر script وإضافة الكود
+                const script = document.createElement('script');
+                script.type = 'module'; // استخدام modules للحماية الإضافية
+                script.textContent = decryptedCode;
                 
-                async loadEncryptedApp() {
-                    // في بيئة حقيقية، سيتم جلب هذا من الخادم
-                    this.appData = {
-                        styles: this.getEncryptedStyles(),
-                        templates: this.getEncryptedTemplates(),
-                        logic: this.getEncryptedLogic()
-                    };
-                }
+                // إضافة خصائص حماية للـ script
+                Object.defineProperty(script, 'src', {
+                    value: '',
+                    writable: false
+                });
                 
-                createShadowDOM() {
-                    const appContainer = document.getElementById('app-container');
-                    appContainer.style.display = 'block';
-                    
-                    // إنشاء Shadow DOM مغلق (لا يمكن الوصول إليه من الخارج)
-                    this.shadowRoot = appContainer.attachShadow({ 
-                        mode: 'closed',
-                        delegatesFocus: true
-                    });
-                    
-                    // إضافة علامة مائية مخفية
-                    this.addWatermark();
-                }
+                // المرحلة 4: اكتمال التحميل
+                progressBar.style.width = '100%';
+                await new Promise(resolve => setTimeout(resolve, 500));
                 
-                addWatermark() {
-                    const watermark = document.createElement('div');
-                    watermark.style.cssText = `
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        pointer-events: none;
-                        z-index: 999999;
-                        background: repeating-linear-gradient(
-                            45deg,
-                            transparent,
-                            transparent 100px,
-                            rgba(255,0,0,0.02) 100px,
-                            rgba(255,0,0,0.02) 200px
-                        );
-                        opacity: 0.1;
-                        display: none;
-                    `;
-                    this.shadowRoot.appendChild(watermark);
-                }
+                // تنفيذ النظام
+                document.head.appendChild(script);
+                systemState.isLoaded = true;
                 
-                loadApplication() {
-                    // إنشاء التطبيق داخل Shadow DOM
-                    const appContent = this.generateAppContent();
-                    this.shadowRoot.innerHTML = appContent;
-                    
-                    // حقن التنسيقات
-                    this.injectStyles();
-                    
-                    // تهيئة التطبيق
-                    this.initializeAppLogic();
-                }
-                
-                generateAppContent() {
-                    return `
-                        <div id="protected-app">
-                            <!-- المحتوى سيتم توليده ديناميكياً -->
-                            <div class="protected-loading">
-                                <div class="spinner"></div>
-                                <p>جاري تهيئة النظام...</p>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                injectStyles() {
-                    const style = document.createElement('style');
-                    style.textContent = this.decryptContent(this.appData.styles);
-                    this.shadowRoot.appendChild(style);
-                }
-                
-                initializeAppLogic() {
-                    // فك تشفير وتنفيذ المنطق
-                    const appLogic = this.decryptContent(this.appData.logic);
-                    
-                    // إنشاء سياق آمن لتنفيذ الكود
-                    const secureEval = new Function('shadowRoot', 'appData', `
-                        try {
-                            ${appLogic}
-                        } catch(e) {
-                            console.error('خطأ في تنفيذ التطبيق:', e);
-                        }
-                    `);
-                    
-                    // تنفيذ التطبيق داخل Shadow DOM
-                    secureEval.call(this.shadowRoot, this.shadowRoot, this.appData);
-                }
-                
-                decryptContent(encrypted) {
-                    // فك تشفير بسيط (في البيئة الحقيقية يستخدم خوارزمية أقوى)
-                    let decrypted = '';
-                    for (let i = 0; i < encrypted.length; i++) {
-                        decrypted += String.fromCharCode(
-                            encrypted.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length)
-                        );
-                    }
-                    return decrypted;
-                }
-                
-                getEncryptedStyles() {
-                    // التنسيقات المشفرة
-                    return this.encryptContent(`
-                        /* التنسيقات الرئيسية */
-                        #protected-app {
-                            width: 100%;
-                            min-height: 100vh;
-                            background: #f8fafc;
-                        }
-                        
-                        .protected-loading {
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            align-items: center;
-                            height: 100vh;
-                        }
-                        
-                        .protected-loading .spinner {
-                            width: 50px;
-                            height: 50px;
-                            border: 3px solid #e5e7eb;
-                            border-radius: 50%;
-                            border-top-color: #3b82f6;
-                            animation: spin 1s linear infinite;
-                            margin-bottom: 20px;
-                        }
-                        
-                        @keyframes spin {
-                            to { transform: rotate(360deg); }
-                        }
-                        
-                        /* تنسيقات النظام */
-                        :root {
-                            --primary-color: #1e3a8a;
-                            --secondary-color: #3b82f6;
-                            --success-color: #10b981;
-                            --warning-color: #f59e0b;
-                            --danger-color: #ef4444;
-                        }
-                        
-                        .auth-page {
-                            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-                            height: 100vh;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            padding: 20px;
-                        }
-                        
-                        .auth-card {
-                            background: white;
-                            border-radius: 20px;
-                            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-                            overflow: hidden;
-                            width: 100%;
-                            max-width: 450px;
-                        }
-                        
-                        .auth-header {
-                            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-                            color: white;
-                            padding: 30px;
-                            text-align: center;
-                        }
-                        
-                        .auth-body {
-                            padding: 30px;
-                        }
-                        
-                        .form-control {
-                            border: 2px solid #e5e7eb;
-                            border-radius: 10px;
-                            padding: 12px 15px;
-                            transition: all 0.3s;
-                            width: 100%;
-                        }
-                        
-                        .btn-auth {
-                            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-                            border: none;
-                            color: white;
-                            padding: 14px;
-                            border-radius: 10px;
-                            font-weight: 600;
-                            font-size: 16px;
-                            width: 100%;
-                            cursor: pointer;
-                        }
-                        
-                        /* ... المزيد من التنسيقات ... */
-                    `);
-                }
-                
-                getEncryptedTemplates() {
-                    // قوالب HTML المشفرة
-                    return this.encryptContent(JSON.stringify({
-                        login: `
-                            <div class="auth-page">
-                                <div class="auth-card">
-                                    <div class="auth-header">
-                                        <h1>تسجيل الدخول</h1>
-                                        <p>نظام متابعة طلبات المواطنين</p>
-                                    </div>
-                                    <div class="auth-body">
-                                        <form id="loginForm">
-                                            <input type="text" class="form-control" placeholder="اسم المستخدم" required>
-                                            <input type="password" class="form-control" placeholder="كلمة المرور" required>
-                                            <button type="submit" class="btn-auth">تسجيل الدخول</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        `,
-                        dashboard: `
-                            <div class="dashboard">
-                                <h1>لوحة التحكم</h1>
-                                <!-- ... -->
-                            </div>
-                        `
-                    }));
-                }
-                
-                getEncryptedLogic() {
-                    // منطق التطبيق المشفر
-                    return this.encryptContent(`
-                        // نظام المصادقة
-                        const authSystem = {
-                            users: [
-                                { username: 'admin', password: 'admin123', role: 'admin' },
-                                { username: 'user', password: 'user123', role: 'user' }
-                            ],
-                            
-                            login(username, password) {
-                                const user = this.users.find(u => 
-                                    u.username === username && u.password === password
-                                );
-                                
-                                if (user) {
-                                    localStorage.setItem('user', JSON.stringify(user));
-                                    this.showDashboard();
-                                    return true;
-                                }
-                                return false;
-                            },
-                            
-                            showDashboard() {
-                                const app = document.getElementById('protected-app');
-                                app.innerHTML = \`
-                                    <div class="dashboard">
-                                        <nav class="sidebar">
-                                            <h3>نظام الطلبات</h3>
-                                            <ul>
-                                                <li><a href="#" onclick="app.showPage('requests')">الطلبات</a></li>
-                                                <li><a href="#" onclick="app.showPage('reports')">التقارير</a></li>
-                                                <li><a href="#" onclick="app.logout()">تسجيل الخروج</a></li>
-                                            </ul>
-                                        </nav>
-                                        <main class="content">
-                                            <div id="page-content"></div>
-                                        </main>
-                                    </div>
-                                \`;
-                            },
-                            
-                            logout() {
-                                localStorage.removeItem('user');
-                                this.showLogin();
-                            },
-                            
-                            showLogin() {
-                                const app = document.getElementById('protected-app');
-                                app.innerHTML = \`
-                                    <div class="auth-page">
-                                        <div class="auth-card">
-                                            <div class="auth-header">
-                                                <h1>تسجيل الدخول</h1>
-                                                <p>نظام متابعة طلبات المواطنين</p>
-                                            </div>
-                                            <div class="auth-body">
-                                                <form id="loginForm">
-                                                    <input type="text" class="form-control" placeholder="اسم المستخدم" required>
-                                                    <input type="password" class="form-control" placeholder="كلمة المرور" required>
-                                                    <button type="submit" class="btn-auth">تسجيل الدخول</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                \`;
-                                
-                                document.getElementById('loginForm').addEventListener('submit', (e) => {
-                                    e.preventDefault();
-                                    const username = e.target[0].value;
-                                    const password = e.target[1].value;
-                                    
-                                    if (this.login(username, password)) {
-                                        alert('تم تسجيل الدخول بنجاح');
-                                    } else {
-                                        alert('اسم المستخدم أو كلمة المرور غير صحيحة');
-                                    }
-                                });
-                            }
-                        };
-                        
-                        // بدء التطبيق
-                        window.app = authSystem;
-                        
-                        // التحقق من حالة تسجيل الدخول
-                        const savedUser = localStorage.getItem('user');
-                        if (savedUser) {
-                            authSystem.showDashboard();
-                        } else {
-                            authSystem.showLogin();
-                        }
-                    `);
-                }
-                
-                encryptContent(content) {
-                    // تشفير المحتوى
-                    let encrypted = '';
-                    for (let i = 0; i < content.length; i++) {
-                        encrypted += String.fromCharCode(
-                            content.charCodeAt(i) ^ ENCRYPTION_KEY.charCodeAt(i % ENCRYPTION_KEY.length)
-                        );
-                    }
-                    return encrypted;
-                }
-                
-                showError(title, message) {
-                    document.getElementById('app-loader').style.display = 'none';
-                    document.getElementById('error-container').style.display = 'block';
-                    document.getElementById('error-title').textContent = title;
-                    document.getElementById('error-message').textContent = message;
-                    
-                    document.getElementById('retry-btn').onclick = () => {
-                        location.reload();
-                    };
-                }
-            }
-            
-            // ===================== بدء النظام =====================
-            document.addEventListener('DOMContentLoaded', () => {
-                // إضافة تأخير لمحاكاة التحميل من الخادم
+                // إخفاء شاشة التحميل
                 setTimeout(() => {
-                    const loader = new SecureAppLoader();
-                    loader.initialize();
-                }, 1500);
+                    document.body.style.opacity = '0';
+                    setTimeout(() => {
+                        document.querySelector('.loader').style.display = 'none';
+                        document.body.style.opacity = '1';
+                    }, 500);
+                }, 1000);
+                
+            } catch (error) {
+                console.error('فشل تحميل النظام:', error);
+                showError(error.message);
+            }
+        }
+        
+        // 6. الحماية الأساسية
+        function setupBasicProtection() {
+            // منع النقر الأيمن
+            document.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                return false;
             });
             
-            // منع الإغلاق أثناء التحميل
-            window.addEventListener('beforeunload', (e) => {
-                if (document.getElementById('app-loader').style.display !== 'none') {
+            // منع F12
+            document.addEventListener('keydown', (e) => {
+                if (e.keyCode === 123) { // F12
                     e.preventDefault();
-                    e.returnValue = 'جاري تحميل النظام، هل تريد المغادرة؟';
+                    return false;
+                }
+                
+                // منع Ctrl+Shift+I
+                if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // منع Ctrl+U
+                if (e.ctrlKey && e.keyCode === 85) {
+                    e.preventDefault();
+                    return false;
                 }
             });
             
-        })();
+            // منع السحب والإفلات
+            document.addEventListener('dragstart', (e) => e.preventDefault());
+            document.addEventListener('drop', (e) => e.preventDefault());
+        }
+        
+        // 7. بدء التحميل
+        window.addEventListener('load', () => {
+            setupBasicProtection();
+            
+            // تأخير بسيط لمحاكاة التحميل
+            setTimeout(() => {
+                loadSystem();
+            }, 1000);
+        });
+        
+        // 8. حماية إضافية ضد التطفل
+        let devToolsOpen = false;
+        setInterval(() => {
+            const widthThreshold = window.outerWidth - window.innerWidth > 100;
+            const heightThreshold = window.outerHeight - window.innerHeight > 100;
+            
+            if ((widthThreshold || heightThreshold) && !devToolsOpen) {
+                devToolsOpen = true;
+                console.warn('⚠️ تم اكتشاف أدوات المطورين');
+                
+                // يمكن إضافة رد فعل هنا مثل:
+                // document.body.innerHTML = '<h1>يُمنع استخدام أدوات المطورين</h1>';
+            }
+        }, 1000);
+        
+        // 9. منع الإغلاق أثناء التحميل
+        window.addEventListener('beforeunload', (e) => {
+            if (!systemState.isLoaded) {
+                e.preventDefault();
+                e.returnValue = 'جاري تحميل النظام...';
+            }
+        });
+        
     </script>
 </body>
 </html>
