@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        /* الأنماط العامة */
         :root {
             --primary-color: #1e3a8a;
             --secondary-color: #3b82f6;
@@ -25,11 +26,195 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
             overflow-x: hidden;
+            transition: all 0.3s;
         }
         
-        /* الشريط الجانبي */
+        /* أنماط تسجيل الدخول */
+        .auth-page {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .auth-container {
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .auth-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .auth-header p {
+            opacity: 0.9;
+            margin: 10px 0 0 0;
+        }
+        
+        .auth-body {
+            padding: 30px;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo i {
+            font-size: 32px;
+            color: var(--primary-color);
+        }
+        
+        .password-input-group {
+            position: relative;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #6b7280;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .btn-auth {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            color: white;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-auth:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(30, 58, 138, 0.2);
+        }
+        
+        .password-strength {
+            height: 5px;
+            border-radius: 5px;
+            margin-top: 5px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s;
+        }
+        
+        .strength-weak {
+            background-color: #ef4444;
+        }
+        
+        .strength-medium {
+            background-color: #f59e0b;
+        }
+        
+        .strength-strong {
+            background-color: #10b981;
+        }
+        
+        .strength-text {
+            font-size: 12px;
+            margin-top: 3px;
+            text-align: left;
+        }
+        
+        .requirements {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        
+        .requirement-met {
+            color: #10b981;
+        }
+        
+        .requirement-not-met {
+            color: #9ca3af;
+        }
+        
+        /* أنماط الصفحة الرئيسية */
+        .app-content {
+            display: none;
+            background-color: #f8fafc;
+            min-height: 100vh;
+        }
+        
         .sidebar {
             background: linear-gradient(180deg, var(--primary-color) 0%, #1e40af 100%);
             min-height: 100vh;
@@ -38,38 +223,11 @@
             width: 250px;
             box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            transition: all 0.3s;
-        }
-        
-        .sidebar.collapsed {
-            width: 70px;
         }
         
         .sidebar-header {
             padding: 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-        
-        .collapse-btn {
-            position: absolute;
-            left: 15px;
-            top: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .collapse-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
         }
         
         .nav-link {
@@ -80,7 +238,6 @@
             transition: all 0.3s;
             display: flex;
             align-items: center;
-            white-space: nowrap;
         }
         
         .nav-link:hover, .nav-link.active {
@@ -95,16 +252,10 @@
             margin-left: 10px;
         }
         
-        /* المحتوى الرئيسي */
         .main-content {
             margin-right: 250px;
             padding: 20px;
             min-height: 100vh;
-            transition: all 0.3s;
-        }
-        
-        .main-content.expanded {
-            margin-right: 70px;
         }
         
         @media (max-width: 992px) {
@@ -132,7 +283,6 @@
             }
         }
         
-        /* البطاقات والإحصائيات */
         .stat-card {
             border-radius: 15px;
             border: none;
@@ -156,7 +306,6 @@
             font-size: 24px;
         }
         
-        /* الحالات */
         .status-badge {
             padding: 6px 15px;
             border-radius: 20px;
@@ -170,7 +319,6 @@
         .status-approved { background-color: #d1fae5; color: var(--success-color); }
         .status-rejected { background-color: #fee2e2; color: var(--danger-color); }
         
-        /* الفئات */
         .category-badge {
             padding: 5px 12px;
             border-radius: 15px;
@@ -188,7 +336,6 @@
         .category-telecom { background-color: #ecfeff; color: var(--telecom-color); border-left: 4px solid var(--telecom-color); }
         .category-housing { background-color: #f0fdfa; color: var(--housing-color); border-left: 4px solid var(--housing-color); }
         
-        /* البحث */
         .search-container {
             position: relative;
         }
@@ -219,22 +366,21 @@
             background-color: #f8f9fa;
         }
         
-        /* صفحات المحتوى */
-        .content-page {
-            display: none;
+        .notification-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .content-page.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* زر الإضافة */
         .add-btn {
             position: fixed;
             bottom: 30px;
@@ -255,7 +401,6 @@
             box-shadow: 0 6px 20px rgba(30, 58, 138, 0.6);
         }
         
-        /* الرسوم المتحركة */
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -281,7 +426,6 @@
             animation: pulse 2s infinite;
         }
         
-        /* الجدول */
         .table th {
             font-weight: 600;
             color: #4b5563;
@@ -294,7 +438,10 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        /* التنبيهات */
+        .progress-bar {
+            border-radius: 10px;
+        }
+        
         .alert-notification {
             position: fixed;
             top: 20px;
@@ -307,7 +454,6 @@
             overflow: hidden;
         }
         
-        /* تصميم الأزرار */
         .btn {
             border-radius: 8px;
             font-weight: 500;
@@ -329,7 +475,6 @@
             border: none;
         }
         
-        /* التحميل */
         .spinner-overlay {
             position: fixed;
             top: 0;
@@ -343,7 +488,6 @@
             z-index: 9999;
         }
         
-        /* تحسينات للجوال */
         @media (max-width: 576px) {
             .main-content {
                 padding: 10px;
@@ -361,129 +505,390 @@
             }
         }
         
-        /* كارت الهيئات */
-        .agency-card {
-            border: none;
-            border-radius: 15px;
-            overflow: hidden;
-            transition: all 0.3s;
-            height: 100%;
-        }
-        
-        .agency-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        
-        .agency-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-        
-        /* البحث المتقدم */
-        .advanced-search-panel {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-        
-        /* التقارير */
-        .report-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
             color: white;
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 15px;
+        }
+        
+        .user-info {
+            text-align: center;
             margin-bottom: 20px;
         }
         
-        /* الإعدادات */
-        .settings-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        .user-name {
+            font-weight: bold;
+            margin-bottom: 5px;
         }
         
-        .setting-item {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+        .user-role {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .welcome-screen {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .welcome-logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .welcome-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .welcome-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+        
+        .welcome-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
-    <!-- الشريط الجانبي -->
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <button class="collapse-btn" id="collapseSidebarBtn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h3 class="mb-0 text-center sidebar-title">
-                <i class="fas fa-hands-helping me-2"></i>
-                <span>طلبات المواطنين</span>
-            </h3>
-            <p class="text-center text-white-50 mb-0 mt-2 small sidebar-subtitle">عضو مجلس النواب</p>
+    <!-- شاشة الترحيب -->
+    <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-logo">
+            <i class="fas fa-hands-helping"></i>
         </div>
-        
-        <ul class="nav flex-column mt-4">
-            <li class="nav-item">
-                <a class="nav-link active" href="#" data-page="dashboard">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span class="nav-text">لوحة التحكم</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-page="requests">
-                    <i class="fas fa-list"></i>
-                    <span class="nav-text">جميع الطلبات</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-page="search">
-                    <i class="fas fa-search"></i>
-                    <span class="nav-text">بحث متقدم</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-page="agencies">
-                    <i class="fas fa-layer-group"></i>
-                    <span class="nav-text">الهيئات الحكومية</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-page="reports">
-                    <i class="fas fa-chart-bar"></i>
-                    <span class="nav-text">التقارير</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#" data-page="settings">
-                    <i class="fas fa-cog"></i>
-                    <span class="nav-text">الإعدادات</span>
-                </a>
-            </li>
-        </ul>
-        
-        <div class="mt-auto p-3">
-            <div class="text-center">
-                <div class="mb-3">
-                    <div class="spinner-grow spinner-grow-sm text-success" role="status">
-                        <span class="visually-hidden">Loading...</span>
+        <h1 class="welcome-title">نظام متابعة طلبات المواطنين</h1>
+        <p class="welcome-subtitle">عضو مجلس النواب</p>
+        <div class="welcome-buttons">
+            <button class="btn btn-light btn-lg" id="loginWelcomeBtn">
+                <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+            </button>
+            <button class="btn btn-outline-light btn-lg" id="registerWelcomeBtn">
+                <i class="fas fa-user-plus me-2"></i>إنشاء حساب جديد
+            </button>
+        </div>
+    </div>
+
+    <!-- صفحة تسجيل الدخول -->
+    <div id="loginPage" class="auth-page" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="logo">
+                        <i class="fas fa-hands-helping"></i>
                     </div>
-                    <span class="small text-white-50 system-status">النظام يعمل</span>
+                    <h1>تسجيل الدخول</h1>
+                    <p>نظام متابعة طلبات المواطنين</p>
                 </div>
-                <button class="btn btn-sm btn-outline-light w-100" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt me-1"></i>
-                    <span class="logout-text">تسجيل الخروج</span>
-                </button>
+                
+                <div class="auth-body">
+                    <div id="loginAlert" class="alert alert-danger d-none">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span id="loginAlertMessage"></span>
+                    </div>
+                    
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user me-2"></i>اسم المستخدم
+                            </label>
+                            <input type="text" class="form-control" id="username" 
+                                   placeholder="أدخل اسم المستخدم" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock me-2"></i>كلمة المرور
+                            </label>
+                            <div class="password-input-group">
+                                <input type="password" class="form-control" id="password" 
+                                       placeholder="أدخل كلمة المرور" required>
+                                <button type="button" class="password-toggle" id="togglePassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">تذكرني</label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-auth" id="loginBtn">
+                            <i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول
+                        </button>
+                        
+                        <div class="auth-footer">
+                            <a href="#" class="forgot-password" id="forgotPasswordLink">
+                                <i class="fas fa-key me-1"></i>نسيت كلمة المرور؟
+                            </a>
+                            
+                            <div class="create-account">
+                                ليس لديك حساب؟ 
+                                <a href="#" class="login-link" id="showRegisterLink">إنشاء حساب جديد</a>
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <div class="system-info mt-3 p-3 bg-light rounded">
+                        <p class="mb-0 text-center text-muted small">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            نظام آمن لمتابعة طلبات المواطنين وإدارتها
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <!-- المحتوى الرئيسي -->
-    <main class="main-content">
-        <!-- صفحة لوحة التحكم -->
-        <div class="content-page active" id="dashboardPage">
+    <!-- صفحة إنشاء حساب جديد -->
+    <div id="registerPage" class="auth-page" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="logo">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h1>إنشاء حساب جديد</h1>
+                    <p>انضم إلى نظام متابعة طلبات المواطنين</p>
+                </div>
+                
+                <div class="auth-body">
+                    <div id="registerAlert" class="alert alert-danger d-none">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <span id="registerAlertMessage"></span>
+                    </div>
+                    
+                    <form id="registerForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fullName" class="form-label">
+                                    <i class="fas fa-user me-2"></i>الاسم الكامل
+                                </label>
+                                <input type="text" class="form-control" id="fullName" 
+                                       placeholder="أدخل الاسم الكامل" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="regUsername" class="form-label">
+                                    <i class="fas fa-user-tag me-2"></i>اسم المستخدم
+                                </label>
+                                <input type="text" class="form-control" id="regUsername" 
+                                       placeholder="أدخل اسم المستخدم" required>
+                                <div class="requirements">
+                                    <span id="usernameAvailable" class="d-none requirement-met">
+                                        <i class="fas fa-check-circle me-1"></i>متاح
+                                    </span>
+                                    <span id="usernameTaken" class="d-none requirement-not-met">
+                                        <i class="fas fa-times-circle me-1"></i>مستخدم مسبقًا
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>البريد الإلكتروني
+                                </label>
+                                <input type="email" class="form-control" id="email" 
+                                       placeholder="example@email.com" required>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>رقم الهاتف
+                                </label>
+                                <input type="tel" class="form-control" id="phone" 
+                                       placeholder="01XXXXXXXXX" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="regPassword" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>كلمة المرور
+                                </label>
+                                <div class="password-input-group">
+                                    <input type="password" class="form-control" id="regPassword" 
+                                           placeholder="أدخل كلمة المرور" required>
+                                    <button type="button" class="password-toggle" id="toggleRegPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="password-strength">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <div class="strength-text" id="strengthText"></div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="confirmPassword" class="form-label">
+                                    <i class="fas fa-lock me-2"></i>تأكيد كلمة المرور
+                                </label>
+                                <div class="password-input-group">
+                                    <input type="password" class="form-control" id="confirmPassword" 
+                                           placeholder="أعد إدخال كلمة المرور" required>
+                                    <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="requirements">
+                                    <span id="passwordMatch" class="d-none requirement-met">
+                                        <i class="fas fa-check-circle me-1"></i>كلمات المرور متطابقة
+                                    </span>
+                                    <span id="passwordMismatch" class="d-none requirement-not-met">
+                                        <i class="fas fa-times-circle me-1"></i>كلمات المرور غير متطابقة
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="role" class="form-label">
+                                <i class="fas fa-user-tie me-2"></i>الدور الوظيفي
+                            </label>
+                            <select class="form-select" id="role" required>
+                                <option value="">اختر الدور الوظيفي</option>
+                                <option value="assistant">مساعد عضو مجلس النواب</option>
+                                <option value="coordinator">منسق طلبات</option>
+                                <option value="viewer">مستعرض</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                أوافق على 
+                                <a href="#" class="terms-link" data-bs-toggle="modal" data-bs-target="#termsModal">
+                                    الشروط والأحكام
+                                </a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-auth" id="registerBtn">
+                            <i class="fas fa-user-plus me-2"></i>إنشاء حساب
+                        </button>
+                        
+                        <div class="auth-footer">
+                            <div class="back-to-login">
+                                لديك حساب بالفعل؟ 
+                                <a href="#" class="login-link" id="showLoginLink">تسجيل الدخول</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- التطبيق الرئيسي -->
+    <div id="appContent" class="app-content" style="display: none;">
+        <!-- الشريط الجانبي -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle" id="userAvatarIcon"></i>
+                    </div>
+                    <div class="user-name" id="sidebarUserName">عضو مجلس النواب</div>
+                    <div class="user-role" id="sidebarUserRole">المسؤول</div>
+                </div>
+            </div>
+            
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" id="dashboardLink">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>لوحة التحكم</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="allRequestsLink">
+                        <i class="fas fa-list"></i>
+                        <span>جميع الطلبات</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="searchLink">
+                        <i class="fas fa-search"></i>
+                        <span>بحث متقدم</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="categoriesLink">
+                        <i class="fas fa-layer-group"></i>
+                        <span>الهيئات الحكومية</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="reportsLink">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>التقارير</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="usersLink">
+                        <i class="fas fa-users"></i>
+                        <span>المستخدمين</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="profileLink">
+                        <i class="fas fa-user-circle"></i>
+                        <span>الملف الشخصي</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="settingsLink">
+                        <i class="fas fa-cog"></i>
+                        <span>الإعدادات</span>
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="mt-auto p-3">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <div class="spinner-grow spinner-grow-sm text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="small text-white-50">النظام يعمل</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-light w-100" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt me-1"></i>
+                        <span class="d-none d-lg-inline">تسجيل الخروج</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="main-content">
             <!-- شريط البحث -->
             <div class="row mb-4">
                 <div class="col-12">
@@ -749,383 +1154,25 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
 
-        <!-- صفحة جميع الطلبات -->
-        <div class="content-page" id="requestsPage">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-list me-2"></i>جميع الطلبات
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>الرقم القومي</th>
-                                    <th>الاسم</th>
-                                    <th>العنوان</th>
-                                    <th>الهيئة</th>
-                                    <th>التاريخ</th>
-                                    <th>الحالة</th>
-                                    <th>الإجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="allRequestsTable">
-                                <!-- سيتم تعبئة جميع الطلبات هنا -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!-- زر إضافة طلب جديد (عائم) -->
+        <button class="add-btn animate-pulse" id="floatingAddBtn">
+            <i class="fas fa-plus fa-lg"></i>
+        </button>
+    </div>
 
-        <!-- صفحة البحث المتقدم -->
-        <div class="content-page" id="searchPage">
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="advanced-search-panel">
-                        <h5 class="mb-4"><i class="fas fa-search me-2"></i>البحث المتقدم</h5>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">الكلمة المفتاحية</label>
-                            <input type="text" class="form-control" id="keywordSearch" placeholder="أي كلمة في الطلب">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">الحالة</label>
-                            <select class="form-select" id="searchStatus">
-                                <option value="">كل الحالات</option>
-                                <option value="submitted">تم التقديم</option>
-                                <option value="pending">انتظار الرد</option>
-                                <option value="approved">موافقة</option>
-                                <option value="rejected">غير موافقة</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">الهيئة</label>
-                            <select class="form-select" id="searchAgency">
-                                <option value="">كل الهيئات</option>
-                                <!-- سيتم تعبئة الهيئات ديناميكيًا -->
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">الفترة الزمنية</label>
-                            <select class="form-select" id="searchPeriod">
-                                <option value="">أي وقت</option>
-                                <option value="today">اليوم</option>
-                                <option value="week">آخر أسبوع</option>
-                                <option value="month">آخر شهر</option>
-                                <option value="year">آخر سنة</option>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">من تاريخ</label>
-                            <input type="date" class="form-control" id="searchFromDate">
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">إلى تاريخ</label>
-                            <input type="date" class="form-control" id="searchToDate">
-                        </div>
-                        
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-primary" id="advancedSearchBtn">
-                                <i class="fas fa-search me-2"></i>بحث
-                            </button>
-                            <button class="btn btn-secondary" id="resetAdvancedSearchBtn">
-                                <i class="fas fa-redo me-2"></i>إعادة تعيين
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-8">
-                    <div class="card shadow">
-                        <div class="card-header">
-                            <h5 class="mb-0">نتائج البحث</h5>
-                        </div>
-                        <div class="card-body">
-                            <div id="searchResultsContainer">
-                                <div class="text-center py-5">
-                                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                                    <p class="text-muted">استخدم أدوات البحث للعثور على الطلبات</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- صفحة الهيئات الحكومية -->
-        <div class="content-page" id="agenciesPage">
-            <div class="row">
-                <div class="col-12 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-layer-group me-2"></i>الهيئات الحكومية
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="text-muted">إدارة وتوزيع الطلبات على الهيئات الحكومية المختلفة</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- بطاقات الهيئات -->
-                <div class="row" id="agenciesGrid">
-                    <!-- سيتم تعبئة بطاقات الهيئات ديناميكيًا -->
-                </div>
-            </div>
-        </div>
-
-        <!-- صفحة التقارير -->
-        <div class="content-page" id="reportsPage">
-            <div class="row">
-                <div class="col-12 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-chart-bar me-2"></i>التقارير والإحصائيات
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- بطاقات التقارير -->
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="report-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h3 id="totalRequestsReport">0</h3>
-                                    <p>إجمالي الطلبات</p>
-                                </div>
-                                <i class="fas fa-file-alt fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="report-card" style="background: linear-gradient(135deg, #f59e0b, #f97316);">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h3 id="pendingRequestsReport">0</h3>
-                                    <p>طلبات قيد الانتظار</p>
-                                </div>
-                                <i class="fas fa-clock fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="report-card" style="background: linear-gradient(135deg, #10b981, #059669);">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h3 id="completedRequestsReport">0</h3>
-                                    <p>طلبات مكتملة</p>
-                                </div>
-                                <i class="fas fa-check-circle fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        <div class="report-card" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h3 id="rejectedRequestsReport">0</h3>
-                                    <p>طلبات مرفوضة</p>
-                                </div>
-                                <i class="fas fa-times-circle fa-2x"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- المزيد من التقارير -->
-                <div class="row mt-4">
-                    <div class="col-md-8">
-                        <div class="card shadow">
-                            <div class="card-header">
-                                <h5 class="mb-0">تقرير أداء الهيئات</h5>
-                            </div>
-                            <div class="card-body">
-                                <canvas id="agencyPerformanceChart" height="300"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card shadow">
-                            <div class="card-header">
-                                <h5 class="mb-0">تقارير جاهزة</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="list-group list-group-flush">
-                                    <button class="list-group-item list-group-item-action" onclick="generateReport('daily')">
-                                        <i class="fas fa-calendar-day me-2"></i>تقرير اليوم
-                                    </button>
-                                    <button class="list-group-item list-group-item-action" onclick="generateReport('weekly')">
-                                        <i class="fas fa-calendar-week me-2"></i>تقرير أسبوعي
-                                    </button>
-                                    <button class="list-group-item list-group-item-action" onclick="generateReport('monthly')">
-                                        <i class="fas fa-calendar-alt me-2"></i>تقرير شهري
-                                    </button>
-                                    <button class="list-group-item list-group-item-action" onclick="generateReport('yearly')">
-                                        <i class="fas fa-calendar me-2"></i>تقرير سنوي
-                                    </button>
-                                    <button class="list-group-item list-group-item-action" onclick="exportAllReports()">
-                                        <i class="fas fa-file-export me-2"></i>تصدير جميع التقارير
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- صفحة الإعدادات -->
-        <div class="content-page" id="settingsPage">
-            <div class="row">
-                <div class="col-12 mb-4">
-                    <div class="card shadow">
-                        <div class="card-header bg-secondary text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-cog me-2"></i>إعدادات النظام
-                            </h5>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="settings-card">
-                        <h5 class="mb-4">إعدادات عامة</h5>
-                        
-                        <div class="setting-item">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="notificationsSwitch" checked>
-                                <label class="form-check-label" for="notificationsSwitch">
-                                    <i class="fas fa-bell me-2"></i>الإشعارات
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="soundSwitch" checked>
-                                <label class="form-check-label" for="soundSwitch">
-                                    <i class="fas fa-volume-up me-2"></i>الصوت
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="autoSaveSwitch" checked>
-                                <label class="form-check-label" for="autoSaveSwitch">
-                                    <i class="fas fa-save me-2"></i>الحفظ التلقائي
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="darkModeSwitch">
-                                <label class="form-check-label" for="darkModeSwitch">
-                                    <i class="fas fa-moon me-2"></i>الوضع الداكن
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-6">
-                    <div class="settings-card">
-                        <h5 class="mb-4">إعدادات العرض</h5>
-                        
-                        <div class="setting-item">
-                            <label class="form-label">عدد الطلبات في الصفحة</label>
-                            <select class="form-select" id="itemsPerPage">
-                                <option value="10">10 طلبات</option>
-                                <option value="25">25 طلباً</option>
-                                <option value="50">50 طلباً</option>
-                                <option value="100">100 طلب</option>
-                            </select>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label class="form-label">لغة الواجهة</label>
-                            <select class="form-select" id="languageSelect">
-                                <option value="ar">العربية</option>
-                                <option value="en">الإنجليزية</option>
-                            </select>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <label class="form-label">تنسيق التاريخ</label>
-                            <select class="form-select" id="dateFormat">
-                                <option value="ar">يوم/شهر/سنة</option>
-                                <option value="en">سنة-شهر-يوم</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-12 mt-4">
-                    <div class="settings-card">
-                        <h5 class="mb-4">إدارة البيانات</h5>
-                        
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <button class="btn btn-primary w-100" onclick="backupData()">
-                                    <i class="fas fa-download me-2"></i>نسخ احتياطي للبيانات
-                                </button>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-secondary w-100" onclick="restoreData()">
-                                    <i class="fas fa-upload me-2"></i>استعادة البيانات
-                                </button>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-danger w-100" onclick="clearAllData()">
-                                    <i class="fas fa-trash me-2"></i>مسح جميع البيانات
-                                </button>
-                            </div>
-                            <div class="col-md-6">
-                                <button class="btn btn-success w-100" onclick="resetSettings()">
-                                    <i class="fas fa-redo me-2"></i>إعادة تعيين الإعدادات
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- زر إضافة طلب جديد (عائم) -->
-    <button class="add-btn animate-pulse" id="floatingAddBtn">
-        <i class="fas fa-plus fa-lg"></i>
-    </button>
-
+    <!-- النماذج -->
+    
     <!-- نموذج إضافة طلب جديد -->
-    <div class="modal fade" id="newRequestModal" tabindex="-1" aria-labelledby="newRequestModalLabel" aria-hidden="true">
+    <div class="modal fade" id="newRequestModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="newRequestModalLabel">
+                    <h5 class="modal-title">
                         <i class="fas fa-plus-circle me-2"></i>إضافة طلب جديد
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="newRequestForm">
@@ -1158,7 +1205,6 @@
                                 </label>
                                 <select class="form-select" id="requestCategory" required>
                                     <option value="">اختر الهيئة</option>
-                                    <!-- سيتم تعبئة الفئات ديناميكيًا -->
                                 </select>
                             </div>
                         </div>
@@ -1212,19 +1258,101 @@
     </div>
 
     <!-- نموذج تفاصيل الطلب -->
-    <div class="modal fade" id="requestDetailsModal" tabindex="-1" aria-labelledby="requestDetailsModalLabel" aria-hidden="true">
+    <div class="modal fade" id="requestDetailsModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="requestDetailsModalLabel">
+                    <h5 class="modal-title">
                         <i class="fas fa-file-alt me-2"></i>تفاصيل الطلب
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="requestDetailsContent">
-                        <!-- سيتم تعبئة البيانات ديناميكيًا -->
+                    <div id="requestDetailsContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج تغيير الحالة -->
+    <div class="modal fade" id="changeStatusModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-exchange-alt me-2"></i>تغيير حالة الطلب
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="changeStatusContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الشروط والأحكام -->
+    <div class="modal fade" id="termsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">الشروط والأحكام</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>شروط استخدام نظام متابعة طلبات المواطنين</h6>
+                    <p>بإنشاء حساب في هذا النظام، فإنك توافق على الالتزام بالشروط التالية:</p>
+                    
+                    <ol>
+                        <li>يجب استخدام النظام لأغراض متابعة طلبات المواطنين فقط.</li>
+                        <li>يحظر مشاركة بيانات المستخدمين مع أي طرف ثالث.</li>
+                        <li>يجب الحفاظ على سرية معلومات تسجيل الدخول.</li>
+                        <li>يجب إبلاغ المسؤول عن أي استخدام غير مصرح به للحساب.</li>
+                        <li>يحق للمسؤول تعطيل الحساب في حال مخالفة الشروط.</li>
+                    </ol>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        سيتم تنشيط حسابك بعد مراجعة طلب التسجيل من قبل المسؤول.
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                    <button type="button" class="btn btn-primary" id="agreeTermsBtn">أوافق على الشروط</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج إدارة المستخدمين -->
+    <div class="modal fade" id="usersModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-users me-2"></i>إدارة المستخدمين
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="usersContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الملف الشخصي -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-user-circle me-2"></i>الملف الشخصي
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="profileContent"></div>
                 </div>
             </div>
         </div>
@@ -1238,959 +1366,1577 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- التطبيق الرئيسي مع تفعيل الأزرار الجانبية -->
+    <!-- التطبيق الرئيسي -->
     <script>
-        // تعريف الفئات الحكومية
+        // تعريف البيانات
         const categories = {
             'electricity': {
                 name: 'كهرباء',
                 color: '#f97316',
                 bgColor: '#ffedd5',
-                icon: 'fas fa-bolt',
-                description: 'وزارة الكهرباء والطاقة المتجددة'
+                icon: 'fas fa-bolt'
             },
             'health': {
                 name: 'صحة',
                 color: '#ec4899',
                 bgColor: '#fce7f3',
-                icon: 'fas fa-hospital',
-                description: 'وزارة الصحة والسكان'
+                icon: 'fas fa-hospital'
             },
             'water': {
                 name: 'مياه',
                 color: '#0ea5e9',
                 bgColor: '#e0f2fe',
-                icon: 'fas fa-tint',
-                description: 'وزارة الموارد المائية والري'
+                icon: 'fas fa-tint'
             },
             'sanitation': {
                 name: 'صرف صحي',
                 color: '#8b5cf6',
                 bgColor: '#f3e8ff',
-                icon: 'fas fa-toilet',
-                description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
+                icon: 'fas fa-toilet'
             },
             'education': {
                 name: 'تعليم',
                 color: '#84cc16',
                 bgColor: '#f0fdf4',
-                icon: 'fas fa-graduation-cap',
-                description: 'وزارة التربية والتعليم'
+                icon: 'fas fa-graduation-cap'
             },
             'transport': {
                 name: 'مواصلات',
                 color: '#6366f1',
                 bgColor: '#eef2ff',
-                icon: 'fas fa-bus',
-                description: 'وزارة النقل'
+                icon: 'fas fa-bus'
             },
             'telecom': {
                 name: 'اتصالات',
                 color: '#06b6d4',
                 bgColor: '#ecfeff',
-                icon: 'fas fa-wifi',
-                description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
+                icon: 'fas fa-wifi'
             },
             'housing': {
                 name: 'إسكان',
                 color: '#14b8a6',
                 bgColor: '#f0fdfa',
-                icon: 'fas fa-home',
-                description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
+                icon: 'fas fa-home'
+            }
+        };
+
+        const statuses = {
+            'submitted': {
+                name: 'تم التقديم',
+                color: '#3b82f6',
+                bgColor: '#dbeafe',
+                icon: 'fas fa-file-import'
+            },
+            'pending': {
+                name: 'انتظار الرد',
+                color: '#f59e0b',
+                bgColor: '#fef3c7',
+                icon: 'fas fa-clock'
+            },
+            'approved': {
+                name: 'موافقة',
+                color: '#10b981',
+                bgColor: '#d1fae5',
+                icon: 'fas fa-check-circle'
+            },
+            'rejected': {
+                name: 'غير موافقة',
+                color: '#ef4444',
+                bgColor: '#fee2e2',
+                icon: 'fas fa-times-circle'
             }
         };
 
         // بيانات التطبيق
-        let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [];
-        let currentPage = 'dashboard';
-        let categoryChart = null;
-        let performanceChart = null;
-        
-        // تهيئة التطبيق
-        $(document).ready(function() {
-            initializeApp();
-            loadSampleData();
-            setupSidebarNavigation();
-            setupCollapseButton();
-            renderAgenciesPage();
-            setupSearchPage();
-            setupSettingsPage();
-        });
-        
-        // تهيئة التطبيق
-        function initializeApp() {
-            if (allRequests.length === 0) {
-                loadSampleData();
+        let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
+            {
+                id: 1001,
+                nationalId: "29801011234567",
+                applicantName: "أحمد محمد علي",
+                requestTitle: "طلب توصيل خدمة كهرباء",
+                requestSummary: "المنطقة التي أسكن بها تفتقد لخدمة الكهرباء منذ ثلاثة أشهر مما يسبب معاناة كبيرة للأهالي.",
+                requestDate: "2023-12-15",
+                category: "electricity",
+                status: "pending",
+                file: null,
+                comments: "جاري التواصل مع شركة الكهرباء",
+                priority: "high",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 1002,
+                nationalId: "29905052345678",
+                applicantName: "سارة خالد حسن",
+                requestTitle: "طلب إنشاء مركز صحي",
+                requestSummary: "الحاجة إلى مركز صحي في الحي الجديد لخدمة أكثر من 5000 مواطن.",
+                requestDate: "2023-12-10",
+                category: "health",
+                status: "approved",
+                file: null,
+                comments: "تمت الموافقة على الطلب وتحويله لوزارة الصحة",
+                priority: "medium",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 1003,
+                nationalId: "30011233445566",
+                applicantName: "محمود سعيد عبدالله",
+                requestTitle: "مشكلة انقطاع المياه المتكرر",
+                requestSummary: "انقطاع المياه بشكل متكرر في منطقة الزهور خلال الأسبوع الماضي.",
+                requestDate: "2023-12-05",
+                category: "water",
+                status: "submitted",
+                file: null,
+                comments: "",
+                priority: "high",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 1004,
+                nationalId: "29708087654321",
+                applicantName: "فاطمة عادل مصطفى",
+                requestTitle: "طلب صرف صحي عاجل",
+                requestSummary: "انقطاع خدمة الصرف الصحي في شارع النخيل مما تسبب في مشاكل صحية كبيرة.",
+                requestDate: "2023-11-28",
+                category: "sanitation",
+                status: "rejected",
+                file: null,
+                comments: "تم رفض الطلب لوجود ميزانية محدودة للصيانة هذا العام",
+                priority: "medium",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 1005,
+                nationalId: "29604049876543",
+                applicantName: "خالد سمير أحمد",
+                requestTitle: "تسريع إجراءات بناء مدرسة",
+                requestSummary: "تأخر إجراءات بناء المدرسة الجديدة في حي الأمل.",
+                requestDate: "2023-11-20",
+                category: "education",
+                status: "pending",
+                file: null,
+                comments: "قيد الدراسة من قبل إدارة التعليم",
+                priority: "low",
+                createdAt: new Date().toISOString()
             }
-            
-            saveDataToLocalStorage();
-            populateCategoryFilters();
-            renderRequestsTable();
-            updateStatistics();
-            setupEventListeners();
-            renderCategoryChart();
-            loadUrgentRequests();
-            
-            // تعيين تاريخ اليوم كتاريخ افتراضي
-            const today = new Date().toISOString().split('T')[0];
-            $('#requestDate').val(today);
-        }
-        
-        // تحميل بيانات تجريبية
-        function loadSampleData() {
-            if (allRequests.length === 0) {
-                allRequests = [
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredRequests = [...allRequests];
+        let activeFilters = {
+            searchTerm: '',
+            searchType: 'both',
+            status: '',
+            category: '',
+            dateFilter: ''
+        };
+        let searchTimeout = null;
+        let categoryChart = null;
+        let selectedRequestId = null;
+        let currentUser = null;
+
+        // التهيئة الرئيسية
+        $(document).ready(function() {
+            initializeAuth();
+            checkUserSession();
+        });
+
+        // تهيئة نظام المصادقة
+        function initializeAuth() {
+            if (!localStorage.getItem('systemUsers')) {
+                const defaultUsers = [
                     {
-                        id: 1001,
-                        nationalId: "29801011234567",
-                        applicantName: "أحمد محمد علي",
-                        requestTitle: "طلب توصيل خدمة كهرباء",
-                        requestSummary: "المنطقة التي أسكن بها تفتقد لخدمة الكهرباء منذ ثلاثة أشهر مما يسبب معاناة كبيرة للأهالي.",
-                        requestDate: "2023-12-15",
-                        category: "electricity",
-                        status: "pending",
-                        file: null,
-                        comments: "جاري التواصل مع شركة الكهرباء",
-                        priority: "high",
+                        id: 1,
+                        username: 'admin',
+                        password: '123456',
+                        fullName: 'عضو مجلس النواب',
+                        email: 'mp@parliament.gov',
+                        phone: '01012345678',
+                        role: 'admin',
+                        isActive: true,
                         createdAt: new Date().toISOString()
                     },
                     {
-                        id: 1002,
-                        nationalId: "29905052345678",
-                        applicantName: "سارة خالد حسن",
-                        requestTitle: "طلب إنشاء مركز صحي",
-                        requestSummary: "الحاجة إلى مركز صحي في الحي الجديد لخدمة أكثر من 5000 مواطن.",
-                        requestDate: "2023-12-10",
-                        category: "health",
-                        status: "approved",
-                        file: null,
-                        comments: "تمت الموافقة على الطلب وتحويله لوزارة الصحة",
-                        priority: "medium",
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 1003,
-                        nationalId: "30011233445566",
-                        applicantName: "محمود سعيد عبدالله",
-                        requestTitle: "مشكلة انقطاع المياه المتكرر",
-                        requestSummary: "انقطاع المياه بشكل متكرر في منطقة الزهور خلال الأسبوع الماضي.",
-                        requestDate: "2023-12-05",
-                        category: "water",
-                        status: "submitted",
-                        file: null,
-                        comments: "",
-                        priority: "high",
+                        id: 2,
+                        username: 'assistant',
+                        password: '123456',
+                        fullName: 'محمد أحمد',
+                        email: 'assistant@parliament.gov',
+                        phone: '01098765432',
+                        role: 'assistant',
+                        isActive: true,
                         createdAt: new Date().toISOString()
                     }
                 ];
-                saveDataToLocalStorage();
+                localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
             }
+            
+            setupWelcomePageEvents();
         }
-        
-        // إعداد التنقل في الشريط الجانبي
-        function setupSidebarNavigation() {
-            $('.nav-link[data-page]').click(function(e) {
-                e.preventDefault();
-                
-                // إزالة الفئة النشطة من جميع الروابط
-                $('.nav-link').removeClass('active');
-                
-                // إضافة الفئة النشطة للرابط الحالي
-                $(this).addClass('active');
-                
-                // الحصول على الصفحة المطلوبة
-                const page = $(this).data('page');
-                
-                // تغيير الصفحة
-                switchPage(page);
+
+        // إعداد أحداث شاشة الترحيب
+        function setupWelcomePageEvents() {
+            $('#loginWelcomeBtn').click(function() {
+                $('#welcomeScreen').hide();
+                $('#loginPage').show();
+                setupLoginPageEvents();
+            });
+            
+            $('#registerWelcomeBtn').click(function() {
+                $('#welcomeScreen').hide();
+                $('#registerPage').show();
+                setupRegisterPageEvents();
             });
         }
-        
-        // تغيير الصفحة
-        function switchPage(page) {
-            // إخفاء جميع الصفحات
-            $('.content-page').removeClass('active');
-            
-            // إظهار الصفحة المطلوبة
-            $(`#${page}Page`).addClass('active');
-            
-            // تحديث الصفحة الحالية
-            currentPage = page;
-            
-            // تحميل بيانات الصفحة حسب الحاجة
-            switch(page) {
-                case 'dashboard':
-                    renderRequestsTable();
-                    updateStatistics();
-                    break;
-                case 'requests':
-                    loadAllRequestsTable();
-                    break;
-                case 'agencies':
-                    renderAgenciesPage();
-                    break;
-                case 'reports':
-                    loadReportsPage();
-                    break;
-                case 'settings':
-                    loadSettings();
-                    break;
-            }
-            
-            // إظهار رسالة نجاح
-            showNotification(`تم التبديل إلى ${getPageTitle(page)}`, 'success');
-        }
-        
-        // الحصول على عنوان الصفحة
-        function getPageTitle(page) {
-            const titles = {
-                'dashboard': 'لوحة التحكم',
-                'requests': 'جميع الطلبات',
-                'search': 'بحث متقدم',
-                'agencies': 'الهيئات الحكومية',
-                'reports': 'التقارير',
-                'settings': 'الإعدادات'
-            };
-            return titles[page] || page;
-        }
-        
-        // إعداد زر طي الشريط الجانبي
-        function setupCollapseButton() {
-            $('#collapseSidebarBtn').click(function() {
-                $('.sidebar').toggleClass('collapsed');
-                $('.main-content').toggleClass('expanded');
+
+        // إعداد أحداث صفحة تسجيل الدخول
+        function setupLoginPageEvents() {
+            // عرض/إخفاء كلمة المرور
+            $('#togglePassword').click(function() {
+                const passwordInput = $('#password');
+                const icon = $(this).find('i');
                 
-                if ($('.sidebar').hasClass('collapsed')) {
-                    $('.sidebar-title span, .sidebar-subtitle, .nav-text, .system-status, .logout-text').hide();
-                    $('#collapseSidebarBtn i').removeClass('fa-bars').addClass('fa-chevron-right');
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
                 } else {
-                    $('.sidebar-title span, .sidebar-subtitle, .nav-text, .system-status, .logout-text').show();
-                    $('#collapseSidebarBtn i').removeClass('fa-chevron-right').addClass('fa-bars');
+                    passwordInput.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
                 }
             });
-        }
-        
-        // تحميل صفحة جميع الطلبات
-        function loadAllRequestsTable() {
-            const tbody = $('#allRequestsTable');
-            tbody.empty();
             
-            if (allRequests.length === 0) {
-                tbody.html(`
-                    <tr>
-                        <td colspan="8" class="text-center py-4">
-                            <i class="fas fa-inbox fa-2x text-muted mb-3"></i>
-                            <p class="text-muted">لا توجد طلبات</p>
-                        </td>
-                    </tr>
-                `);
+            // تسجيل الدخول
+            $('#loginForm').submit(function(e) {
+                e.preventDefault();
+                loginUser();
+            });
+            
+            // عرض صفحة التسجيل
+            $('#showRegisterLink').click(function(e) {
+                e.preventDefault();
+                $('#loginPage').hide();
+                $('#registerPage').show();
+                setupRegisterPageEvents();
+            });
+        }
+
+        // إعداد أحداث صفحة التسجيل
+        function setupRegisterPageEvents() {
+            // عرض/إخفاء كلمات المرور
+            $('#toggleRegPassword').click(function() {
+                togglePasswordVisibility('#regPassword', $(this));
+            });
+            
+            $('#toggleConfirmPassword').click(function() {
+                togglePasswordVisibility('#confirmPassword', $(this));
+            });
+            
+            // التحقق من اسم المستخدم
+            $('#regUsername').on('input', function() {
+                checkUsernameAvailability($(this).val());
+            });
+            
+            // التحقق من قوة كلمة المرور
+            $('#regPassword').on('input', function() {
+                checkPasswordStrength($(this).val());
+            });
+            
+            // التحقق من تطابق كلمات المرور
+            $('#confirmPassword').on('input', function() {
+                checkPasswordMatch();
+            });
+            
+            // تقديم نموذج التسجيل
+            $('#registerForm').submit(function(e) {
+                e.preventDefault();
+                registerUser();
+            });
+            
+            // عرض صفحة تسجيل الدخول
+            $('#showLoginLink').click(function(e) {
+                e.preventDefault();
+                $('#registerPage').hide();
+                $('#loginPage').show();
+                setupLoginPageEvents();
+            });
+            
+            // موافقة على الشروط
+            $('#agreeTermsBtn').click(function() {
+                $('#agreeTerms').prop('checked', true);
+                $('#termsModal').modal('hide');
+            });
+        }
+
+        // تبديل رؤية كلمة المرور
+        function togglePasswordVisibility(inputId, button) {
+            const passwordInput = $(inputId);
+            const icon = button.find('i');
+            
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+        }
+
+        // التحقق من توفر اسم المستخدم
+        function checkUsernameAvailability(username) {
+            if (!username.trim()) {
+                $('#usernameAvailable').addClass('d-none');
+                $('#usernameTaken').addClass('d-none');
                 return;
             }
             
-            allRequests.forEach((request, index) => {
-                const status = getStatusInfo(request.status);
-                const category = categories[request.category];
-                
-                const row = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${request.nationalId}</td>
-                        <td>${request.applicantName}</td>
-                        <td>${request.requestTitle}</td>
-                        <td>
-                            <span class="category-badge ${getCategoryClass(request.category)}">
-                                <i class="${category.icon} me-1"></i>${category.name}
-                            </span>
-                        </td>
-                        <td>${formatDate(request.requestDate)}</td>
-                        <td>
-                            <span class="status-badge ${getStatusClass(request.status)}">
-                                <i class="${status.icon} me-1"></i>${status.name}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="showRequestDetails(${request.id})">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-                
-                tbody.append(row);
-            });
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            const isTaken = users.some(user => user.username === username);
+            
+            if (isTaken) {
+                $('#usernameAvailable').addClass('d-none');
+                $('#usernameTaken').removeClass('d-none');
+                return false;
+            } else {
+                $('#usernameAvailable').removeClass('d-none');
+                $('#usernameTaken').addClass('d-none');
+                return true;
+            }
         }
-        
-        // عرض صفحة الهيئات الحكومية
-        function renderAgenciesPage() {
-            const grid = $('#agenciesGrid');
-            grid.empty();
+
+        // التحقق من قوة كلمة المرور
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let text = '';
+            let barClass = '';
             
-            Object.entries(categories).forEach(([key, agency]) => {
-                // حساب عدد الطلبات لكل هيئة
-                const requestsCount = allRequests.filter(r => r.category === key).length;
-                const pendingCount = allRequests.filter(r => r.category === key && r.status === 'pending').length;
-                
-                const card = `
-                    <div class="col-md-6 col-lg-4 mb-4">
-                        <div class="card agency-card h-100">
-                            <div class="card-body text-center">
-                                <div class="agency-icon" style="color: ${agency.color}">
-                                    <i class="${agency.icon}"></i>
-                                </div>
-                                <h5 class="card-title">${agency.name}</h5>
-                                <p class="card-text text-muted small">${agency.description}</p>
-                                
-                                <div class="mt-3">
-                                    <div class="row text-center">
-                                        <div class="col-6">
-                                            <div class="h4 mb-0">${requestsCount}</div>
-                                            <small class="text-muted">إجمالي الطلبات</small>
-                                        </div>
-                                        <div class="col-6">
-                                            <div class="h4 mb-0" style="color: ${pendingCount > 0 ? '#f59e0b' : '#10b981'}">${pendingCount}</div>
-                                            <small class="text-muted">قيد الانتظار</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mt-4">
-                                    <button class="btn btn-sm btn-outline-primary me-2" onclick="viewAgencyRequests('${key}')">
-                                        <i class="fas fa-eye me-1"></i>عرض الطلبات
-                                    </button>
-                                    <button class="btn btn-sm btn-primary" onclick="addAgencyRequest('${key}')">
-                                        <i class="fas fa-plus me-1"></i>إضافة طلب
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                grid.append(card);
-            });
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            const strengthBar = $('#strengthBar');
+            const strengthText = $('#strengthText');
+            
+            switch(strength) {
+                case 0:
+                    text = 'ضعيفة جدًا';
+                    barClass = 'strength-weak';
+                    break;
+                case 1:
+                    text = 'ضعيفة';
+                    barClass = 'strength-weak';
+                    break;
+                case 2:
+                    text = 'متوسطة';
+                    barClass = 'strength-medium';
+                    break;
+                case 3:
+                    text = 'جيدة';
+                    barClass = 'strength-medium';
+                    break;
+                case 4:
+                    text = 'قوية';
+                    barClass = 'strength-strong';
+                    break;
+            }
+            
+            strengthBar.css('width', (strength * 25) + '%');
+            strengthBar.removeClass('strength-weak strength-medium strength-strong');
+            strengthBar.addClass(barClass);
+            strengthText.text(text);
+            
+            return strength >= 3;
         }
-        
-        // عرض طلبات هيئة معينة
-        function viewAgencyRequests(agencyKey) {
-            // حفظ الوكالة الحالية
-            localStorage.setItem('currentAgencyFilter', agencyKey);
+
+        // التحقق من تطابق كلمات المرور
+        function checkPasswordMatch() {
+            const password = $('#regPassword').val();
+            const confirmPassword = $('#confirmPassword').val();
             
-            // التبديل إلى لوحة التحكم مع فلتر الهيئة
-            switchPage('dashboard');
+            if (!confirmPassword) {
+                $('#passwordMatch').addClass('d-none');
+                $('#passwordMismatch').addClass('d-none');
+                return false;
+            }
             
-            // تطبيق فلتر الهيئة
-            $('#categoryFilter').val(agencyKey);
+            if (password === confirmPassword) {
+                $('#passwordMatch').removeClass('d-none');
+                $('#passwordMismatch').addClass('d-none');
+                return true;
+            } else {
+                $('#passwordMatch').addClass('d-none');
+                $('#passwordMismatch').removeClass('d-none');
+                return false;
+            }
+        }
+
+        // تسجيل مستخدم جديد
+        function registerUser() {
+            const fullName = $('#fullName').val().trim();
+            const username = $('#regUsername').val().trim();
+            const email = $('#email').val().trim();
+            const phone = $('#phone').val().trim();
+            const password = $('#regPassword').val();
+            const confirmPassword = $('#confirmPassword').val();
+            const role = $('#role').val();
+            const agreeTerms = $('#agreeTerms').is(':checked');
             
-            // تنفيذ البحث
+            if (!fullName || !username || !email || !phone || !password || !confirmPassword || !role) {
+                showAuthAlert('الرجاء ملء جميع الحقول المطلوبة', 'error', 'register');
+                return;
+            }
+            
+            if (!agreeTerms) {
+                showAuthAlert('يجب الموافقة على الشروط والأحكام', 'error', 'register');
+                return;
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showAuthAlert('الرجاء إدخال بريد إلكتروني صحيح', 'error', 'register');
+                return;
+            }
+            
+            if (!checkUsernameAvailability(username)) {
+                showAuthAlert('اسم المستخدم مستخدم مسبقًا', 'error', 'register');
+                return;
+            }
+            
+            if (!checkPasswordStrength(password)) {
+                showAuthAlert('كلمة المرور ضعيفة. يجب أن تحتوي على 8 أحرف على الأقل وتتضمن حروفًا كبيرة وأرقامًا', 'error', 'register');
+                return;
+            }
+            
+            if (!checkPasswordMatch()) {
+                showAuthAlert('كلمات المرور غير متطابقة', 'error', 'register');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            
+            const newUser = {
+                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 3,
+                username: username,
+                password: password,
+                fullName: fullName,
+                email: email,
+                phone: phone,
+                role: role,
+                createdAt: new Date().toISOString(),
+                isActive: false,
+                lastLogin: null
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('systemUsers', JSON.stringify(users));
+            
+            showAuthAlert('تم إنشاء الحساب بنجاح! سيتم تنشيط حسابك بعد مراجعة الطلب من قبل المسؤول', 'success', 'register');
+            
             setTimeout(() => {
-                const event = new Event('change');
-                $('#categoryFilter')[0].dispatchEvent(event);
-                
-                showNotification(`عرض طلبات هيئة ${categories[agencyKey].name}`, 'info');
-            }, 100);
+                $('#registerPage').hide();
+                $('#loginPage').show();
+                setupLoginPageEvents();
+            }, 2000);
         }
-        
-        // إضافة طلب لهيئة معينة
-        function addAgencyRequest(agencyKey) {
+
+        // تسجيل الدخول
+        function loginUser() {
+            const username = $('#username').val().trim();
+            const password = $('#password').val().trim();
+            
+            if (!username || !password) {
+                showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (!user) {
+                showAuthAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
+                return;
+            }
+            
+            if (!user.isActive) {
+                showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
+                return;
+            }
+            
+            const sessionData = {
+                id: user.id,
+                username: user.username,
+                fullName: user.fullName,
+                role: user.role,
+                email: user.email,
+                loggedInAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(sessionData));
+            currentUser = sessionData;
+            
+            showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+            
+            setTimeout(() => {
+                startApplication();
+            }, 1500);
+        }
+
+        // عرض رسائل المصادقة
+        function showAuthAlert(message, type, page) {
+            const alertDiv = $(`#${page}Alert`);
+            const messageSpan = $(`#${page}AlertMessage`);
+            
+            alertDiv.removeClass('d-none alert-danger alert-success alert-info');
+            alertDiv.addClass(`alert-${type === 'error' ? 'danger' : type}`);
+            
+            if (type === 'success') {
+                alertDiv.html(`
+                    <i class="fas fa-check-circle me-2"></i>
+                    ${message}
+                `);
+            } else {
+                alertDiv.html(`
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    ${message}
+                `);
+            }
+        }
+
+        // التحقق من جلسة المستخدم
+        function checkUserSession() {
+            const userData = localStorage.getItem('currentUser');
+            
+            if (userData && userData !== 'null') {
+                try {
+                    currentUser = JSON.parse(userData);
+                    
+                    // التحقق من أن المستخدم لا يزال موجودًا
+                    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+                    const userExists = users.some(u => u.id === currentUser.id && u.username === currentUser.username);
+                    
+                    if (userExists) {
+                        startApplication();
+                    } else {
+                        localStorage.removeItem('currentUser');
+                        showWelcomePage();
+                    }
+                } catch (e) {
+                    localStorage.removeItem('currentUser');
+                    showWelcomePage();
+                }
+            } else {
+                showWelcomePage();
+            }
+        }
+
+        // عرض شاشة الترحيب
+        function showWelcomePage() {
+            $('#welcomeScreen').show();
+            $('#loginPage').hide();
+            $('#registerPage').hide();
+            $('#appContent').hide();
+        }
+
+        // بدء التطبيق
+        function startApplication() {
+            $('#welcomeScreen').hide();
+            $('#loginPage').hide();
+            $('#registerPage').hide();
+            $('#appContent').show();
+            
+            initializeApp();
+        }
+
+        // تهيئة التطبيق الرئيسي
+        function initializeApp() {
+            saveDataToLocalStorage();
+            populateCategoryFilters();
+            updateUserInterface();
+            renderRequestsTable();
+            updateStatistics();
+            setupMainEventListeners();
+            renderCategoryChart();
+            loadUrgentRequests();
+            
+            const today = new Date().toISOString().split('T')[0];
+            $('#requestDate').val(today);
+            
+            checkUnreadNotifications();
+            setInterval(checkNewRequests, 30000);
+        }
+
+        // تحديث واجهة المستخدم
+        function updateUserInterface() {
+            if (currentUser) {
+                $('#sidebarUserName').text(currentUser.fullName);
+                $('#sidebarUserRole').text(getRoleName(currentUser.role));
+                
+                // تحديث أيقونة المستخدم
+                const avatarIcon = $('#userAvatarIcon');
+                avatarIcon.removeClass('fa-user-circle');
+                avatarIcon.addClass(getUserIconByRole(currentUser.role));
+                
+                // إظهار/إخفاء الأزرار بناءً على الصلاحيات
+                if (currentUser.role !== 'admin') {
+                    $('#usersLink').hide();
+                }
+            }
+        }
+
+        // الحصول على اسم الدور
+        function getRoleName(role) {
+            const roles = {
+                'admin': 'المسؤول',
+                'assistant': 'مساعد',
+                'coordinator': 'منسق',
+                'viewer': 'مستعرض'
+            };
+            return roles[role] || 'مستخدم';
+        }
+
+        // الحصول على أيقونة بناءً على الدور
+        function getUserIconByRole(role) {
+            const icons = {
+                'admin': 'fas fa-user-shield',
+                'assistant': 'fas fa-user-tie',
+                'coordinator': 'fas fa-user-cog',
+                'viewer': 'fas fa-user'
+            };
+            return icons[role] || 'fas fa-user-circle';
+        }
+
+        // إعداد أحداث التطبيق الرئيسي
+        function setupMainEventListeners() {
+            // البحث أثناء الكتابة
+            $('#mainSearchInput').on('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    activeFilters.searchTerm = $(this).val();
+                    performSearch();
+                    if ($(this).val().length > 0) {
+                        showSearchResults($(this).val());
+                    } else {
+                        $('#searchResults').hide();
+                    }
+                }, 300);
+            });
+
+            $('#mainSearchInput').on('keypress', function(e) {
+                if (e.which === 13) {
+                    activeFilters.searchTerm = $(this).val();
+                    performSearch();
+                    $('#searchResults').hide();
+                }
+            });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.search-container').length) {
+                    $('#searchResults').hide();
+                }
+            });
+
+            $('#searchType').change(function() {
+                activeFilters.searchType = $(this).val();
+                performSearch();
+            });
+
+            $('#statusFilter, #categoryFilter, #dateFilter').change(function() {
+                const filterId = $(this).attr('id');
+                const filterValue = $(this).val();
+                
+                switch(filterId) {
+                    case 'statusFilter':
+                        activeFilters.status = filterValue;
+                        break;
+                    case 'categoryFilter':
+                        activeFilters.category = filterValue;
+                        break;
+                    case 'dateFilter':
+                        activeFilters.dateFilter = filterValue;
+                        break;
+                }
+                
+                performSearch();
+            });
+
             // فتح نموذج الطلب الجديد
-            openNewRequestModal();
-            
-            // تعيين الهيئة المختارة
-            setTimeout(() => {
-                $('#requestCategory').val(agencyKey);
-                showNotification(`تم تحديد هيئة ${categories[agencyKey].name} للطلب الجديد`, 'info');
-            }, 500);
-        }
-        
-        // إعداد صفحة البحث
-        function setupSearchPage() {
-            // زر البحث المتقدم
-            $('#advancedSearchBtn').click(function() {
-                performAdvancedSearch();
+            $('#newRequestBtn, #floatingAddBtn').click(function() {
+                openNewRequestModal();
             });
-            
-            // زر إعادة تعيين البحث المتقدم
-            $('#resetAdvancedSearchBtn').click(function() {
-                resetAdvancedSearch();
+
+            // تقديم طلب جديد
+            $('#submitRequestBtn').click(function() {
+                submitNewRequest();
+            });
+
+            // مسح البحث
+            $('#clearSearchBtn').click(function() {
+                $('#mainSearchInput').val('');
+                activeFilters.searchTerm = '';
+                performSearch();
+                $('#searchResults').hide();
+            });
+
+            // إعادة تعيين جميع الفلاتر
+            $('#resetSearchBtn').click(function() {
+                resetAllFilters();
+            });
+
+            // تحديث البيانات
+            $('#refreshBtn').click(function() {
+                refreshData();
+            });
+
+            // تصدير البيانات
+            $('#exportBtn').click(function() {
+                exportData();
+            });
+
+            // مسح ملف المرفق
+            $('#clearFileBtn').click(function() {
+                $('#requestFile').val('');
+            });
+
+            // تسجيل الخروج
+            $('#logoutBtn').click(function() {
+                logout();
+            });
+
+            // التنقل بين الصفحات
+            $('.nav-link').click(function(e) {
+                e.preventDefault();
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+                
+                const pageId = $(this).attr('id').replace('Link', '');
+                showPage(pageId);
+            });
+
+            // زر المستخدمين
+            $('#usersLink').click(function(e) {
+                e.preventDefault();
+                showUsersManagement();
+            });
+
+            // زر الملف الشخصي
+            $('#profileLink').click(function(e) {
+                e.preventDefault();
+                showProfile();
             });
         }
-        
-        // تنفيذ البحث المتقدم
-        function performAdvancedSearch() {
-            const keyword = $('#keywordSearch').val().toLowerCase();
-            const status = $('#searchStatus').val();
-            const agency = $('#searchAgency').val();
-            const period = $('#searchPeriod').val();
-            const fromDate = $('#searchFromDate').val();
-            const toDate = $('#searchToDate').val();
+
+        // فتح نموذج طلب جديد
+        function openNewRequestModal() {
+            $('#newRequestForm')[0].reset();
+            const today = new Date().toISOString().split('T')[0];
+            $('#requestDate').val(today);
+            $('#newRequestModal').modal('show');
+        }
+
+        // تقديم طلب جديد
+        function submitNewRequest() {
+            if (!validateRequestForm()) {
+                return;
+            }
+
+            const newRequest = {
+                id: generateRequestId(),
+                nationalId: $('#nationalId').val(),
+                applicantName: $('#applicantName').val(),
+                requestTitle: $('#requestTitle').val(),
+                requestSummary: $('#requestSummary').val(),
+                requestDate: $('#requestDate').val() || new Date().toISOString().split('T')[0],
+                category: $('#requestCategory').val(),
+                status: "submitted",
+                file: null,
+                comments: "",
+                priority: "medium",
+                createdAt: new Date().toISOString(),
+                isNew: true,
+                createdBy: currentUser.id
+            };
+
+            const fileInput = $('#requestFile')[0];
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                newRequest.file = {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    lastModified: file.lastModified
+                };
+            }
+
+            allRequests.unshift(newRequest);
+            saveDataToLocalStorage();
             
+            $('#newRequestModal').modal('hide');
+            
+            showNotification(`تم إضافة طلب جديد #${newRequest.id}`, 'success', true);
+            
+            activeFilters.searchTerm = '';
+            $('#mainSearchInput').val('');
+            performSearch();
+            
+            addToNotificationLog(newRequest.id, 'new_request', newRequest);
+        }
+
+        // التحقق من صحة نموذج الطلب
+        function validateRequestForm() {
+            const nationalId = $('#nationalId').val();
+            const applicantName = $('#applicantName').val();
+            const requestTitle = $('#requestTitle').val();
+            const requestSummary = $('#requestSummary').val();
+            const requestCategory = $('#requestCategory').val();
+
+            if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+                showAlert('الرجاء إدخال رقم قومي صحيح (14 رقمًا)', 'error');
+                return false;
+            }
+
+            if (!applicantName.trim()) {
+                showAlert('الرجاء إدخال اسم مقدم الطلب', 'error');
+                return false;
+            }
+
+            if (!requestTitle.trim()) {
+                showAlert('الرجاء إدخال عنوان الطلب', 'error');
+                return false;
+            }
+
+            if (!requestCategory) {
+                showAlert('الرجاء اختيار الهيئة الحكومية', 'error');
+                return false;
+            }
+
+            if (!requestSummary.trim()) {
+                showAlert('الرجاء إدخال نظرة عن الطلب', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // تنفيذ البحث
+        function performSearch() {
             let results = [...allRequests];
-            
-            // تطبيق البحث بالكلمة المفتاحية
-            if (keyword) {
-                results = results.filter(request => 
-                    request.nationalId.includes(keyword) ||
-                    request.applicantName.toLowerCase().includes(keyword) ||
-                    request.requestTitle.toLowerCase().includes(keyword) ||
-                    request.requestSummary.toLowerCase().includes(keyword)
-                );
+
+            if (activeFilters.searchTerm.trim() !== '') {
+                const searchTerm = activeFilters.searchTerm.toLowerCase();
+                
+                results = results.filter(request => {
+                    if (activeFilters.searchType === 'nationalId') {
+                        return request.nationalId.includes(searchTerm);
+                    } else if (activeFilters.searchType === 'name') {
+                        return request.applicantName.toLowerCase().includes(searchTerm);
+                    } else {
+                        return request.nationalId.includes(searchTerm) || 
+                               request.applicantName.toLowerCase().includes(searchTerm) ||
+                               request.requestTitle.toLowerCase().includes(searchTerm);
+                    }
+                });
             }
-            
-            // تطبيق فلتر الحالة
-            if (status) {
-                results = results.filter(request => request.status === status);
+
+            if (activeFilters.status !== '') {
+                results = results.filter(request => request.status === activeFilters.status);
             }
-            
-            // تطبيق فلتر الهيئة
-            if (agency) {
-                results = results.filter(request => request.category === agency);
+
+            if (activeFilters.category !== '') {
+                results = results.filter(request => request.category === activeFilters.category);
             }
-            
-            // تطبيق فلتر الفترة الزمنية
-            if (period) {
+
+            if (activeFilters.dateFilter !== '') {
                 const today = new Date();
                 results = results.filter(request => {
                     const requestDate = new Date(request.requestDate);
                     const diffTime = today - requestDate;
                     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                     
-                    switch(period) {
+                    switch(activeFilters.dateFilter) {
                         case 'today':
                             return diffDays === 0;
                         case 'week':
                             return diffDays <= 7;
                         case 'month':
                             return diffDays <= 30;
-                        case 'year':
-                            return diffDays <= 365;
                         default:
                             return true;
                     }
                 });
             }
-            
-            // تطبيق فلتر التاريخ المحدد
-            if (fromDate) {
-                const from = new Date(fromDate);
-                results = results.filter(request => new Date(request.requestDate) >= from);
-            }
-            
-            if (toDate) {
-                const to = new Date(toDate);
-                results = results.filter(request => new Date(request.requestDate) <= to);
-            }
-            
-            // عرض النتائج
-            displaySearchResults(results);
-            
-            // إظهار إشعار
-            showNotification(`تم العثور على ${results.length} نتيجة للبحث`, 'success');
+
+            filteredRequests = results;
+            currentPage = 1;
+            renderRequestsTable();
+            updateActiveFiltersDisplay();
+            updateStatistics();
+            renderCategoryChart();
         }
-        
-        // عرض نتائج البحث المتقدم
-        function displaySearchResults(results) {
-            const container = $('#searchResultsContainer');
-            container.empty();
-            
-            if (results.length === 0) {
-                container.html(`
-                    <div class="text-center py-5">
-                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">لا توجد نتائج</h5>
-                        <p class="text-muted">جرب معايير بحث مختلفة</p>
-                    </div>
-                `);
+
+        // عرض نتائج البحث أثناء الكتابة
+        function showSearchResults(searchTerm) {
+            if (searchTerm.trim() === '') {
+                $('#searchResults').hide();
                 return;
             }
             
-            let html = `
-                <div class="alert alert-info mb-3">
-                    <i class="fas fa-info-circle me-2"></i>
-                    تم العثور على ${results.length} نتيجة للبحث
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>الرقم القومي</th>
-                                <th>الاسم</th>
-                                <th>العنوان</th>
-                                <th>الهيئة</th>
-                                <th>التاريخ</th>
-                                <th>الحالة</th>
-                                <th>الإجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
+            let results = allRequests;
+            const searchType = $('#searchType').val();
             
-            results.forEach((request, index) => {
-                const status = getStatusInfo(request.status);
+            results = results.filter(request => {
+                if (searchType === 'nationalId') {
+                    return request.nationalId.includes(searchTerm);
+                } else if (searchType === 'name') {
+                    return request.applicantName.toLowerCase().includes(searchTerm.toLowerCase());
+                } else {
+                    return request.nationalId.includes(searchTerm) || 
+                           request.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           request.requestTitle.toLowerCase().includes(searchTerm.toLowerCase());
+                }
+            }).slice(0, 5);
+            
+            if (results.length === 0) {
+                $('#searchResults').html(`
+                    <div class="search-result-item text-muted text-center p-3">
+                        <i class="fas fa-search me-2"></i>لا توجد نتائج للبحث
+                    </div>
+                `);
+            } else {
+                let html = '';
+                results.forEach(request => {
+                    const category = categories[request.category];
+                    const status = statuses[request.status];
+                    
+                    html += `
+                        <div class="search-result-item" data-id="${request.id}">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <div class="fw-bold">${request.applicantName}</div>
+                                    <div class="text-muted small">${request.nationalId}</div>
+                                    <div class="mt-1 small">${request.requestTitle}</div>
+                                </div>
+                                <div class="text-start">
+                                    <span class="badge ${getCategoryClass(request.category)}">${category.name}</span>
+                                    <div class="small mt-1">
+                                        <span class="status-badge ${getStatusClass(request.status)}">
+                                            ${status.name}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                $('#searchResults').html(html);
+            }
+            
+            $('#searchResults').show();
+            
+            $('.search-result-item').click(function() {
+                const requestId = $(this).data('id');
+                showRequestDetails(requestId);
+                $('#searchResults').hide();
+            });
+        }
+
+        // عرض جدول الطلبات
+        function renderRequestsTable() {
+            const tbody = $('#requestsTableBody');
+            tbody.empty();
+            
+            const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredRequests.length);
+            const currentPageRequests = filteredRequests.slice(startIndex, endIndex);
+            
+            $('#startRow').text(startIndex + 1);
+            $('#endRow').text(endIndex);
+            $('#totalRows').text(filteredRequests.length);
+            
+            if (currentPageRequests.length === 0) {
+                $('#requestsTable').hide();
+                $('#noResultsMessage').removeClass('d-none');
+                $('#resultsTitle').text('نتائج البحث');
+                $('#resultsCount').text('لا توجد نتائج');
+                renderPagination(totalPages);
+                return;
+            }
+            
+            $('#requestsTable').show();
+            $('#noResultsMessage').addClass('d-none');
+            $('#resultsTitle').text(activeFilters.searchTerm ? 'نتائج البحث' : 'الطلبات الأخيرة');
+            $('#resultsCount').text(`عرض ${currentPageRequests.length} من ${filteredRequests.length} طلب`);
+            
+            currentPageRequests.forEach((request, index) => {
+                const globalIndex = startIndex + index + 1;
+                const status = statuses[request.status];
                 const category = categories[request.category];
+                const isNew = request.isNew && !request.viewed;
                 
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${request.nationalId}</td>
-                        <td>${request.applicantName}</td>
-                        <td>${request.requestTitle}</td>
+                const row = `
+                    <tr id="request-${request.id}" class="${isNew ? 'table-info' : ''}" data-id="${request.id}">
+                        <td>
+                            <div class="form-check">
+                                <input class="form-check-input request-checkbox" type="checkbox" value="${request.id}">
+                            </div>
+                            <span class="text-muted small">${globalIndex}</span>
+                        </td>
+                        <td>
+                            <div class="fw-bold">${request.nationalId}</div>
+                            ${isNew ? '<span class="badge bg-info small">جديد</span>' : ''}
+                        </td>
+                        <td>
+                            <div class="fw-bold">${request.applicantName}</div>
+                            <small class="text-muted">${formatDate(request.requestDate)}</small>
+                        </td>
+                        <td>
+                            <div class="fw-bold">${request.requestTitle}</div>
+                            <small class="text-muted text-truncate d-block" style="max-width: 200px;">
+                                ${request.requestSummary.substring(0, 50)}${request.requestSummary.length > 50 ? '...' : ''}
+                            </small>
+                        </td>
                         <td>
                             <span class="category-badge ${getCategoryClass(request.category)}">
                                 <i class="${category.icon} me-1"></i>${category.name}
                             </span>
                         </td>
-                        <td>${formatDate(request.requestDate)}</td>
                         <td>
-                            <span class="status-badge ${getStatusClass(request.status)}">
-                                <i class="${status.icon} me-1"></i>${status.name}
-                            </span>
+                            <span class="badge bg-light text-dark">${formatDate(request.requestDate)}</span>
                         </td>
                         <td>
-                            <button class="btn btn-sm btn-outline-primary" onclick="showRequestDetails(${request.id})">
-                                <i class="fas fa-eye"></i>
-                            </button>
+                            <div class="dropdown">
+                                <span class="status-badge ${getStatusClass(request.status)} dropdown-toggle" 
+                                      data-bs-toggle="dropdown" 
+                                      style="cursor: pointer;">
+                                    <i class="${status.icon} me-1"></i>${status.name}
+                                </span>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item change-status-dropdown" href="#" 
+                                           data-id="${request.id}" data-status="submitted">
+                                           <i class="fas fa-file-import text-primary me-2"></i>تم التقديم
+                                        </a></li>
+                                    <li><a class="dropdown-item change-status-dropdown" href="#" 
+                                           data-id="${request.id}" data-status="pending">
+                                           <i class="fas fa-clock text-warning me-2"></i>انتظار الرد
+                                        </a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item change-status-dropdown" href="#" 
+                                           data-id="${request.id}" data-status="approved">
+                                           <i class="fas fa-check-circle text-success me-2"></i>موافقة
+                                        </a></li>
+                                    <li><a class="dropdown-item change-status-dropdown" href="#" 
+                                           data-id="${request.id}" data-status="rejected">
+                                           <i class="fas fa-times-circle text-danger me-2"></i>غير موافقة
+                                        </a></li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <button class="btn btn-outline-primary view-details" data-id="${request.id}" title="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-outline-warning edit-request" data-id="${request.id}" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-outline-danger delete-request" data-id="${request.id}" title="حذف">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
+                
+                tbody.append(row);
+                
+                if (request.isNew && !request.viewed) {
+                    request.viewed = true;
+                }
             });
             
-            html += `
-                        </tbody>
-                    </table>
+            renderPagination(totalPages);
+            saveDataToLocalStorage();
+            
+            addTableEventListeners();
+        }
+
+        // إضافة مستمعي الأحداث للجدول
+        function addTableEventListeners() {
+            $('.view-details').click(function(e) {
+                e.stopPropagation();
+                const requestId = $(this).data('id');
+                showRequestDetails(requestId);
+            });
+
+            $('.edit-request').click(function(e) {
+                e.stopPropagation();
+                const requestId = $(this).data('id');
+                editRequest(requestId);
+            });
+
+            $('.delete-request').click(function(e) {
+                e.stopPropagation();
+                const requestId = $(this).data('id');
+                deleteRequest(requestId);
+            });
+
+            $('.change-status-dropdown').click(function(e) {
+                e.preventDefault();
+                const requestId = $(this).data('id');
+                const newStatus = $(this).data('status');
+                changeRequestStatus(requestId, newStatus);
+            });
+
+            $('tbody tr[data-id]').click(function(e) {
+                if (!$(e.target).closest('td:last-child').length && 
+                    !$(e.target).is('input[type="checkbox"]') &&
+                    !$(e.target).closest('.dropdown').length) {
+                    const requestId = $(this).data('id');
+                    showRequestDetails(requestId);
+                }
+            });
+        }
+
+        // عرض تفاصيل الطلب
+        function showRequestDetails(requestId) {
+            const request = allRequests.find(r => r.id === requestId);
+            if (!request) return;
+            
+            const category = categories[request.category];
+            const status = statuses[request.status];
+            
+            const detailsHtml = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-3">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>معلومات الطلب</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">رقم الطلب:</div>
+                                    <div class="col-8">#${request.id}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">الرقم القومي:</div>
+                                    <div class="col-8">${request.nationalId}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">اسم مقدم الطلب:</div>
+                                    <div class="col-8">${request.applicantName}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">تاريخ التقديم:</div>
+                                    <div class="col-8">${formatDate(request.requestDate)}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-4 fw-bold">الهيئة الحكومية:</div>
+                                    <div class="col-8">
+                                        <span class="category-badge ${getCategoryClass(request.category)}">
+                                            <i class="${category.icon} me-1"></i>${category.name}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 fw-bold">الحالة الحالية:</div>
+                                    <div class="col-8">
+                                        <span class="status-badge ${getStatusClass(request.status)}">
+                                            <i class="${status.icon} me-1"></i>${status.name}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-cogs me-2"></i>تغيير حالة الطلب</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="btn-group w-100" role="group">
+                                    <button type="button" class="btn btn-success change-status-btn" 
+                                            data-status="approved">
+                                        <i class="fas fa-check me-2"></i>موافقة
+                                    </button>
+                                    <button type="button" class="btn btn-danger change-status-btn" 
+                                            data-status="rejected">
+                                        <i class="fas fa-times me-2"></i>غير موافقة
+                                    </button>
+                                </div>
+                                <div class="mt-2">
+                                    <textarea class="form-control" id="statusComment" 
+                                              placeholder="إضافة تعليق (خاصة عند الرفض)" rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-file-alt me-2"></i>تفاصيل الطلب</h6>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">${request.requestTitle}</h5>
+                                <div class="card-text mt-3">
+                                    <p>${request.requestSummary}</p>
+                                </div>
+                                
+                                ${request.file ? `
+                                <div class="mt-3">
+                                    <h6><i class="fas fa-paperclip me-2"></i>الملف المرفق</h6>
+                                    <div class="alert alert-info p-2">
+                                        <i class="fas fa-file-pdf text-danger me-2"></i>
+                                        ${request.file.name}
+                                        <button class="btn btn-sm btn-outline-primary float-left" onclick="viewFile(${request.id})">
+                                            <i class="fas fa-eye me-1"></i>معاينة
+                                        </button>
+                                    </div>
+                                </div>
+                                ` : ''}
+                                
+                                ${request.comments ? `
+                                <div class="mt-3">
+                                    <h6><i class="fas fa-comment me-2"></i>التعليقات</h6>
+                                    <div class="alert alert-warning p-2">
+                                        ${request.comments}
+                                    </div>
+                                </div>
+                                ` : ''}
+                                
+                                <div class="mt-3">
+                                    <h6><i class="fas fa-history me-2"></i>سجل التعديلات</h6>
+                                    <div class="small text-muted">
+                                        تم الإنشاء: ${formatDateTime(request.createdAt)}<br>
+                                        ${request.lastUpdated ? `آخر تحديث: ${formatDateTime(request.lastUpdated)}` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
             
-            container.html(html);
-        }
-        
-        // إعادة تعيين البحث المتقدم
-        function resetAdvancedSearch() {
-            $('#keywordSearch').val('');
-            $('#searchStatus').val('');
-            $('#searchAgency').val('');
-            $('#searchPeriod').val('');
-            $('#searchFromDate').val('');
-            $('#searchToDate').val('');
+            $('#requestDetailsContent').html(detailsHtml);
             
-            $('#searchResultsContainer').html(`
-                <div class="text-center py-5">
-                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                    <p class="text-muted">استخدم أدوات البحث للعثور على الطلبات</p>
-                </div>
-            `);
+            $('.change-status-btn').click(function() {
+                const newStatus = $(this).data('status');
+                const comment = $('#statusComment').val();
+                changeRequestStatus(requestId, newStatus, comment);
+                $('#requestDetailsModal').modal('hide');
+            });
             
-            showNotification('تم إعادة تعيين البحث', 'info');
+            $('#requestDetailsModal').modal('show');
         }
-        
-        // تحميل صفحة التقارير
-        function loadReportsPage() {
-            // تحديث أرقام التقارير
+
+        // تغيير حالة الطلب
+        function changeRequestStatus(requestId, newStatus, comment = '') {
+            const requestIndex = allRequests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) return;
+            
+            const oldStatus = allRequests[requestIndex].status;
+            allRequests[requestIndex].status = newStatus;
+            allRequests[requestIndex].lastUpdated = new Date().toISOString();
+            
+            if (comment.trim() !== '') {
+                allRequests[requestIndex].comments = comment;
+            }
+            
+            saveDataToLocalStorage();
+            performSearch();
+            
+            const statusName = statuses[newStatus].name;
+            showNotification(`تم تغيير حالة الطلب #${requestId} إلى "${statusName}"`, 'success');
+            
+            logActivity(requestId, oldStatus, newStatus, comment);
+        }
+
+        // تسجيل النشاطات
+        function logActivity(requestId, oldStatus, newStatus, comment = '') {
+            const activityLog = JSON.parse(localStorage.getItem('activityLog') || '[]');
+            
+            activityLog.push({
+                requestId: requestId,
+                oldStatus: oldStatus,
+                newStatus: newStatus,
+                comment: comment,
+                changedBy: currentUser.fullName,
+                changedAt: new Date().toISOString()
+            });
+            
+            localStorage.setItem('activityLog', JSON.stringify(activityLog));
+        }
+
+        // تحديث الإحصائيات
+        function updateStatistics() {
             const total = allRequests.length;
             const pending = allRequests.filter(r => r.status === 'pending').length;
             const approved = allRequests.filter(r => r.status === 'approved').length;
             const rejected = allRequests.filter(r => r.status === 'rejected').length;
             
-            $('#totalRequestsReport').text(total);
-            $('#pendingRequestsReport').text(pending);
-            $('#completedRequestsReport').text(approved);
-            $('#rejectedRequestsReport').text(rejected);
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            const newRequestsCount = allRequests.filter(r => {
+                const requestDate = new Date(r.requestDate);
+                return requestDate >= weekAgo;
+            }).length;
             
-            // إنشاء رسم بياني لأداء الهيئات
-            renderPerformanceChart();
+            const completionRate = total > 0 ? Math.round((approved / total) * 100) : 0;
+            
+            $('#totalRequests').text(total);
+            $('#newRequests').text(newRequestsCount);
+            $('#pendingRequests').text(pending);
+            $('#completionRate').text(completionRate + '%');
+            $('#progressBar').css('width', completionRate + '%');
         }
-        
-        // عرض رسم بياني لأداء الهيئات
-        function renderPerformanceChart() {
-            const ctx = document.getElementById('agencyPerformanceChart');
-            if (!ctx) return;
+
+        // تحديث عرض الفلاتر النشطة
+        function updateActiveFiltersDisplay() {
+            const filtersContainer = $('#activeFilters');
+            filtersContainer.empty();
             
-            // تدمير الرسم البياني السابق إن وجد
-            if (performanceChart) {
-                performanceChart.destroy();
+            if (activeFilters.searchTerm.trim() !== '') {
+                filtersContainer.append(`
+                    <span class="badge bg-primary me-2 mb-2">
+                        بحث: "${activeFilters.searchTerm}"
+                        <button class="btn-close btn-close-white btn-sm ms-1" data-filter="searchTerm"></button>
+                    </span>
+                `);
             }
             
-            // حساب بيانات الأداء لكل هيئة
-            const agencies = Object.keys(categories);
-            const labels = agencies.map(key => categories[key].name);
+            if (activeFilters.status !== '') {
+                const statusText = $('#statusFilter option:selected').text();
+                filtersContainer.append(`
+                    <span class="badge bg-warning me-2 mb-2">
+                        حالة: ${statusText}
+                        <button class="btn-close btn-close-white btn-sm ms-1" data-filter="status"></button>
+                    </span>
+                `);
+            }
             
-            const completedData = agencies.map(key => 
-                allRequests.filter(r => r.category === key && r.status === 'approved').length
-            );
+            if (activeFilters.category !== '') {
+                const categoryText = $('#categoryFilter option:selected').text();
+                filtersContainer.append(`
+                    <span class="badge bg-info me-2 mb-2">
+                        هيئة: ${categoryText}
+                        <button class="btn-close btn-close-white btn-sm ms-1" data-filter="category"></button>
+                    </span>
+                `);
+            }
             
-            const pendingData = agencies.map(key => 
-                allRequests.filter(r => r.category === key && r.status === 'pending').length
-            );
+            if (activeFilters.dateFilter !== '') {
+                const dateText = $('#dateFilter option:selected').text();
+                filtersContainer.append(`
+                    <span class="badge bg-secondary me-2 mb-2">
+                        فترة: ${dateText}
+                        <button class="btn-close btn-close-white btn-sm ms-1" data-filter="dateFilter"></button>
+                    </span>
+                `);
+            }
             
-            // إنشاء الرسم البياني
-            performanceChart = new Chart(ctx, {
-                type: 'bar',
+            $('.btn-close[data-filter]').click(function() {
+                const filterToRemove = $(this).data('filter');
+                
+                switch(filterToRemove) {
+                    case 'searchTerm':
+                        activeFilters.searchTerm = '';
+                        $('#mainSearchInput').val('');
+                        break;
+                    case 'status':
+                        activeFilters.status = '';
+                        $('#statusFilter').val('');
+                        break;
+                    case 'category':
+                        activeFilters.category = '';
+                        $('#categoryFilter').val('');
+                        break;
+                    case 'dateFilter':
+                        activeFilters.dateFilter = '';
+                        $('#dateFilter').val('');
+                        break;
+                }
+                
+                performSearch();
+            });
+        }
+
+        // تعبئة قوائم الفئات
+        function populateCategoryFilters() {
+            const categorySelects = ['#requestCategory', '#categoryFilter'];
+            
+            categorySelects.forEach(selectId => {
+                const select = $(selectId);
+                select.empty();
+                select.append('<option value="">اختر الهيئة</option>');
+                
+                Object.entries(categories).forEach(([key, category]) => {
+                    select.append(`<option value="${key}">${category.name}</option>`);
+                });
+            });
+        }
+
+        // عرض الرسم البياني للفئات
+        function renderCategoryChart() {
+            const ctx = document.getElementById('categoryChart');
+            if (!ctx) return;
+            
+            const categoryData = {};
+            Object.keys(categories).forEach(category => {
+                categoryData[category] = 0;
+            });
+            
+            filteredRequests.forEach(request => {
+                if (categoryData[request.category] !== undefined) {
+                    categoryData[request.category]++;
+                }
+            });
+            
+            const labels = Object.values(categories).map(c => c.name);
+            const data = Object.keys(categories).map(category => categoryData[category]);
+            const backgroundColors = Object.values(categories).map(c => c.bgColor.replace('rgb(', 'rgba(').replace(')', ', 0.8)'));
+            const borderColors = Object.values(categories).map(c => c.color);
+            
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
+            
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
                 data: {
                     labels: labels,
-                    datasets: [
-                        {
-                            label: 'مكتملة',
-                            data: completedData,
-                            backgroundColor: '#10b981',
-                            borderColor: '#059669',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'قيد الانتظار',
-                            data: pendingData,
-                            backgroundColor: '#f59e0b',
-                            borderColor: '#d97706',
-                            borderWidth: 1
-                        }
-                    ]
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: borderColors,
+                        borderWidth: 1
+                    }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'top',
+                            position: 'right',
                             rtl: true,
                             labels: {
                                 font: {
                                     family: 'Segoe UI',
                                     size: 12
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            ticks: {
-                                font: {
-                                    family: 'Segoe UI'
-                                }
+                                },
+                                padding: 20
                             }
                         },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                font: {
-                                    family: 'Segoe UI'
+                        tooltip: {
+                            rtl: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} طلب (${percentage}%)`;
                                 }
                             }
                         }
                     }
                 }
             });
+            
+            updateCategoryLegend(categoryData);
         }
-        
-        // إنشاء تقرير
-        function generateReport(type) {
-            let reportData = {};
-            let title = '';
+
+        // تحديث وسوم الفئات
+        function updateCategoryLegend(categoryData) {
+            const legendContainer = $('#categoryLegend');
+            legendContainer.empty();
             
-            switch(type) {
-                case 'daily':
-                    const today = new Date().toISOString().split('T')[0];
-                    reportData = allRequests.filter(r => r.requestDate === today);
-                    title = 'تقرير اليوم';
-                    break;
-                    
-                case 'weekly':
-                    const weekAgo = new Date();
-                    weekAgo.setDate(weekAgo.getDate() - 7);
-                    reportData = allRequests.filter(r => new Date(r.requestDate) >= weekAgo);
-                    title = 'تقرير أسبوعي';
-                    break;
-                    
-                case 'monthly':
-                    const monthAgo = new Date();
-                    monthAgo.setMonth(monthAgo.getMonth() - 1);
-                    reportData = allRequests.filter(r => new Date(r.requestDate) >= monthAgo);
-                    title = 'تقرير شهري';
-                    break;
-                    
-                case 'yearly':
-                    const yearAgo = new Date();
-                    yearAgo.setFullYear(yearAgo.getFullYear() - 1);
-                    reportData = allRequests.filter(r => new Date(r.requestDate) >= yearAgo);
-                    title = 'تقرير سنوي';
-                    break;
-            }
+            let html = '<div class="list-group list-group-flush">';
             
-            // عرض التقرير في نافذة جديدة
-            const reportWindow = window.open('', '_blank');
-            reportWindow.document.write(`
-                <html dir="rtl">
-                <head>
-                    <title>${title}</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; padding: 20px; }
-                        h1 { color: #333; text-align: center; }
-                        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-                        th { background-color: #f8f9fa; }
-                        .stats { background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; }
-                        .print-btn { padding: 10px 20px; background: #0066cc; color: white; border: none; border-radius: 5px; cursor: pointer; }
-                    </style>
-                </head>
-                <body>
-                    <h1>${title}</h1>
-                    <p>تاريخ التقرير: ${new Date().toLocaleDateString('ar-EG')}</p>
-                    
-                    <div class="stats">
-                        <h3>الإحصائيات</h3>
-                        <p>عدد الطلبات: ${reportData.length}</p>
-                        <p>طلبات مكتملة: ${reportData.filter(r => r.status === 'approved').length}</p>
-                        <p>طلبات قيد الانتظار: ${reportData.filter(r => r.status === 'pending').length}</p>
-                        <p>طلبات مرفوضة: ${reportData.filter(r => r.status === 'rejected').length}</p>
+            Object.entries(categories).forEach(([key, category]) => {
+                const count = categoryData[key] || 0;
+                const percentage = filteredRequests.length > 0 ? 
+                    Math.round((count / filteredRequests.length) * 100) : 0;
+                
+                html += `
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-0 border-0">
+                        <div>
+                            <span class="badge ${getCategoryClass(key)} me-2">
+                                <i class="${category.icon}"></i>
+                            </span>
+                            <span class="small">${category.name}</span>
+                        </div>
+                        <div>
+                            <span class="fw-bold">${count}</span>
+                            <small class="text-muted">(${percentage}%)</small>
+                        </div>
                     </div>
-                    
-                    <h3>الطلبات</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>الرقم القومي</th>
-                                <th>اسم مقدم الطلب</th>
-                                <th>عنوان الطلب</th>
-                                <th>الهيئة</th>
-                                <th>الحالة</th>
-                                <th>التاريخ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${reportData.map((req, index) => `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${req.nationalId}</td>
-                                    <td>${req.applicantName}</td>
-                                    <td>${req.requestTitle}</td>
-                                    <td>${categories[req.category]?.name || req.category}</td>
-                                    <td>${getStatusInfo(req.status).name}</td>
-                                    <td>${req.requestDate}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                    
-                    <div style="text-align: center; margin-top: 30px;">
-                        <button class="print-btn" onclick="window.print()">طباعة التقرير</button>
+                `;
+            });
+            
+            html += '</div>';
+            legendContainer.html(html);
+        }
+
+        // تحميل الطلبات العاجلة
+        function loadUrgentRequests() {
+            const urgentContainer = $('#urgentRequests');
+            urgentContainer.empty();
+            
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            
+            const urgentRequests = allRequests
+                .filter(r => r.status === 'pending')
+                .filter(r => {
+                    const requestDate = new Date(r.requestDate);
+                    return requestDate < weekAgo;
+                })
+                .slice(0, 5);
+            
+            if (urgentRequests.length === 0) {
+                urgentContainer.html(`
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                        <p class="text-muted mb-0">لا توجد طلبات عاجلة</p>
                     </div>
-                </body>
-                </html>
-            `);
-            reportWindow.document.close();
+                `);
+                return;
+            }
             
-            showNotification(`تم إنشاء ${title}`, 'success');
-        }
-        
-        // تصدير جميع التقارير
-        function exportAllReports() {
-            const exportData = {
-                allRequests: allRequests,
-                statistics: {
-                    total: allRequests.length,
-                    pending: allRequests.filter(r => r.status === 'pending').length,
-                    approved: allRequests.filter(r => r.status === 'approved').length,
-                    rejected: allRequests.filter(r => r.status === 'rejected').length,
-                    byCategory: {}
-                },
-                exportDate: new Date().toISOString()
-            };
+            let html = '<div class="list-group list-group-flush">';
             
-            // حساب التوزيع حسب الفئة
-            Object.keys(categories).forEach(key => {
-                exportData.statistics.byCategory[key] = {
-                    name: categories[key].name,
-                    total: allRequests.filter(r => r.category === key).length,
-                    pending: allRequests.filter(r => r.category === key && r.status === 'pending').length,
-                    approved: allRequests.filter(r => r.category === key && r.status === 'approved').length
-                };
+            urgentRequests.forEach(request => {
+                const daysAgo = Math.floor((new Date() - new Date(request.requestDate)) / (1000 * 60 * 60 * 24));
+                const category = categories[request.category];
+                
+                html += `
+                    <div class="list-group-item border-0 px-0 py-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="mb-1">${request.applicantName}</h6>
+                                <p class="text-muted small mb-1">${request.requestTitle}</p>
+                                <span class="badge ${getCategoryClass(request.category)}">
+                                    <i class="${category.icon} me-1"></i>${category.name}
+                                </span>
+                            </div>
+                            <div class="text-start">
+                                <span class="badge bg-danger">منذ ${daysAgo} يوم</span>
+                                <button class="btn btn-sm btn-outline-primary mt-1" onclick="showRequestDetails(${request.id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
             });
             
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = `تقارير_الطلبات_${new Date().toISOString().split('T')[0]}.json`;
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-            
-            showNotification('تم تصدير جميع التقارير', 'success');
+            html += '</div>';
+            urgentContainer.html(html);
         }
-        
-        // تحميل الإعدادات
-        function loadSettings() {
-            // تحميل الإعدادات المحفوظة
-            const settings = JSON.parse(localStorage.getItem('systemSettings')) || {
-                notifications: true,
-                sound: true,
-                autoSave: true,
-                darkMode: false,
-                itemsPerPage: 10,
-                language: 'ar',
-                dateFormat: 'ar'
-            };
-            
-            // تعيين القيم
-            $('#notificationsSwitch').prop('checked', settings.notifications);
-            $('#soundSwitch').prop('checked', settings.sound);
-            $('#autoSaveSwitch').prop('checked', settings.autoSave);
-            $('#darkModeSwitch').prop('checked', settings.darkMode);
-            $('#itemsPerPage').val(settings.itemsPerPage);
-            $('#languageSelect').val(settings.language);
-            $('#dateFormat').val(settings.dateFormat);
-            
-            // تطبيق الوضع الداكن إذا كان مفعلاً
-            if (settings.darkMode) {
-                $('body').addClass('dark-mode');
-            }
-        }
-        
-        // إعداد صفحة الإعدادات
-        function setupSettingsPage() {
-            // حفظ الإعدادات عند التغيير
-            $('.settings-card input, .settings-card select').change(function() {
-                saveSettings();
-            });
-        }
-        
-        // حفظ الإعدادات
-        function saveSettings() {
-            const settings = {
-                notifications: $('#notificationsSwitch').prop('checked'),
-                sound: $('#soundSwitch').prop('checked'),
-                autoSave: $('#autoSaveSwitch').prop('checked'),
-                darkMode: $('#darkModeSwitch').prop('checked'),
-                itemsPerPage: parseInt($('#itemsPerPage').val()),
-                language: $('#languageSelect').val(),
-                dateFormat: $('#dateFormat').val()
-            };
-            
-            localStorage.setItem('systemSettings', JSON.stringify(settings));
-            
-            // تطبيق الوضع الداكن
-            if (settings.darkMode) {
-                $('body').addClass('dark-mode');
-            } else {
-                $('body').removeClass('dark-mode');
-            }
-            
-            showNotification('تم حفظ الإعدادات', 'success');
-        }
-        
-        // نسخ احتياطي للبيانات
-        function backupData() {
-            const backup = {
-                requests: allRequests,
-                settings: JSON.parse(localStorage.getItem('systemSettings') || '{}'),
-                backupDate: new Date().toISOString()
-            };
-            
-            const dataStr = JSON.stringify(backup, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', `نسخة_احتياطية_${new Date().toISOString().split('T')[0]}.json`);
-            linkElement.click();
-            
-            showNotification('تم إنشاء نسخة احتياطية', 'success');
-        }
-        
-        // استعادة البيانات
-        function restoreData() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                
-                reader.onload = function(event) {
-                    try {
-                        const backup = JSON.parse(event.target.result);
-                        
-                        if (confirm('هل أنت متأكد من استعادة البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
-                            if (backup.requests) {
-                                allRequests = backup.requests;
-                                localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-                            }
-                            
-                            if (backup.settings) {
-                                localStorage.setItem('systemSettings', JSON.stringify(backup.settings));
-                            }
-                            
-                            showNotification('تم استعادة البيانات بنجاح', 'success');
-                            
-                            // إعادة تحميل التطبيق
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1000);
-                        }
-                    } catch (error) {
-                        showNotification('خطأ في قراءة ملف النسخ الاحتياطي', 'error');
-                    }
-                };
-                
-                reader.readAsText(file);
-            };
-            
-            input.click();
-        }
-        
-        // مسح جميع البيانات
-        function clearAllData() {
-            if (confirm('⚠️ هل أنت متأكد من مسح جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.')) {
-                localStorage.clear();
-                allRequests = [];
-                showNotification('تم مسح جميع البيانات', 'success');
-                
-                // إعادة تحميل التطبيق
-                setTimeout(() => {
-                    location.reload();
-                }, 1000);
-            }
-        }
-        
-        // إعادة تعيين الإعدادات
-        function resetSettings() {
-            if (confirm('هل تريد إعادة تعيين الإعدادات إلى القيم الافتراضية؟')) {
-                localStorage.removeItem('systemSettings');
-                showNotification('تم إعادة تعيين الإعدادات', 'success');
-                
-                // إعادة تحميل الإعدادات
-                loadSettings();
-            }
-        }
-        
-        // ===== الوظائف المساعدة =====
-        
-        // الحصول على معلومات الحالة
-        function getStatusInfo(status) {
-            const statuses = {
-                'submitted': { name: 'تم التقديم', color: '#3b82f6', icon: 'fas fa-file-import' },
-                'pending': { name: 'انتظار الرد', color: '#f59e0b', icon: 'fas fa-clock' },
-                'approved': { name: 'موافقة', color: '#10b981', icon: 'fas fa-check-circle' },
-                'rejected': { name: 'غير موافقة', color: '#ef4444', icon: 'fas fa-times-circle' }
-            };
-            
-            return statuses[status] || { name: 'غير معروف', color: '#666', icon: 'fas fa-question' };
-        }
-        
-        // تنسيق التاريخ
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ar-EG', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        }
-        
-        // عرض إشعار
-        function showNotification(message, type = 'info') {
+
+        // عرض الإشعارات
+        function showNotification(message, type = 'info', playSound = false) {
             const notificationId = 'notification-' + Date.now();
             const icon = type === 'success' ? 'fa-check-circle' : 
                         type === 'error' ? 'fa-exclamation-circle' : 
@@ -2205,34 +2951,573 @@
             
             $('#notificationContainer').append(notificationHtml);
             
+            if (playSound) {
+                playNotificationSound();
+            }
+            
             setTimeout(() => {
                 $(`#${notificationId}`).alert('close');
             }, 5000);
         }
-        
-        // فتح نموذج طلب جديد
-        function openNewRequestModal() {
-            $('#newRequestForm')[0].reset();
-            const today = new Date().toISOString().split('T')[0];
-            $('#requestDate').val(today);
+
+        // تشغيل صوت الإشعار
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 800;
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+                gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('تعذر تشغيل الصوت:', e);
+            }
+        }
+
+        // تحقق من الطلبات الجديدة
+        function checkNewRequests() {
+            const lastCheck = localStorage.getItem('lastNotificationCheck') || new Date().toISOString();
+            const newRequests = allRequests.filter(r => {
+                return r.isNew && (!r.notificationSent || r.createdAt > lastCheck);
+            });
+            
+            if (newRequests.length > 0) {
+                showNotification(`لديك ${newRequests.length} طلب جديد`, 'info', true);
+                
+                localStorage.setItem('lastNotificationCheck', new Date().toISOString());
+                
+                newRequests.forEach(request => {
+                    request.notificationSent = true;
+                });
+                
+                saveDataToLocalStorage();
+            }
+        }
+
+        // تحقق من الإشعارات غير المقروءة
+        function checkUnreadNotifications() {
+            const unreadRequests = allRequests.filter(r => r.isNew && !r.viewed);
+            if (unreadRequests.length > 0) {
+                showNotification(`لديك ${unreadRequests.length} طلب جديد غير مقروء`, 'warning');
+            }
+        }
+
+        // إضافة إلى سجل الإشعارات
+        function addToNotificationLog(requestId, type, data) {
+            const notifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+            
+            notifications.push({
+                id: Date.now(),
+                requestId: requestId,
+                type: type,
+                data: data,
+                timestamp: new Date().toISOString(),
+                read: false
+            });
+            
+            localStorage.setItem('notifications', JSON.stringify(notifications));
+        }
+
+        // عرض الترقيم
+        function renderPagination(totalPages) {
+            const paginationContainer = $('#pagination');
+            paginationContainer.empty();
+            
+            if (totalPages <= 1) return;
+            
+            const prevDisabled = currentPage === 1 ? 'disabled' : '';
+            paginationContainer.append(`
+                <li class="page-item ${prevDisabled}">
+                    <a class="page-link" href="#" data-page="${currentPage - 1}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `);
+            
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const activeClass = i === currentPage ? 'active' : '';
+                paginationContainer.append(`
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="#" data-page="${i}">${i}</a>
+                    </li>
+                `);
+            }
+            
+            const nextDisabled = currentPage === totalPages ? 'disabled' : '';
+            paginationContainer.append(`
+                <li class="page-item ${nextDisabled}">
+                    <a class="page-link" href="#" data-page="${currentPage + 1}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `);
+            
+            $('.page-link[data-page]').click(function(e) {
+                e.preventDefault();
+                const page = parseInt($(this).data('page'));
+                if (page >= 1 && page <= totalPages && page !== currentPage) {
+                    currentPage = page;
+                    renderRequestsTable();
+                }
+            });
+        }
+
+        // إعادة تعيين جميع الفلاتر
+        function resetAllFilters() {
+            activeFilters = {
+                searchTerm: '',
+                searchType: 'both',
+                status: '',
+                category: '',
+                dateFilter: ''
+            };
+            
+            $('#mainSearchInput').val('');
+            $('#searchType').val('both');
+            $('#statusFilter').val('');
+            $('#categoryFilter').val('');
+            $('#dateFilter').val('');
+            
+            performSearch();
+            $('#searchResults').hide();
+            showNotification('تم إعادة تعيين جميع الفلاتر', 'info');
+        }
+
+        // تحديث البيانات
+        function refreshData() {
+            showNotification('جاري تحديث البيانات...', 'info');
+            setTimeout(() => {
+                performSearch();
+                showNotification('تم تحديث البيانات بنجاح', 'success');
+            }, 500);
+        }
+
+        // تصدير البيانات
+        function exportData() {
+            const dataStr = JSON.stringify(filteredRequests, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `طلبات_المواطنين_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showNotification('تم تصدير البيانات بنجاح', 'success');
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                
+                showNotification('جارٍ تسجيل الخروج...', 'info');
+                setTimeout(() => {
+                    showWelcomePage();
+                }, 1000);
+            }
+        }
+
+        // حفظ البيانات في التخزين المحلي
+        function saveDataToLocalStorage() {
+            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+        }
+
+        // توليد رقم طلب جديد
+        function generateRequestId() {
+            const maxId = allRequests.length > 0 ? 
+                Math.max(...allRequests.map(r => r.id)) : 1000;
+            return maxId + 1;
+        }
+
+        // تعديل الطلب
+        function editRequest(requestId) {
+            const request = allRequests.find(r => r.id === requestId);
+            if (!request) return;
+            
+            $('#nationalId').val(request.nationalId);
+            $('#applicantName').val(request.applicantName);
+            $('#requestTitle').val(request.requestTitle);
+            $('#requestCategory').val(request.category);
+            $('#requestSummary').val(request.requestSummary);
+            $('#requestDate').val(request.requestDate);
+            
+            $('#submitRequestBtn').html('<i class="fas fa-save me-2"></i>تحديث الطلب');
             $('#newRequestModal').modal('show');
+            
+            $('#submitRequestBtn').off('click').on('click', function() {
+                updateRequest(requestId);
+            });
         }
         
-        // === الوظائف المتبقية من الكود الأصلي ===
+        // تحديث الطلب
+        function updateRequest(requestId) {
+            const requestIndex = allRequests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) return;
+            
+            if (!validateRequestForm()) {
+                return;
+            }
+            
+            allRequests[requestIndex].nationalId = $('#nationalId').val();
+            allRequests[requestIndex].applicantName = $('#applicantName').val();
+            allRequests[requestIndex].requestTitle = $('#requestTitle').val();
+            allRequests[requestIndex].category = $('#requestCategory').val();
+            allRequests[requestIndex].requestSummary = $('#requestSummary').val();
+            allRequests[requestIndex].requestDate = $('#requestDate').val() || new Date().toISOString().split('T')[0];
+            allRequests[requestIndex].lastUpdated = new Date().toISOString();
+            
+            saveDataToLocalStorage();
+            performSearch();
+            $('#newRequestModal').modal('hide');
+            
+            showNotification('تم تحديث الطلب بنجاح', 'success');
+            
+            $('#submitRequestBtn').off('click').on('click', submitNewRequest);
+            $('#submitRequestBtn').html('<i class="fas fa-save me-2"></i>حفظ الطلب');
+        }
         
-        // هذه وظائف تحتاج لتنفيذها من الكود الأصلي:
-        // - populateCategoryFilters()
-        // - renderRequestsTable()
-        // - updateStatistics()
-        // - setupEventListeners()
-        // - renderCategoryChart()
-        // - loadUrgentRequests()
-        // - saveDataToLocalStorage()
-        // - وغيرها من الوظائف
+        // حذف الطلب
+        function deleteRequest(requestId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطلب؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                return;
+            }
+            
+            const requestIndex = allRequests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) return;
+            
+            const deletedRequest = allRequests.splice(requestIndex, 1)[0];
+            saveDataToLocalStorage();
+            performSearch();
+            
+            showNotification(`تم حذف الطلب #${requestId} بنجاح`, 'success');
+            
+            logActivity(requestId, deletedRequest.status, 'deleted', 'تم حذف الطلب');
+        }
         
-        // للحفاظ على إجابة قصيرة، تم حذف بعض الوظائف
-        // يمكنك إضافة بقية الوظائف من الكود الأصلي هنا
+        // إدارة المستخدمين
+        function showUsersManagement() {
+            if (currentUser.role !== 'admin') {
+                showNotification('غير مسموح لك بالوصول إلى هذه الصفحة', 'error');
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            
+            let html = `
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>اسم المستخدم</th>
+                                <th>الاسم الكامل</th>
+                                <th>الدور</th>
+                                <th>الحالة</th>
+                                <th>تاريخ التسجيل</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            users.forEach((user, index) => {
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${user.username}</td>
+                        <td>${user.fullName}</td>
+                        <td>${getRoleName(user.role)}</td>
+                        <td>
+                            ${user.isActive ? 
+                                '<span class="badge bg-success">نشط</span>' : 
+                                '<span class="badge bg-warning">غير نشط</span>'}
+                        </td>
+                        <td>${formatDate(user.createdAt)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary toggle-user" data-id="${user.id}">
+                                ${user.isActive ? '<i class="fas fa-user-slash"></i>' : '<i class="fas fa-user-check"></i>'}
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger delete-user" data-id="${user.id}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-primary" id="addUserBtn">
+                        <i class="fas fa-user-plus me-2"></i>إضافة مستخدم جديد
+                    </button>
+                </div>
+            `;
+            
+            $('#usersContent').html(html);
+            $('#usersModal').modal('show');
+            
+            $('.toggle-user').click(function() {
+                const userId = $(this).data('id');
+                toggleUserStatus(userId);
+            });
+            
+            $('.delete-user').click(function() {
+                const userId = $(this).data('id');
+                deleteUser(userId);
+            });
+            
+            $('#addUserBtn').click(function() {
+                $('#usersModal').modal('hide');
+                $('#registerPage').show();
+                $('#welcomeScreen').hide();
+                $('#appContent').hide();
+                setupRegisterPageEvents();
+            });
+        }
         
+        // تبديل حالة المستخدم
+        function toggleUserStatus(userId) {
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            const userIndex = users.findIndex(u => u.id === userId);
+            
+            if (userIndex === -1) return;
+            
+            if (users[userIndex].id === currentUser.id) {
+                showNotification('لا يمكنك تعطيل حسابك الخاص', 'error');
+                return;
+            }
+            
+            users[userIndex].isActive = !users[userIndex].isActive;
+            localStorage.setItem('systemUsers', JSON.stringify(users));
+            
+            showNotification(`تم ${users[userIndex].isActive ? 'تفعيل' : 'تعطيل'} المستخدم بنجاح`, 'success');
+            showUsersManagement();
+        }
+        
+        // حذف المستخدم
+        function deleteUser(userId) {
+            if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                return;
+            }
+            
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            const userIndex = users.findIndex(u => u.id === userId);
+            
+            if (userIndex === -1) return;
+            
+            if (users[userIndex].id === currentUser.id) {
+                showNotification('لا يمكنك حذف حسابك الخاص', 'error');
+                return;
+            }
+            
+            users.splice(userIndex, 1);
+            localStorage.setItem('systemUsers', JSON.stringify(users));
+            
+            showNotification('تم حذف المستخدم بنجاح', 'success');
+            showUsersManagement();
+        }
+        
+        // عرض الملف الشخصي
+        function showProfile() {
+            const user = currentUser;
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            const userData = users.find(u => u.id === user.id);
+            
+            const html = `
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="user-avatar mb-3" style="width: 100px; height: 100px; margin: 0 auto;">
+                                    <i class="${getUserIconByRole(user.role)}" style="font-size: 48px;"></i>
+                                </div>
+                                <h4>${user.fullName}</h4>
+                                <p class="text-muted">${getRoleName(user.role)}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="mb-0">معلومات الحساب</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">اسم المستخدم</label>
+                                        <input type="text" class="form-control" value="${user.username}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">البريد الإلكتروني</label>
+                                        <input type="email" class="form-control" value="${userData?.email || ''}" id="profileEmail">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">رقم الهاتف</label>
+                                        <input type="text" class="form-control" value="${userData?.phone || ''}" id="profilePhone">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">تاريخ التسجيل</label>
+                                        <input type="text" class="form-control" value="${formatDate(userData?.createdAt || '')}" readonly>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">كلمة المرور الجديدة</label>
+                                        <input type="password" class="form-control" id="newPassword" placeholder="اتركه فارغًا للحفاظ على كلمة المرور الحالية">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">تأكيد كلمة المرور</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="أعد إدخال كلمة المرور الجديدة">
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" id="saveProfileBtn">
+                                    <i class="fas fa-save me-2"></i>حفظ التغييرات
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            $('#profileContent').html(html);
+            $('#profileModal').modal('show');
+            
+            $('#saveProfileBtn').click(function() {
+                updateProfile();
+            });
+        }
+        
+        // تحديث الملف الشخصي
+        function updateProfile() {
+            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex === -1) return;
+            
+            const newEmail = $('#profileEmail').val().trim();
+            const newPhone = $('#profilePhone').val().trim();
+            const newPassword = $('#newPassword').val();
+            const confirmPassword = $('#confirmNewPassword').val();
+            
+            if (newPassword && newPassword !== confirmPassword) {
+                showNotification('كلمات المرور غير متطابقة', 'error');
+                return;
+            }
+            
+            users[userIndex].email = newEmail;
+            users[userIndex].phone = newPhone;
+            
+            if (newPassword) {
+                users[userIndex].password = newPassword;
+            }
+            
+            localStorage.setItem('systemUsers', JSON.stringify(users));
+            
+            // تحديث بيانات المستخدم الحالي
+            currentUser.email = newEmail;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            showNotification('تم تحديث الملف الشخصي بنجاح', 'success');
+            $('#profileModal').modal('hide');
+            updateUserInterface();
+        }
+        
+        // عرض صفحة معينة
+        function showPage(pageId) {
+            const pages = ['dashboard', 'allRequests', 'search', 'categories', 'reports', 'users', 'profile', 'settings'];
+            
+            pages.forEach(page => {
+                $(`#${page}Section`).addClass('d-none');
+            });
+            
+            $(`#${pageId}Section`).removeClass('d-none');
+        }
+
+        // وظائف مساعدة
+        function getCategoryClass(category) {
+            return `category-${category}`;
+        }
+        
+        function getStatusClass(status) {
+            return `status-${status}`;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        function formatDateTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return date.toLocaleString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        function showAlert(message, type) {
+            showNotification(message, type === 'error' ? 'danger' : type);
+        }
+        
+        // إنشاء الأقسام المفقودة
+        function createMissingSections() {
+            const sections = ['searchSection', 'categoriesSection', 'reportsSection', 'settingsSection'];
+            
+            sections.forEach(sectionId => {
+                if (!$(`#${sectionId}`).length) {
+                    $('.main-content').append(`
+                        <div id="${sectionId}" class="d-none">
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 fw-bold text-primary">
+                                        <i class="fas fa-cog me-2"></i>${sectionId.replace('Section', '')}
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <p>هذه الصفحة قيد التطوير.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+            });
+        }
+        
+        // استدعاء إنشاء الأقسام عند التهيئة
+        setTimeout(createMissingSections, 100);
     </script>
 </body>
 </html>
