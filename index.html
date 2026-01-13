@@ -1,48 +1,1522 @@
-const CACHE_NAME = 'citizen-requests-v2';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
-  'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css',
-  'https://code.jquery.com/jquery-3.6.0.min.js',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js'
-];
-
-// تثبيت Service Worker
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => {
-        return cache.addAll(urlsToCache);
-      })
-  );
-});
-
-// تفعيل Service Worker
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-});
-
-// اعتراض الطلبات
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="theme-color" content="#1e3a8a">
+    <title>طلبات المواطنين - عضو مجلس النواب</title>
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="طلبات المواطنين">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    
+    <!-- Bootstrap 5 RTL -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* تخصيص Bootstrap للغة العربية */
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #0ea5e9;
+            --light: #f8fafc;
+            --dark: #1e293b;
         }
-        return fetch(event.request);
-      })
-  );
-});
+        
+        * {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px; /* مساحة للأزرار العائمة */
+            padding-top: env(safe-area-inset-top); /* دعم iPhone X وما فوق */
+        }
+        
+        /* تحسين التمرير على الجوال */
+        .scrollable {
+            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
+        }
+        
+        /* تصميم للشاشات الصغيرة أولاً */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            .card {
+                border-radius: 12px;
+                margin-bottom: 12px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                font-weight: 600;
+                line-height: 1.3;
+            }
+        }
+        
+        /* شريط التنقل العلوي للجوال */
+        .mobile-header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 10px 15px;
+            margin: -8px -8px 15px -8px;
+        }
+        
+        .mobile-header h1 {
+            font-size: 1.25rem;
+            margin: 0;
+            color: var(--primary);
+        }
+        
+        /* أزرار الإجراءات السريعة */
+        .quick-actions {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 12px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+        
+        .quick-actions .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 0.9rem;
+            border-radius: 15px;
+        }
+        
+        /* تحسين الجدول للجوال */
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .mobile-table-view {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .desktop-table-view {
+                display: none;
+            }
+            
+            .mobile-table-view {
+                display: block;
+            }
+            
+            .mobile-table-card {
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                margin-bottom: 10px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            }
+        }
+        
+        /* حالات الطلبات - تصميم للجوال */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin: 2px;
+        }
+        
+        .status-submitted { background: #e0f2fe; color: #0284c7; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-inprogress { background: #dbeafe; color: #1d4ed8; }
+        .status-approved { background: #d1fae5; color: #059669; }
+        .status-rejected { background: #fee2e2; color: #dc2626; }
+        
+        /* شريط البحث المحسن للجوال */
+        .search-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 14px 45px 14px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            font-size: 1rem;
+            background: white;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+        }
+        
+        /* بطاقات الإحصائيات للجوال */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        /* فلتر الحالات للجوال */
+        .status-filter {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding: 10px 0;
+            margin-bottom: 15px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        
+        .status-filter::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .status-filter-btn {
+            padding: 8px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            background: white;
+            white-space: nowrap;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        
+        .status-filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* تصميم النماذج للجوال */
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-control, .form-select {
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        /* تحسين الأزرار للجوال */
+        .btn {
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            transition: all 0.2s;
+            touch-action: manipulation;
+        }
+        
+        .btn-lg {
+            padding: 16px 24px;
+            font-size: 1.1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #34d399);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #f87171);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #fbbf24);
+            color: white;
+        }
+        
+        /* تصميم القوائم المنبثقة للجوال */
+        .modal-dialog {
+            margin: 10px;
+        }
+        
+        .modal-content {
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+        }
+        
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* بطاقة تفاصيل الطلب للجوال */
+        .request-details-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+        
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        /* تصميم أزرار تغيير الحالة للجوال */
+        .status-change-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .status-btn {
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        /* تحسين التنقل */
+        .nav-tabs {
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid #e2e8f0;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .nav-tabs .nav-link {
+            white-space: nowrap;
+            padding: 10px 20px;
+        }
+        
+        /* تحسين الأيقونات للجوال */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* تحسين الظلال للجوال */
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* تحسين الصوت للإشعارات */
+        .notification-sound {
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            opacity: 0;
+        }
+        
+        /* تحسين للشاشات الكبيرة */
+        @media (min-width: 768px) {
+            body {
+                background: #f8fafc;
+                padding: 20px;
+            }
+            
+            .container {
+                max-width: 1200px;
+            }
+            
+            .mobile-header {
+                display: none;
+            }
+            
+            .quick-actions {
+                display: none;
+            }
+            
+            .mobile-table-view {
+                display: none;
+            }
+            
+            .desktop-table-view {
+                display: block;
+            }
+        }
+        
+        /* تحسينات خاصة بـ iOS */
+        @supports (-webkit-touch-callout: none) {
+            .modal-body {
+                max-height: 65vh;
+            }
+            
+            .status-filter {
+                padding-bottom: 15px;
+            }
+        }
+        
+        /* تحسينات خاصة بـ Android */
+        @supports (-webkit-overflow-scrolling: touch) {
+            .scrollable {
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+        
+        /* دعم الشاشات ذات الحواف المقوسة */
+        @media (max-width: 768px) {
+            .safe-area {
+                padding-left: max(10px, env(safe-area-inset-left));
+                padding-right: max(10px, env(safe-area-inset-right));
+                padding-bottom: max(10px, env(safe-area-inset-bottom));
+            }
+            
+            .quick-actions {
+                left: max(20px, env(safe-area-inset-left));
+                right: max(20px, env(safe-area-inset-right));
+                bottom: max(20px, env(safe-area-inset-bottom));
+            }
+        }
+        
+        /* تحميل وهمي */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="safe-area">
+    <!-- شريط العنوان للجوال -->
+    <div class="mobile-header d-md-none">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-hands-helping me-2"></i>طلبات المواطنين</h1>
+                <small class="text-muted">عضو مجلس النواب</small>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" onclick="showMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- قائمة التنقّل للجوال -->
+    <div class="offcanvas offcanvas-end" id="mobileMenu">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">القائمة</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="list-group list-group-flush">
+                <a href="#" class="list-group-item list-group-item-action active" onclick="showDashboard()">
+                    <i class="fas fa-home me-3"></i>لوحة التحكم
+                </a>
+                <a href="#" class="list-group-item list-group-item-action" onclick="showAllRequests()">
+                    <i class="fas fa-list me-3"></i>جميع الطلبات
+                </a>
+                <a href="#" class="list-group-item list-group-item-action" onclick="showStatistics()">
+                    <i class="fas fa-chart-bar me-3"></i>الإحصائيات
+                </a>
+                <a href="#" class="list-group-item list-group-item-action" onclick="showSettings()">
+                    <i class="fas fa-cog me-3"></i>الإعدادات
+                </a>
+                <a href="#" class="list-group-item list-group-item-action text-danger" onclick="logout()">
+                    <i class="fas fa-sign-out-alt me-3"></i>تسجيل الخروج
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="container">
+        <!-- شريط البحث للجوال -->
+        <div class="search-container">
+            <input type="text" class="search-input" id="mobileSearch" 
+                   placeholder="ابحث عن طلب...">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <!-- فلتر الحالات للجوال -->
+        <div class="status-filter" id="mobileStatusFilter">
+            <button class="status-filter-btn active" data-status="all">الكل</button>
+            <button class="status-filter-btn" data-status="submitted">تم التقديم</button>
+            <button class="status-filter-btn" data-status="pending">قيد الانتظار</button>
+            <button class="status-filter-btn" data-status="inprogress">قيد التنفيذ</button>
+            <button class="status-filter-btn" data-status="approved">موافق</button>
+            <button class="status-filter-btn" data-status="rejected">غير موافق</button>
+        </div>
+
+        <!-- إحصائيات سريعة للجوال -->
+        <div class="stats-grid" id="mobileStats">
+            <!-- سيتم ملؤها بالبيانات -->
+        </div>
+
+        <!-- عرض الطلبات للجوال -->
+        <div class="mobile-table-view">
+            <div id="mobileRequestsList">
+                <!-- سيتم ملؤها بالبيانات -->
+            </div>
+        </div>
+
+        <!-- عرض الطلبات للشاشات الكبيرة -->
+        <div class="desktop-table-view">
+            <div class="card card-shadow">
+                <div class="card-body">
+                    <div class="table-responsive scrollable">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>الرقم القومي</th>
+                                    <th>الاسم</th>
+                                    <th>العنوان</th>
+                                    <th>التاريخ</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="desktopRequestsTable">
+                                <!-- سيتم ملؤها بالبيانات -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- رسالة عدم وجود نتائج -->
+        <div class="text-center py-5 d-none" id="noResultsMessage">
+            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+            <h5 class="text-muted">لا توجد طلبات</h5>
+            <p class="text-muted">اضغط على زر "طلب جديد" لإضافة أول طلب</p>
+        </div>
+    </main>
+
+    <!-- أزرار الإجراءات السريعة للجوال -->
+    <div class="quick-actions d-md-none">
+        <button class="btn btn-primary" onclick="addNewRequest()">
+            <i class="fas fa-plus me-1"></i>جديد
+        </button>
+        <button class="btn btn-outline-primary" onclick="refreshData()">
+            <i class="fas fa-redo"></i>
+        </button>
+        <button class="btn btn-outline-primary" onclick="showFilters()">
+            <i class="fas fa-filter"></i>
+        </button>
+    </div>
+
+    <!-- نافذة إضافة طلب جديد -->
+    <div class="modal fade" id="newRequestModal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>طلب جديد</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body scrollable">
+                    <form id="requestForm">
+                        <div class="form-group">
+                            <label class="form-label fw-bold">الرقم القومي *</label>
+                            <input type="text" class="form-control" id="mobileNationalId" 
+                                   placeholder="14 رقمًا" maxlength="14" required
+                                   pattern="\d{14}" inputmode="numeric">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label fw-bold">اسم مقدم الطلب *</label>
+                            <input type="text" class="form-control" id="mobileApplicantName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label fw-bold">عنوان الطلب *</label>
+                            <input type="text" class="form-control" id="mobileRequestTitle" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label fw-bold">الفئة *</label>
+                            <select class="form-select" id="mobileCategory" required>
+                                <option value="">اختر الفئة</option>
+                                <option value="electricity">كهرباء</option>
+                                <option value="health">صحة</option>
+                                <option value="water">مياه</option>
+                                <option value="sanitation">صرف صحي</option>
+                                <option value="education">تعليم</option>
+                                <option value="transport">مواصلات</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label fw-bold">تفاصيل الطلب *</label>
+                            <textarea class="form-control" id="mobileRequestDetails" 
+                                      rows="4" placeholder="اكتب تفاصيل الطلب هنا..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label fw-bold">الأولوية</label>
+                            <select class="form-select" id="mobilePriority">
+                                <option value="low">منخفضة</option>
+                                <option value="medium" selected>متوسطة</option>
+                                <option value="high">عالية</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary" onclick="saveMobileRequest()">حفظ الطلب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تفاصيل الطلب للجوال -->
+    <div class="modal fade" id="mobileDetailsModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">تفاصيل الطلب</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body scrollable">
+                    <div id="mobileRequestDetailsContent">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تغيير الحالة للجوال -->
+    <div class="modal fade" id="mobileStatusModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">تغيير حالة الطلب</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="status-change-buttons" id="mobileStatusButtons">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </div>
+                    
+                    <div class="mt-3" id="commentSection" style="display: none;">
+                        <label class="form-label fw-bold">سبب الرفض أو التعليق</label>
+                        <textarea class="form-control" id="mobileStatusComment" 
+                                  rows="3" placeholder="اكسبب الرفض أو التعليق..."></textarea>
+                        <button class="btn btn-primary w-100 mt-2" onclick="saveStatusWithComment()">
+                            حفظ مع التعليق
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- فلتر متقدم للجوال -->
+    <div class="modal fade" id="mobileFilterModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">خيارات البحث المتقدم</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">نوع البحث</label>
+                        <select class="form-select" id="mobileSearchType">
+                            <option value="all">بحث شامل</option>
+                            <option value="nationalId">رقم قومي فقط</option>
+                            <option value="name">اسم فقط</option>
+                            <option value="title">عنوان فقط</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">الفئة</label>
+                        <select class="form-select" id="mobileCategoryFilter">
+                            <option value="">جميع الفئات</option>
+                            <option value="electricity">كهرباء</option>
+                            <option value="health">صحة</option>
+                            <option value="water">مياه</option>
+                            <option value="sanitation">صرف صحي</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">الفترة الزمنية</label>
+                        <select class="form-select" id="mobileDateFilter">
+                            <option value="">جميع الفترات</option>
+                            <option value="today">اليوم</option>
+                            <option value="week">أخر أسبوع</option>
+                            <option value="month">أخر شهر</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="resetMobileFilters()">إعادة تعيين</button>
+                    <button type="button" class="btn btn-primary" onclick="applyMobileFilters()">تطبيق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- إشعارات للجوال -->
+    <div id="mobileNotifications" class="position-fixed top-0 start-0 w-100" style="z-index: 9999;"></div>
+
+    <!-- ملف صوتي للإشعارات -->
+    <audio id="notificationSound" class="notification-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- مكتبات JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    
+    <!-- التطبيق الرئيسي -->
+    <script>
+        // بيانات التطبيق
+        let requests = JSON.parse(localStorage.getItem('mobileRequests')) || [
+            {
+                id: 1,
+                nationalId: "29801011234567",
+                applicantName: "أحمد محمد علي",
+                requestTitle: "طلب توصيل خدمة كهرباء",
+                requestDetails: "توصيل خدمة الكهرباء للمنطقة السكنية الجديدة",
+                category: "electricity",
+                date: "2024-01-15",
+                status: "pending",
+                priority: "high",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 2,
+                nationalId: "29905052345678",
+                applicantName: "سارة خالد حسن",
+                requestTitle: "إنشاء مركز صحي",
+                requestDetails: "الحاجة لمركز صحي في الحي الجديد",
+                category: "health",
+                date: "2024-01-10",
+                status: "approved",
+                priority: "medium",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 3,
+                nationalId: "30011233445566",
+                applicantName: "محمود سعيد عبدالله",
+                requestTitle: "انقطاع المياه المتكرر",
+                requestDetails: "انقطاع المياه بشكل متكرر في المنطقة",
+                category: "water",
+                date: "2024-01-05",
+                status: "inprogress",
+                priority: "high",
+                createdAt: new Date().toISOString()
+            }
+        ];
+
+        // حالة التطبيق
+        let currentStatusFilter = "all";
+        let searchQuery = "";
+        let selectedRequestId = null;
+
+        // تهيئة التطبيق
+        $(document).ready(function() {
+            initApp();
+        });
+
+        // تهيئة التطبيق
+        function initApp() {
+            // تحميل البيانات
+            loadMobileData();
+            
+            // إعداد مستمعي الأحداث
+            setupEventListeners();
+            
+            // عرض شاشة الترحيب
+            showWelcomeMessage();
+            
+            // تسجيل Service Worker لـ PWA
+            registerServiceWorker();
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // بحث أثناء الكتابة
+            $('#mobileSearch').on('input', function() {
+                searchQuery = $(this).val();
+                filterRequests();
+            });
+
+            // فلتر الحالات
+            $('#mobileStatusFilter button').click(function() {
+                $('#mobileStatusFilter button').removeClass('active');
+                $(this).addClass('active');
+                currentStatusFilter = $(this).data('status');
+                filterRequests();
+            });
+
+            // منع إعادة إرسال النموذج
+            $('#requestForm').submit(function(e) {
+                e.preventDefault();
+                saveMobileRequest();
+            });
+
+            // حدث لحجم الشاشة
+            $(window).on('resize orientationchange', function() {
+                adjustForScreenSize();
+            });
+
+            // حدث لتحسين الأداء على الجوال
+            let typingTimer;
+            $('#mobileSearch').on('input', function() {
+                clearTimeout(typingTimer);
+                typingTimer = setTimeout(() => {
+                    filterRequests();
+                }, 300);
+            });
+        }
+
+        // تحميل البيانات للجوال
+        function loadMobileData() {
+            // تحديث الإحصائيات
+            updateMobileStats();
+            
+            // عرض الطلبات
+            renderMobileRequests();
+            
+            // تحديث عدد الطلبات
+            updateRequestCount();
+        }
+
+        // تحديث الإحصائيات للجوال
+        function updateMobileStats() {
+            const stats = {
+                total: requests.length,
+                pending: requests.filter(r => r.status === 'pending').length,
+                inprogress: requests.filter(r => r.status === 'inprogress').length,
+                approved: requests.filter(r => r.status === 'approved').length
+            };
+
+            $('#mobileStats').html(`
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total}</div>
+                    <div class="stat-label">إجمالي الطلبات</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.pending}</div>
+                    <div class="stat-label">قيد الانتظار</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.inprogress}</div>
+                    <div class="stat-label">قيد التنفيذ</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.approved}</div>
+                    <div class="stat-label">تم الموافقة</div>
+                </div>
+            `);
+        }
+
+        // عرض الطلبات للجوال
+        function renderMobileRequests() {
+            const filtered = filterRequestsData();
+            const container = $('#mobileRequestsList');
+            const desktopTable = $('#desktopRequestsTable');
+            
+            container.empty();
+            desktopTable.empty();
+            
+            if (filtered.length === 0) {
+                $('#noResultsMessage').removeClass('d-none');
+                container.append(`
+                    <div class="text-center py-5">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا توجد نتائج</h5>
+                        <button class="btn btn-primary mt-2" onclick="resetMobileFilters()">
+                            إعادة تعيين البحث
+                        </button>
+                    </div>
+                `);
+                return;
+            }
+            
+            $('#noResultsMessage').addClass('d-none');
+            
+            // عرض للجوال
+            filtered.forEach(request => {
+                const statusClass = getStatusClass(request.status);
+                const statusText = getStatusText(request.status);
+                const categoryText = getCategoryText(request.category);
+                
+                // بطاقة الجوال
+                const mobileCard = `
+                    <div class="mobile-table-card" data-id="${request.id}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="fw-bold mb-1">${request.requestTitle}</h6>
+                                <p class="text-muted small mb-1">${request.applicantName}</p>
+                            </div>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="row small text-muted mb-2">
+                            <div class="col-6">
+                                <i class="fas fa-id-card me-1"></i>${request.nationalId}
+                            </div>
+                            <div class="col-6 text-start">
+                                <i class="fas fa-calendar me-1"></i>${formatDate(request.date)}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button class="btn btn-sm btn-outline-primary" onclick="showMobileDetails(${request.id})">
+                                <i class="fas fa-eye me-1"></i>عرض
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning" onclick="changeMobileStatus(${request.id})">
+                                <i class="fas fa-edit me-1"></i>تغيير الحالة
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                container.append(mobileCard);
+                
+                // صف للشاشات الكبيرة
+                const desktopRow = `
+                    <tr data-id="${request.id}">
+                        <td>${request.id}</td>
+                        <td>${request.nationalId}</td>
+                        <td>${request.applicantName}</td>
+                        <td>${request.requestTitle}</td>
+                        <td>${formatDate(request.date)}</td>
+                        <td>
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-outline-primary" onclick="showMobileDetails(${request.id})">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning" onclick="changeMobileStatus(${request.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="deleteRequest(${request.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                
+                desktopTable.append(desktopRow);
+            });
+        }
+
+        // فلتر البيانات
+        function filterRequestsData() {
+            let filtered = [...requests];
+            
+            // فلتر البحث
+            if (searchQuery.trim() !== '') {
+                const query = searchQuery.toLowerCase();
+                filtered = filtered.filter(request => 
+                    request.nationalId.includes(query) ||
+                    request.applicantName.toLowerCase().includes(query) ||
+                    request.requestTitle.toLowerCase().includes(query) ||
+                    request.requestDetails.toLowerCase().includes(query)
+                );
+            }
+            
+            // فلتر الحالة
+            if (currentStatusFilter !== 'all') {
+                filtered = filtered.filter(request => request.status === currentStatusFilter);
+            }
+            
+            return filtered;
+        }
+
+        // تنفيذ الفلترة
+        function filterRequests() {
+            renderMobileRequests();
+            updateRequestCount();
+        }
+
+        // تحديث عدد الطلبات
+        function updateRequestCount() {
+            const filtered = filterRequestsData();
+            $('#mobileStats .stat-number:first').text(filtered.length);
+        }
+
+        // إضافة طلب جديد
+        function addNewRequest() {
+            // تنظيف النموذج
+            $('#requestForm')[0].reset();
+            
+            // تعيين التاريخ الحالي
+            const today = new Date().toISOString().split('T')[0];
+            
+            // إظهار النافذة
+            const modal = new bootstrap.Modal(document.getElementById('newRequestModal'));
+            modal.show();
+            
+            // تركيز على أول حقل
+            setTimeout(() => {
+                $('#mobileNationalId').focus();
+            }, 300);
+        }
+
+        // حفظ الطلب من الجوال
+        function saveMobileRequest() {
+            // التحقق من البيانات
+            if (!validateMobileForm()) {
+                return;
+            }
+            
+            // إنشاء طلب جديد
+            const newId = requests.length > 0 ? Math.max(...requests.map(r => r.id)) + 1 : 1;
+            
+            const newRequest = {
+                id: newId,
+                nationalId: $('#mobileNationalId').val(),
+                applicantName: $('#mobileApplicantName').val(),
+                requestTitle: $('#mobileRequestTitle').val(),
+                requestDetails: $('#mobileRequestDetails').val(),
+                category: $('#mobileCategory').val(),
+                priority: $('#mobilePriority').val(),
+                date: new Date().toISOString().split('T')[0],
+                status: 'submitted',
+                createdAt: new Date().toISOString()
+            };
+            
+            // إضافة الطلب
+            requests.unshift(newRequest);
+            saveToLocalStorage();
+            
+            // إغلاق النافذة
+            bootstrap.Modal.getInstance(document.getElementById('newRequestModal')).hide();
+            
+            // تحديث العرض
+            loadMobileData();
+            
+            // إظهار إشعار
+            showMobileNotification(`تم إضافة طلب جديد #${newId}`, 'success', true);
+            
+            // لمسات هزازة على الجوال
+            if (navigator.vibrate) {
+                navigator.vibrate([100, 50, 100]);
+            }
+        }
+
+        // التحقق من نموذج الجوال
+        function validateMobileForm() {
+            const nationalId = $('#mobileNationalId').val();
+            const applicantName = $('#mobileApplicantName').val();
+            const requestTitle = $('#mobileRequestTitle').val();
+            const category = $('#mobileCategory').val();
+            const requestDetails = $('#mobileRequestDetails').val();
+            
+            // التحقق من الرقم القومي
+            if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+                showMobileNotification('الرجاء إدخال رقم قومي صحيح (14 رقمًا)', 'error');
+                $('#mobileNationalId').focus();
+                return false;
+            }
+            
+            // التحقق من الاسم
+            if (!applicantName.trim()) {
+                showMobileNotification('الرجاء إدخال اسم مقدم الطلب', 'error');
+                $('#mobileApplicantName').focus();
+                return false;
+            }
+            
+            // التحقق من العنوان
+            if (!requestTitle.trim()) {
+                showMobileNotification('الرجاء إدخال عنوان الطلب', 'error');
+                $('#mobileRequestTitle').focus();
+                return false;
+            }
+            
+            // التحقق من الفئة
+            if (!category) {
+                showMobileNotification('الرجاء اختيار الفئة', 'error');
+                $('#mobileCategory').focus();
+                return false;
+            }
+            
+            // التحقق من التفاصيل
+            if (!requestDetails.trim()) {
+                showMobileNotification('الرجاء إدخال تفاصيل الطلب', 'error');
+                $('#mobileRequestDetails').focus();
+                return false;
+            }
+            
+            return true;
+        }
+
+        // عرض تفاصيل الطلب على الجوال
+        function showMobileDetails(requestId) {
+            const request = requests.find(r => r.id === requestId);
+            if (!request) return;
+            
+            const statusClass = getStatusClass(request.status);
+            const statusText = getStatusText(request.status);
+            const categoryText = getCategoryText(request.category);
+            const priorityText = getPriorityText(request.priority);
+            
+            const detailsHtml = `
+                <div class="request-details-card">
+                    <div class="detail-item">
+                        <div class="detail-label">رقم الطلب</div>
+                        <div class="detail-value">#${request.id}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الرقم القومي</div>
+                        <div class="detail-value">${request.nationalId}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">اسم مقدم الطلب</div>
+                        <div class="detail-value">${request.applicantName}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">عنوان الطلب</div>
+                        <div class="detail-value">${request.requestTitle}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الفئة</div>
+                        <div class="detail-value">${categoryText}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الحالة</div>
+                        <div class="detail-value">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">الأولوية</div>
+                        <div class="detail-value">${priorityText}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">تاريخ التقديم</div>
+                        <div class="detail-value">${formatDate(request.date)}</div>
+                    </div>
+                    
+                    <div class="detail-item">
+                        <div class="detail-label">تفاصيل الطلب</div>
+                        <div class="detail-value">${request.requestDetails}</div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-warning" onclick="changeMobileStatus(${request.id})">
+                        <i class="fas fa-exchange-alt me-2"></i>تغيير الحالة
+                    </button>
+                    <button class="btn btn-outline-danger" onclick="deleteRequest(${request.id})">
+                        <i class="fas fa-trash me-2"></i>حذف الطلب
+                    </button>
+                </div>
+            `;
+            
+            $('#mobileRequestDetailsContent').html(detailsHtml);
+            const modal = new bootstrap.Modal(document.getElementById('mobileDetailsModal'));
+            modal.show();
+        }
+
+        // تغيير حالة الطلب على الجوال
+        function changeMobileStatus(requestId) {
+            selectedRequestId = requestId;
+            const request = requests.find(r => r.id === requestId);
+            
+            if (!request) return;
+            
+            const buttonsHtml = `
+                <button class="status-btn btn-success" onclick="updateStatus('approved')">
+                    <i class="fas fa-check"></i> موافق
+                </button>
+                <button class="status-btn btn-danger" onclick="showRejectComment()">
+                    <i class="fas fa-times"></i> غير موافق
+                </button>
+                <button class="status-btn btn-warning" onclick="updateStatus('pending')">
+                    <i class="fas fa-clock"></i> قيد الانتظار
+                </button>
+                <button class="status-btn" style="background: var(--info);" onclick="updateStatus('inprogress')">
+                    <i class="fas fa-spinner"></i> قيد التنفيذ
+                </button>
+                <button class="status-btn" style="background: var(--primary);" onclick="updateStatus('submitted')">
+                    <i class="fas fa-file-import"></i> تم التقديم
+                </button>
+            `;
+            
+            $('#mobileStatusButtons').html(buttonsHtml);
+            const modal = new bootstrap.Modal(document.getElementById('mobileStatusModal'));
+            modal.show();
+        }
+
+        // عرض حقل التعليق للرفض
+        function showRejectComment() {
+            $('#commentSection').show();
+            $('#mobileStatusComment').focus();
+        }
+
+        // حفظ الحالة مع التعليق
+        function saveStatusWithComment() {
+            const comment = $('#mobileStatusComment').val();
+            if (!comment.trim()) {
+                showMobileNotification('الرجاء إدخال سبب الرفض', 'error');
+                return;
+            }
+            
+            updateStatus('rejected', comment);
+            $('#commentSection').hide();
+            $('#mobileStatusComment').val('');
+        }
+
+        // تحديث حالة الطلب
+        function updateStatus(newStatus, comment = '') {
+            const requestIndex = requests.findIndex(r => r.id === selectedRequestId);
+            if (requestIndex === -1) return;
+            
+            const oldStatus = requests[requestIndex].status;
+            requests[requestIndex].status = newStatus;
+            
+            if (comment) {
+                requests[requestIndex].comment = comment;
+            }
+            
+            saveToLocalStorage();
+            loadMobileData();
+            
+            // إغلاق النافذة
+            bootstrap.Modal.getInstance(document.getElementById('mobileStatusModal')).hide();
+            
+            // إشعار
+            showMobileNotification(`تم تغيير الحالة إلى: ${getStatusText(newStatus)}`, 'success', true);
+            
+            // تسجيل النشاط
+            logStatusChange(selectedRequestId, oldStatus, newStatus, comment);
+        }
+
+        // حذف الطلب
+        function deleteRequest(requestId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+                return;
+            }
+            
+            const requestIndex = requests.findIndex(r => r.id === requestId);
+            if (requestIndex === -1) return;
+            
+            requests.splice(requestIndex, 1);
+            saveToLocalStorage();
+            loadMobileData();
+            
+            showMobileNotification('تم حذف الطلب بنجاح', 'success');
+        }
+
+        // تسجيل تغيير الحالة
+        function logStatusChange(requestId, oldStatus, newStatus, comment) {
+            const logs = JSON.parse(localStorage.getItem('statusLogs')) || [];
+            
+            logs.push({
+                requestId: requestId,
+                oldStatus: oldStatus,
+                newStatus: newStatus,
+                comment: comment,
+                timestamp: new Date().toISOString(),
+                changedBy: 'عضو مجلس النواب'
+            });
+            
+            localStorage.setItem('statusLogs', JSON.stringify(logs));
+        }
+
+        // إظهار الفلاتر
+        function showFilters() {
+            const modal = new bootstrap.Modal(document.getElementById('mobileFilterModal'));
+            modal.show();
+        }
+
+        // تطبيق الفلاتر
+        function applyMobileFilters() {
+            // يمكن إضافة فلاتر إضافية هنا
+            bootstrap.Modal.getInstance(document.getElementById('mobileFilterModal')).hide();
+            showMobileNotification('تم تطبيق الفلاتر', 'info');
+        }
+
+        // إعادة تعيين الفلاتر
+        function resetMobileFilters() {
+            $('#mobileSearch').val('');
+            $('#mobileStatusFilter button[data-status="all"]').click();
+            searchQuery = '';
+            currentStatusFilter = 'all';
+            loadMobileData();
+            showMobileNotification('تم إعادة تعيين جميع الفلاتر', 'info');
+        }
+
+        // تحديث البيانات
+        function refreshData() {
+            showMobileNotification('جاري تحديث البيانات...', 'info');
+            setTimeout(() => {
+                loadMobileData();
+                showMobileNotification('تم تحديث البيانات', 'success');
+            }, 500);
+        }
+
+        // إظهار قائمة الجوال
+        function showMenu() {
+            const offcanvas = new bootstrap.Offcanvas(document.getElementById('mobileMenu'));
+            offcanvas.show();
+        }
+
+        // عرض لوحة التحكم
+        function showDashboard() {
+            // إعادة توجيه للصفحة الرئيسية
+            window.location.reload();
+        }
+
+        // عرض جميع الطلبات
+        function showAllRequests() {
+            resetMobileFilters();
+        }
+
+        // عرض الإحصائيات
+        function showStatistics() {
+            alert('صفحة الإحصائيات قيد التطوير');
+        }
+
+        // عرض الإعدادات
+        function showSettings() {
+            alert('صفحة الإعدادات قيد التطوير');
+        }
+
+        // تسجيل الخروج
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('mobileRequests');
+                showMobileNotification('تم تسجيل الخروج', 'info');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+            }
+        }
+
+        // إظهار رسالة ترحيب
+        function showWelcomeMessage() {
+            const firstVisit = !localStorage.getItem('firstVisit');
+            if (firstVisit) {
+                showMobileNotification('مرحباً بك في نظام طلبات المواطنين!', 'info');
+                localStorage.setItem('firstVisit', 'true');
+            }
+        }
+
+        // إظهار إشعار على الجوال
+        function showMobileNotification(message, type = 'info', playSound = false) {
+            const notificationId = 'notif-' + Date.now();
+            const icon = {
+                'success': 'fa-check-circle',
+                'error': 'fa-exclamation-circle',
+                'warning': 'fa-exclamation-triangle',
+                'info': 'fa-info-circle'
+            }[type] || 'fa-info-circle';
+            
+            const notificationHtml = `
+                <div id="${notificationId}" class="alert alert-${type} alert-dismissible fade show m-3" 
+                     style="border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    <i class="fas ${icon} me-2"></i>${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            $('#mobileNotifications').append(notificationHtml);
+            
+            // تشغيل الصوت إذا طُلب
+            if (playSound) {
+                playNotificationSound();
+            }
+            
+            // إزالة الإشعار بعد 4 ثواني
+            setTimeout(() => {
+                $(`#${notificationId}`).alert('close');
+            }, 4000);
+        }
+
+        // تشغيل صوت الإشعار
+        function playNotificationSound() {
+            try {
+                const audio = document.getElementById('notificationSound');
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log('تعذر تشغيل الصوت:', e));
+            } catch (e) {
+                console.log('خطأ في تشغيل الصوت:', e);
+            }
+        }
+
+        // حفظ البيانات في التخزين المحلي
+        function saveToLocalStorage() {
+            localStorage.setItem('mobileRequests', JSON.stringify(requests));
+        }
+
+        // تسجيل Service Worker لـ PWA
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered:', registration);
+                    })
+                    .catch(error => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            }
+        }
+
+        // ضبط الواجهة لحجم الشاشة
+        function adjustForScreenSize() {
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                $('body').addClass('mobile-view');
+            } else {
+                $('body').removeClass('mobile-view');
+            }
+        }
+
+        // وظائف مساعدة
+        function getStatusClass(status) {
+            return `status-${status}`;
+        }
+        
+        function getStatusText(status) {
+            const map = {
+                'submitted': 'تم التقديم',
+                'pending': 'قيد الانتظار',
+                'inprogress': 'قيد التنفيذ',
+                'approved': 'موافق',
+                'rejected': 'غير موافق'
+            };
+            return map[status] || status;
+        }
+        
+        function getCategoryText(category) {
+            const map = {
+                'electricity': 'كهرباء',
+                'health': 'صحة',
+                'water': 'مياه',
+                'sanitation': 'صرف صحي',
+                'education': 'تعليم',
+                'transport': 'مواصلات'
+            };
+            return map[category] || category;
+        }
+        
+        function getPriorityText(priority) {
+            const map = {
+                'low': 'منخفضة',
+                'medium': 'متوسطة',
+                'high': 'عالية'
+            };
+            return map[priority] || priority;
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG');
+        }
+
+        // تهيئة عند التحميل
+        $(window).on('load', function() {
+            adjustForScreenSize();
+            // تحميل أولي بأسلوب وهمي
+            setTimeout(() => {
+                loadMobileData();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
