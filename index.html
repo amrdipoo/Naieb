@@ -529,6 +529,127 @@
             justify-content: center;
         }
     </style>
+	<!-- أضف هذا قبل </head> -->
+<script>
+// متغيرات لتتبع حالة الاتصال
+window.appStatus = {
+    supabaseConnected: false,
+    showReconnectButton: false,
+    lastConnectionAttempt: null
+};
+</script>
+
+<!-- أضف هذا قبل </body> -->
+<div id="connectionStatusBar" style="display: none;">
+    <div class="alert alert-warning alert-dismissible fade show mb-0 rounded-0" role="alert">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <i class="fas fa-wifi-slash me-2"></i>
+                    <strong>النظام يعمل محلياً</strong> - لا يمكن الاتصال بالسيرفر
+                </div>
+                <div>
+                    <button id="reconnectNowBtn" class="btn btn-sm btn-outline-warning me-2">
+                        <i class="fas fa-redo me-1"></i>إعادة الاتصال
+                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// كود إدارة الاتصال
+$(document).ready(function() {
+    // زر إعادة الاتصال
+    $('#reconnectNowBtn').click(async function() {
+        $(this).prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>جاري الاتصال...');
+        
+        if (window.supabaseConnection && window.supabaseConnection.reconnect) {
+            const reconnected = await window.supabaseConnection.reconnect();
+            
+            if (reconnected) {
+                showNotification('✅ تم إعادة الاتصال بنجاح!', 'success');
+                $('#connectionStatusBar').hide();
+                
+                // إعادة تحميل البيانات
+                if (typeof loadDataFromSupabase === 'function') {
+                    await loadDataFromSupabase();
+                }
+            } else {
+                showNotification('❌ فشل إعادة الاتصال', 'error');
+            }
+        } else {
+            showNotification('❌ نظام الاتصال غير متاح', 'error');
+        }
+        
+        $(this).prop('disabled', false).html('<i class="fas fa-redo me-1"></i>إعادة الاتصال');
+    });
+    
+    // استمع لأحداث الاتصال
+    window.addEventListener('supabase-connected', function(event) {
+        console.log('🎉 Supabase متصل:', event.detail);
+        window.appStatus.supabaseConnected = true;
+        $('#connectionStatusBar').hide();
+        
+        // تحديث واجهة المستخدم
+        updateConnectionStatusUI(true);
+    });
+    
+    window.addEventListener('supabase-error', function(event) {
+        console.error('💥 خطأ في Supabase:', event.detail);
+        window.appStatus.supabaseConnected = false;
+        window.appStatus.showReconnectButton = true;
+        $('#connectionStatusBar').show();
+        
+        // تحديث واجهة المستخدم
+        updateConnectionStatusUI(false);
+    });
+    
+    window.addEventListener('supabase-connecting', function() {
+        console.log('🔄 جاري الاتصال بـ Supabase...');
+        window.appStatus.lastConnectionAttempt = new Date();
+    });
+    
+    // دالة تحديث واجهة المستخدم
+    function updateConnectionStatusUI(connected) {
+        const statusElement = $('#connectionStatus');
+        if (statusElement.length) {
+            statusElement.html(connected 
+                ? '<i class="fas fa-cloud text-success me-1"></i>متصل بالسحابة'
+                : '<i class="fas fa-laptop text-warning me-1"></i>يعمل محلياً'
+            );
+        }
+    }
+    
+    // اختبار الاتصال عند النقر على أيقونة DB
+    $('#supabaseSettingsBtn').click(function() {
+        if (window.supabaseConnection && window.supabaseConnection.getStatus) {
+            const status = window.supabaseConnection.getStatus();
+            console.log('📊 حالة الاتصال:', status);
+            
+            let message = status.isConnected 
+                ? '✅ النظام متصل بـ Supabase'
+                : '⚠️ النظام يعمل محلياً';
+            
+            alert(message);
+        }
+    });
+    
+    // اختبار الاتصال الأولي
+    setTimeout(async () => {
+        if (window.supabaseConnection && window.supabaseConnection.getStatus) {
+            const status = window.supabaseConnection.getStatus();
+            
+            if (!status.isConnected && status.configValid) {
+                // إذا كانت الإعدادات صحيحة ولكن الاتصال فشل، عرض زر إعادة الاتصال
+                $('#connectionStatusBar').show();
+            }
+        }
+    }, 3000);
+});
+</script>
 </head>
 <body>
     <!-- شاشة الترحيب -->
