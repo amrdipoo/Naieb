@@ -6,6 +6,9 @@
     <title>نظام متابعة طلبات المواطنين - عضو مجلس النواب</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<!-- Supabase -->
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	<script src="supabase-config.js"></script>
     <style>
         /* الأنماط العامة */
         :root {
@@ -809,12 +812,6 @@
                         <span>المستخدمين</span>
                     </a>
                 </li>
-				<li class="nav-item">
-					<a class="nav-link" href="#" id="usersLink">
-						<i class="fas fa-users"></i>
-						<span>المستخدمين</span>
-					</a>
-				</li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="profileLink">
                         <i class="fas fa-user-circle"></i>
@@ -1932,422 +1929,7 @@
                 icon: 'fas fa-times-circle'
             }
         };
-		// ==================== GitHub Data Manager ====================
-class GitHubDataManager {
-    constructor() {
-        this.initialized = false;
-    }
-    
-    // طلب GitHub Token من المستخدم
-    async init() {
-        // تحقق إذا كان هناك Token محفوظ
-        const savedToken = localStorage.getItem('github_token');
-        if (savedToken && savedToken.startsWith('ghp_')) {
-            GITHUB_CONFIG.TOKEN = savedToken;
-            GITHUB_CONFIG.ENABLED = true;
-            this.initialized = true;
-            showNotification('GitHub Token محفوظ، جاري المزامنة...', 'info');
-            return true;
-        }
-        
-        // عرض نموذج طلب Token
-        return await this.showTokenModal();
-    }
-    
-    // عرض نموذج إدخال Token
-    async showTokenModal() {
-        return new Promise((resolve) => {
-            const modalHtml = `
-                <div class="modal fade" id="githubTokenModal" data-bs-backdrop="static">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">
-                                    <i class="fab fa-github me-2"></i>ربط مع GitHub
-                                </h5>
-                            </div>
-                            <div class="modal-body">
-                                <div class="alert alert-info">
-                                    <h6><i class="fas fa-info-circle me-2"></i>مميزات الربط:</h6>
-                                    <ul class="mb-0">
-                                        <li>مزامنة البيانات بين جميع أجهزتك</li>
-                                        <li>نسخ احتياطي تلقائي</li>
-                                        <li>عرض البيانات على أي جهاز</li>
-                                    </ul>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">GitHub Username</label>
-                                    <input type="text" class="form-control" id="githubUsername" 
-                                           value="${GITHUB_CONFIG.USERNAME}" placeholder="اسم المستخدم">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">اسم المستودع (Repository)</label>
-                                    <input type="text" class="form-control" id="githubRepo" 
-                                           value="${GITHUB_CONFIG.REPO}" placeholder="citizen-requests">
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label">GitHub Personal Access Token</label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control" id="githubToken" 
-                                               placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-                                        <button class="btn btn-outline-secondary" type="button" id="toggleToken">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                    </div>
-                                    <small class="text-muted">
-                                        <a href="https://github.com/settings/tokens" target="_blank">
-                                            <i class="fas fa-external-link-alt me-1"></i>أنشئ Token جديد
-                                        </a>
-                                        (اختر "repo" permissions)
-                                    </small>
-                                </div>
-                                
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="rememberToken" checked>
-                                    <label class="form-check-label" for="rememberToken">
-                                        تذكر بياناتي على هذا الجهاز
-                                    </label>
-                                </div>
-                                
-                                <div class="alert alert-warning">
-                                    <small>
-                                        <i class="fas fa-exclamation-triangle me-1"></i>
-                                        سيتم حفظ البيانات في مستودع GitHub عام. لا تخزن بيانات سرية.
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" id="skipGitHubBtn">
-                                    تخطي الآن
-                                </button>
-                                <button type="button" class="btn btn-primary" id="connectGitHubBtn">
-                                    <i class="fab fa-github me-2"></i>ربط مع GitHub
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            $('body').append(modalHtml);
-            const modal = new bootstrap.Modal(document.getElementById('githubTokenModal'));
-            modal.show();
-            
-            // أحداث النموذج
-            $('#toggleToken').click(function() {
-                const input = $('#githubToken');
-                const icon = $(this).find('i');
-                if (input.attr('type') === 'password') {
-                    input.attr('type', 'text');
-                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
-                } else {
-                    input.attr('type', 'password');
-                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
-                }
-            });
-            
-            $('#connectGitHubBtn').click(async () => {
-                const username = $('#githubUsername').val().trim();
-                const repo = $('#githubRepo').val().trim();
-                const token = $('#githubToken').val().trim();
-                
-                if (!username || !repo || !token) {
-                    showNotification('الرجاء ملء جميع الحقول', 'error');
-                    return;
-                }
-                
-                if (!token.startsWith('ghp_')) {
-                    showNotification('الرجاء إدخال GitHub Token صالح', 'error');
-                    return;
-                }
-                
-                // اختبار الاتصال
-                const isValid = await this.testConnection(username, repo, token);
-                
-                if (isValid) {
-                    // حفظ الإعدادات
-                    GITHUB_CONFIG.USERNAME = username;
-                    GITHUB_CONFIG.REPO = repo;
-                    GITHUB_CONFIG.TOKEN = token;
-                    GITHUB_CONFIG.ENABLED = true;
-                    
-                    if ($('#rememberToken').is(':checked')) {
-                        localStorage.setItem('github_token', token);
-                        localStorage.setItem('github_username', username);
-                        localStorage.setItem('github_repo', repo);
-                    }
-                    
-                    this.initialized = true;
-                    modal.hide();
-                    $('#githubTokenModal').remove();
-                    showNotification('تم الربط مع GitHub بنجاح!', 'success');
-                    resolve(true);
-                } else {
-                    showNotification('فشل الاتصال بـ GitHub، تأكد من البيانات', 'error');
-                }
-            });
-            
-            $('#skipGitHubBtn').click(() => {
-                modal.hide();
-                $('#githubTokenModal').remove();
-                GITHUB_CONFIG.ENABLED = false;
-                showNotification('يمكنك الربط لاحقًا من الإعدادات', 'info');
-                resolve(false);
-            });
-        });
-    }
-    
-    // اختبار الاتصال بـ GitHub
-    async testConnection(username, repo, token) {
-        try {
-            const response = await fetch(`https://api.github.com/repos/${username}/${repo}`, {
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (response.ok) {
-                return true;
-            } else if (response.status === 404) {
-                // المستودع غير موجود، سنحاول إنشاؤه
-                return await this.createRepository(username, repo, token);
-            }
-            return false;
-        } catch (error) {
-            console.error('GitHub connection test failed:', error);
-            return false;
-        }
-    }
-    
-    // إنشاء مستودع جديد
-    async createRepository(username, repo, token) {
-        const create = confirm(`المستودع "${repo}" غير موجود. هل تريد إنشاؤه؟`);
-        
-        if (!create) return false;
-        
-        try {
-            const response = await fetch('https://api.github.com/user/repos', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `token ${token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name: repo,
-                    description: 'نظام متابعة طلبات المواطنين',
-                    private: false,
-                    auto_init: true
-                })
-            });
-            
-            return response.ok;
-        } catch (error) {
-            console.error('Failed to create repository:', error);
-            return false;
-        }
-    }
-    
-    // رفع البيانات إلى GitHub
-    async pushToGitHub(data) {
-        if (!GITHUB_CONFIG.ENABLED || !this.initialized) return false;
-        
-        try {
-            // أولاً: جلب البيانات الحالية للحصول على SHA
-            const getUrl = `https://api.github.com/repos/${GITHUB_CONFIG.USERNAME}/${GITHUB_CONFIG.REPO}/contents/${GITHUB_CONFIG.DATA_FILE}`;
-            const getResponse = await fetch(getUrl, {
-                headers: {
-                    'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            let sha = null;
-            if (getResponse.status === 200) {
-                const existing = await getResponse.json();
-                sha = existing.sha;
-            }
-            
-            // إعداد البيانات للرفع
-            const content = btoa(JSON.stringify(data, null, 2));
-            const message = `🔄 تحديث بيانات النظام - ${new Date().toLocaleString('ar-EG')}`;
-            
-            const putUrl = `https://api.github.com/repos/${GITHUB_CONFIG.USERNAME}/${GITHUB_CONFIG.REPO}/contents/${GITHUB_CONFIG.DATA_FILE}`;
-            const putResponse = await fetch(putUrl, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: message,
-                    content: content,
-                    sha: sha,
-                    branch: GITHUB_CONFIG.BRANCH
-                })
-            });
-            
-            if (putResponse.ok) {
-                GITHUB_CONFIG.LAST_SYNC = new Date().toISOString();
-                localStorage.setItem('last_github_sync', GITHUB_CONFIG.LAST_SYNC);
-                console.log('✅ Data pushed to GitHub');
-                return true;
-            }
-            return false;
-        } catch (error) {
-            console.error('❌ Failed to push to GitHub:', error);
-            return false;
-        }
-    }
-    
-    // سحب البيانات من GitHub
-    async pullFromGitHub() {
-        if (!GITHUB_CONFIG.ENABLED || !this.initialized) return null;
-        
-        try {
-            const url = `https://api.github.com/repos/${GITHUB_CONFIG.USERNAME}/${GITHUB_CONFIG.REPO}/contents/${GITHUB_CONFIG.DATA_FILE}`;
-            const response = await fetch(url, {
-                headers: {
-                    'Authorization': `token ${GITHUB_CONFIG.TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                const content = atob(data.content.replace(/\n/g, ''));
-                const parsedData = JSON.parse(content);
-                
-                GITHUB_CONFIG.LAST_SYNC = new Date().toISOString();
-                localStorage.setItem('last_github_sync', GITHUB_CONFIG.LAST_SYNC);
-                
-                return parsedData;
-            }
-            return null;
-        } catch (error) {
-            console.error('❌ Failed to pull from GitHub:', error);
-            return null;
-        }
-    }
-    
-    // مزامنة البيانات
-    async sync() {
-        if (isSyncing) return;
-        isSyncing = true;
-        
-        try {
-            // 1. سحب البيانات من GitHub
-            const remoteData = await this.pullFromGitHub();
-            
-            // 2. تحميل البيانات المحلية
-            const localData = {
-                requests: allRequests,
-                users: JSON.parse(localStorage.getItem('systemUsers') || '[]'),
-                lastSync: new Date().toISOString()
-            };
-            
-            // 3. دمج البيانات
-            let mergedData = localData;
-            
-            if (remoteData) {
-                mergedData = this.mergeData(localData, remoteData);
-            }
-            
-            // 4. تحديث البيانات المحلية
-            allRequests = mergedData.requests || [];
-            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-            
-            if (mergedData.users) {
-                localStorage.setItem('systemUsers', JSON.stringify(mergedData.users));
-            }
-            
-            // 5. رفع البيانات المدمجة إلى GitHub
-            await this.pushToGitHub(mergedData);
-            
-            // 6. تحديث الواجهة
-            if (currentUser) {
-                refreshData();
-            }
-            
-            showNotification('تمت مزامنة البيانات بنجاح', 'success');
-            return true;
-        } catch (error) {
-            console.error('❌ Sync failed:', error);
-            showNotification('فشلت المزامنة، جاري استخدام البيانات المحلية', 'warning');
-            return false;
-        } finally {
-            isSyncing = false;
-        }
-    }
-    
-    // دمج البيانات المحلية والبعيدة
-    mergeData(local, remote) {
-        const result = {
-            requests: [],
-            users: [],
-            lastSync: new Date().toISOString()
-        };
-        
-        // دمج الطلبات
-        const requestMap = new Map();
-        
-        // إضافة طلبات GitHub
-        if (remote.requests && Array.isArray(remote.requests)) {
-            remote.requests.forEach(req => {
-                requestMap.set(req.id, req);
-            });
-        }
-        
-        // إضافة/تحديث طلبات محلية
-        if (local.requests && Array.isArray(local.requests)) {
-            local.requests.forEach(req => {
-                const existing = requestMap.get(req.id);
-                if (!existing) {
-                    requestMap.set(req.id, req);
-                } else {
-                    // اختيار الأحدث
-                    const existingDate = new Date(existing.updatedAt || existing.createdAt);
-                    const localDate = new Date(req.updatedAt || req.createdAt);
-                    
-                    if (localDate > existingDate) {
-                        requestMap.set(req.id, req);
-                    }
-                }
-            });
-        }
-        
-        result.requests = Array.from(requestMap.values())
-            .sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
-        
-        // دمج المستخدمين بنفس الطريقة
-        // ... (يمكن إضافة دمج المستخدمين إذا أردت)
-        
-        return result;
-    }
-}
 
-// إنشاء مدير GitHub
-const gitHubManager = new GitHubDataManager();
-// ==================== إعدادات GitHub ====================
-const GITHUB_CONFIG = {
-    ENABLED: false, // تغيير لـ true بعد إعداد GitHub
-    USERNAME: 'YOUR_GITHUB_USERNAME', // ⬅️ غير هذا
-    REPO: 'citizen-requests-system', // ⬅️ غير هذا إن أردت
-    TOKEN: null, // سيتم طلبه من المستخدم
-    BRANCH: 'main',
-    DATA_FILE: 'data.json',
-    LAST_SYNC: null
-};
-
-// ==================== متغيرات المزامنة ====================
-let isSyncing = false;
-let lastSyncTime = null;
-let syncInterval = null;
         // بيانات التطبيق
         let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
             {
@@ -2842,65 +2424,15 @@ let syncInterval = null;
         }
 
         // بدء التطبيق
-       // بدء التطبيق
-async function startApplication() {
-    $('#welcomeScreen').hide();
-    $('#loginPage').hide();
-    $('#registerPage').hide();
-    $('#appContent').show();
-    
-    // تهيئة GitHub Manager
-    await gitHubManager.init();
-    
-    // تحميل البيانات من GitHub إذا كان ممكناً
-    if (GITHUB_CONFIG.ENABLED) {
-        const remoteData = await gitHubManager.pullFromGitHub();
-        if (remoteData && remoteData.requests) {
-            allRequests = remoteData.requests;
+        function startApplication() {
+            $('#welcomeScreen').hide();
+            $('#loginPage').hide();
+            $('#registerPage').hide();
+            $('#appContent').show();
+            
+            initializeApp();
         }
-    } else {
-        // استخدام البيانات المحلية
-        allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [];
-    }
-    
-    initializeApp();
-    
-    // بدء المزامنة التلقائية
-    if (GITHUB_CONFIG.ENABLED) {
-        startAutoSync();
-    }
-}
-// بدء المزامنة التلقائية
-function startAutoSync(interval = 30000) { // كل 30 ثانية
-    if (syncInterval) clearInterval(syncInterval);
-    
-    syncInterval = setInterval(async () => {
-        if (GITHUB_CONFIG.ENABLED && currentUser && !isSyncing) {
-            await gitHubManager.sync();
-            updateSyncStatus();
-        }
-    }, interval);
-}
 
-// تحديث حالة المزامنة في الواجهة
-function updateSyncStatus() {
-    if (!GITHUB_CONFIG.ENABLED) return;
-    
-    const statusElement = $('#syncStatus');
-    if (!statusElement.length) {
-        // إنشاء عنصر حالة المزامنة إذا لم يكن موجوداً
-        $('.main-content').append(`
-            <div id="syncStatus" class="sync-status">
-                <small><i class="fas fa-sync-alt me-1"></i>آخر مزامنة: <span id="lastSyncTime">الآن</span></small>
-            </div>
-        `);
-    }
-    
-    if (GITHUB_CONFIG.LAST_SYNC) {
-        const timeAgo = getTimeAgo(GITHUB_CONFIG.LAST_SYNC);
-        $('#lastSyncTime').text(timeAgo);
-    }
-}
         // تهيئة التطبيق الرئيسي
         function initializeApp() {
             saveDataToLocalStorage();
@@ -3062,95 +2594,6 @@ function updateSyncStatus() {
                 showPage(pageId);
             });
         }
-		// حدث زر المزامنة
-$('#syncLink').click(async function(e) {
-    e.preventDefault();
-    
-    if (!GITHUB_CONFIG.ENABLED) {
-        // طلب إعداد GitHub
-        const setup = confirm('المزامنة غير مفعلة. هل تريد إعداد المزامنة مع GitHub؟');
-        if (setup) {
-            await gitHubManager.init();
-            if (GITHUB_CONFIG.ENABLED) {
-                startAutoSync();
-                showNotification('تم تفعيل المزامنة التلقائية', 'success');
-            }
-        }
-        return;
-    }
-    
-    // عرض نافذة المزامنة
-    const modalHtml = `
-        <div class="modal fade" id="syncModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">
-                            <i class="fas fa-sync-alt me-2"></i>مزامنة البيانات
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                            <h5>مزامنة مع GitHub</h5>
-                            <p class="text-muted">مزامنة جميع البيانات مع GitHub</p>
-                            <button class="btn btn-primary" id="manualSyncBtn">
-                                <i class="fas fa-sync-alt me-2"></i>مزامنة الآن
-                            </button>
-                        </div>
-                        
-                        <hr>
-                        
-                        <div class="mb-3">
-                            <h6>حالة المزامنة:</h6>
-                            <div id="syncStats">
-                                <p>المستخدم: ${GITHUB_CONFIG.USERNAME}</p>
-                                <p>المستودع: ${GITHUB_CONFIG.REPO}</p>
-                                <p>آخر مزامنة: ${GITHUB_CONFIG.LAST_SYNC ? getTimeAgo(GITHUB_CONFIG.LAST_SYNC) : 'لم تتم'}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <small>
-                                <i class="fas fa-info-circle me-1"></i>
-                                البيانات ستكون متاحة على: 
-                                <a href="https://${GITHUB_CONFIG.USERNAME}.github.io/${GITHUB_CONFIG.REPO}/" target="_blank">
-                                    ${GITHUB_CONFIG.USERNAME}.github.io/${GITHUB_CONFIG.REPO}/
-                                </a>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    $('body').append(modalHtml);
-    const modal = new bootstrap.Modal(document.getElementById('syncModal'));
-    modal.show();
-    
-    $('#manualSyncBtn').click(async () => {
-        $('#manualSyncBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>جاري المزامنة...');
-        
-        const success = await gitHubManager.sync();
-        
-        if (success) {
-            showNotification('تمت المزامنة بنجاح', 'success');
-            modal.hide();
-            setTimeout(() => {
-                $('#syncModal').remove();
-            }, 300);
-        } else {
-            showNotification('فشلت المزامنة', 'error');
-            $('#manualSyncBtn').prop('disabled', false).html('<i class="fas fa-sync-alt me-2"></i>مزامنة الآن');
-        }
-    });
-    
-    $('#syncModal').on('hidden.bs.modal', function() {
-        $(this).remove();
-    });
-});
 
         // إعداد صفحة البحث المتقدم
         function initSearchPage() {
@@ -4368,12 +3811,6 @@ $('#syncLink').click(async function(e) {
             
             // إضافة للأنشطة
             addActivity('طلب جديد', `تم إضافة طلب جديد #${newId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
-			    // مزامنة مع GitHub بعد الإضافة
-				if (GITHUB_CONFIG.ENABLED) {
-					setTimeout(() => {
-						gitHubManager.sync();
-					}, 1000);
-    }
         }
 
         // عرض تفاصيل الطلب
@@ -4515,12 +3952,6 @@ $('#syncLink').click(async function(e) {
             
             // إضافة للأنشطة
             addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-					    // مزامنة مع GitHub بعد الإضافة
-			if (GITHUB_CONFIG.ENABLED) {
-				setTimeout(() => {
-					gitHubManager.sync();
-				}, 1000);
-			}
         }
 
         // تحديث حالة الطلب مباشرة
@@ -4540,24 +3971,12 @@ $('#syncLink').click(async function(e) {
             
             // إضافة للأنشطة
             addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-					    // مزامنة مع GitHub بعد الإضافة
-				if (GITHUB_CONFIG.ENABLED) {
-					setTimeout(() => {
-						gitHubManager.sync();
-					}, 1000);
-				}
         }
 
         // تعديل الطلب
         function editRequest(requestId) {
             // في هذا المثال، سنقوم بفتح تفاصيل الطلب للتحرير
             showRequestDetails(requestId);
-			    // مزامنة مع GitHub بعد الإضافة
-			if (GITHUB_CONFIG.ENABLED) {
-				setTimeout(() => {
-					gitHubManager.sync();
-				}, 1000);
-			}
         }
 
         // تحديث البيانات
@@ -4977,26 +4396,6 @@ $('#syncLink').click(async function(e) {
             
             return `الآن`;
         }
-		// دالة لعرض وقت المزامنة بشكل مناسب
-			function formatSyncTime(dateString) {
-				if (!dateString) return 'لم تتم';
-				
-				const date = new Date(dateString);
-				const now = new Date();
-				const diffMs = now - date;
-				const diffMins = Math.floor(diffMs / 60000);
-				
-				if (diffMins < 1) return 'الآن';
-				if (diffMins < 60) return `قبل ${diffMins} دقيقة`;
-				
-				const diffHours = Math.floor(diffMins / 60);
-				if (diffHours < 24) return `قبل ${diffHours} ساعة`;
-				
-				const diffDays = Math.floor(diffHours / 24);
-				if (diffDays < 7) return `قبل ${diffDays} يوم`;
-				
-				return date.toLocaleDateString('ar-EG');
-			}
 
         // تحويل الأولوية للنص العربي
         function getPriorityText(priority) {
@@ -5810,8 +5209,6 @@ function initializeApp() {
     
     checkUnreadNotifications();
     setInterval(checkNewRequests, 30000);
-	    // تحديث حالة المزامنة
-    updateSyncStatus();
 }
         // تعريف دالة الحصول على اسم الدور للاستخدام العام
         window.getRoleName = getRoleName;
@@ -5825,351 +5222,258 @@ function initializeApp() {
 
         // تسجيل رسالة نجاح التحميل
         console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
-		// ==================== Supabase Integration ====================
-const SUPABASE_CONFIG = {
-    url: 'https://YOUR_PROJECT.supabase.co',
-    anonKey: 'YOUR_ANON_KEY'
-};
+		// ==================== تكامل مع Supabase ====================
 
-class SupabaseManager {
-    constructor() {
-        this.supabase = null;
-        this.initialized = false;
+// دالة للتسجيل الدخول مع Supabase
+async function loginWithSupabaseWrapper(username, password) {
+    const result = await window.supabaseFunctions?.loginWithSupabase(username, password);
+    
+    if (result?.success) {
+        const sessionData = {
+            id: result.user.id,
+            username: result.user.username,
+            fullName: result.user.full_name,
+            role: result.user.role,
+            email: result.user.email,
+            loggedInAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(sessionData));
+        currentUser = sessionData;
+        
+        return { success: true };
     }
     
-    async init() {
-        try {
-            // تحميل مكتبة Supabase
-            await this.loadSupabaseScript();
-            
-            // تهيئة Supabase
-            this.supabase = window.supabase.createClient(
-                SUPABASE_CONFIG.url,
-                SUPABASE_CONFIG.anonKey
-            );
-            
-            this.initialized = true;
-            console.log('✅ Supabase initialized successfully');
-            return true;
-        } catch (error) {
-            console.error('❌ Supabase initialization failed:', error);
-            return false;
-        }
-    }
-    
-    async loadSupabaseScript() {
-        return new Promise((resolve, reject) => {
-            if (window.supabase) {
-                resolve();
-                return;
-            }
-            
-            const script = document.createElement('script');
-            script.src = 'https://unpkg.com/@supabase/supabase-js@2';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    }
-    
-    // ========== إدارة المستخدمين ==========
-    async login(username, password) {
-        try {
-            // في الواقع، نستخدم المصادقة البريدية مع Supabase
-            // لكن لأجل التوافق مع نظامك الحالي:
-            const { data, error } = await this.supabase
-                .from('users')
-                .select('*')
-                .eq('username', username)
-                .eq('password', password)
-                .eq('is_active', true)
-                .single();
-                
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Login error:', error);
-            return null;
-        }
-    }
-    
-    async register(userData) {
-        try {
-            const { data, error } = await this.supabase
-                .from('users')
-                .insert([userData])
-                .select()
-                .single();
-                
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Registration error:', error);
-            return null;
-        }
-    }
-    
-    // ========== إدارة الطلبات ==========
-    async saveRequest(request) {
-        try {
-            const { data, error } = await this.supabase
-                .from('requests')
-                .upsert(request) // إدخال أو تحديث
-                .select()
-                .single();
-                
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Save request error:', error);
-            return null;
-        }
-    }
-    
-    async loadRequests(filters = {}) {
-        try {
-            let query = this.supabase.from('requests').select('*');
-            
-            // تطبيق الفلاتر
-            if (filters.status) {
-                query = query.eq('status', filters.status);
-            }
-            if (filters.category) {
-                query = query.eq('category', filters.category);
-            }
-            if (filters.search) {
-                query = query.or(`applicant_name.ilike.%${filters.search}%,national_id.ilike.%${filters.search}%`);
-            }
-            
-            const { data, error } = await query.order('created_at', { ascending: false });
-            
-            if (error) throw error;
-            return data || [];
-        } catch (error) {
-            console.error('Load requests error:', error);
-            return [];
-        }
-    }
-    
-    async updateRequestStatus(requestId, status, comments) {
-        try {
-            const { data, error } = await this.supabase
-                .from('requests')
-                .update({ 
-                    status: status, 
-                    comments: comments,
-                    updated_at: new Date().toISOString()
-                })
-                .eq('id', requestId)
-                .select()
-                .single();
-                
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Update request error:', error);
-            return null;
-        }
-    }
-    
-    // ========== التقارير والإحصائيات ==========
-    async getStatistics() {
-        try {
-            const { data, error } = await this.supabase.rpc('get_statistics');
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Get statistics error:', error);
-            return null;
-        }
-    }
-    
-    async getCategoryDistribution() {
-        try {
-            const { data, error } = await this.supabase
-                .from('requests')
-                .select('category, status');
-                
-            if (error) throw error;
-            return data;
-        } catch (error) {
-            console.error('Get category distribution error:', error);
-            return [];
-        }
-    }
-    
-    // ========== المزامنة ==========
-    async syncLocalData(localRequests) {
-        try {
-            // رفع البيانات المحلية للسحابة
-            for (const request of localRequests) {
-                await this.saveRequest(request);
-            }
-            
-            // جلب أحدث البيانات من السحابة
-            const cloudRequests = await this.loadRequests();
-            return cloudRequests;
-        } catch (error) {
-            console.error('Sync error:', error);
-            return localRequests;
-        }
-    }
-    
-    // ========== الاستعلامات المتقدمة ==========
-    async advancedSearch(params) {
-        try {
-            let query = this.supabase.from('requests').select('*');
-            
-            if (params.nationalId) {
-                query = query.ilike('national_id', `%${params.nationalId}%`);
-            }
-            if (params.applicantName) {
-                query = query.ilike('applicant_name', `%${params.applicantName}%`);
-            }
-            if (params.requestTitle) {
-                query = query.ilike('request_title', `%${params.requestTitle}%`);
-            }
-            if (params.category) {
-                query = query.eq('category', params.category);
-            }
-            if (params.status) {
-                query = query.eq('status', params.status);
-            }
-            if (params.dateFrom && params.dateTo) {
-                query = query.gte('request_date', params.dateFrom)
-                           .lte('request_date', params.dateTo);
-            }
-            
-            const { data, error } = await query.order('created_at', { ascending: false });
-            
-            if (error) throw error;
-            return data || [];
-        } catch (error) {
-            console.error('Advanced search error:', error);
-            return [];
-        }
-    }
+    return { success: false, message: result?.message || 'حدث خطأ في المصادقة' };
 }
 
-// إنشاء مدير Supabase
-const supabaseManager = new SupabaseManager();
-
-// ==================== تعديل الدوال الرئيسية ====================
-
-// تعديل startApplication
-async function startApplication() {
-    $('#welcomeScreen').hide();
-    $('#loginPage').hide();
-    $('#registerPage').hide();
-    $('#appContent').show();
+// دالة لجلب الطلبات من Supabase
+async function loadRequestsFromSupabase() {
+    const result = await window.supabaseFunctions?.getRequestsFromSupabase(activeFilters);
     
-    // تهيئة Supabase
-    const supabaseReady = await supabaseManager.init();
-    
-    if (supabaseReady) {
-        // تحميل البيانات من Supabase
-        const supabaseRequests = await supabaseManager.loadRequests();
-        if (supabaseRequests && supabaseRequests.length > 0) {
-            allRequests = supabaseRequests;
-            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-        }
-        showNotification('✓ متصل بقاعدة البيانات السحابية', 'success');
-    } else {
-        showNotification('⚠ استخدام البيانات المحلية فقط', 'warning');
+    if (result?.success) {
+        // تحويل البيانات من Supabase إلى تنسيق النظام
+        allRequests = result.requests.map(req => ({
+            id: req.id,
+            nationalId: req.national_id,
+            applicantName: req.applicant_name,
+            requestTitle: req.request_title,
+            requestSummary: req.request_summary,
+            requestDate: req.request_date,
+            category: req.category,
+            status: req.status,
+            file: req.file_url,
+            comments: req.comments,
+            priority: req.priority,
+            createdAt: req.created_at,
+            createdBy: req.created_by
+        }));
+        
+        localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+        filteredRequests = [...allRequests];
+        
+        renderRequestsTable();
+        updateStatistics();
+        renderCategoryChart();
+        loadUrgentRequests();
+        
+        return true;
     }
     
-    initializeApp();
+    return false;
 }
 
-// تعديل saveNewRequest
+// دالة لحفظ طلب جديد في Supabase
+async function saveNewRequestToSupabase(requestData) {
+    if (!currentUser) return false;
+    
+    const result = await window.supabaseFunctions?.saveRequestToSupabase({
+        nationalId: requestData.nationalId,
+        applicantName: requestData.applicantName,
+        requestTitle: requestData.requestTitle,
+        requestSummary: requestData.requestSummary,
+        requestDate: requestData.requestDate,
+        category: requestData.category,
+        status: requestData.status,
+        priority: requestData.priority,
+        createdBy: currentUser.id
+    });
+    
+    return result?.success || false;
+}
+
+// تعديل دالة حفظ الطلب الجديد للعمل مع Supabase
 async function saveNewRequest() {
-    // ... الكود الحالي ...
+    const nationalId = $('#newNationalId').val().trim();
+    const applicantName = $('#newApplicantName').val().trim();
+    const category = $('#newCategory').val();
+    const priority = $('#newPriority').val();
+    const requestTitle = $('#newRequestTitle').val().trim();
+    const requestSummary = $('#newRequestSummary').val().trim();
     
-    // حفظ في Supabase
-    if (supabaseManager.initialized) {
-        const saved = await supabaseManager.saveRequest(newRequest);
-        if (saved) {
-            console.log('✅ Request saved to Supabase');
-        }
-    }
-    
-   // ==================== Supabase Configuration ====================
-// ⬇️⬇️⬇️ ضع هنا القيم التي نسختها من Supabase ⬇️⬇️⬇️
-const SUPABASE_CONFIG = {
-    url: 'https://gcgjzqiumgesultletws.supabase.co',  // ← ضع URL هنا
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJoE'               // ← ضع anon key هنا
-};
-// إضافة حدث زر المزامنة
-$('#syncLink').click(async function(e) {
-    e.preventDefault();
-    
-    if (!supabaseManager.initialized) {
-        showNotification('غير متصل بقاعدة البيانات السحابية', 'error');
+    // التحقق من البيانات
+    if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+        showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
         return;
     }
     
-    // عرض نافذة المزامنة
-    const modalHtml = `
-        <div class="modal fade" id="syncModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title">
-                            <i class="fas fa-sync-alt me-2"></i>مزامنة البيانات
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
-                            <h5>مزامنة مع السحابة</h5>
-                            <p class="text-muted">مزامنة جميع البيانات مع قاعدة البيانات السحابية</p>
-                            <button class="btn btn-primary" id="manualSyncBtn">
-                                <i class="fas fa-sync-alt me-2"></i>مزامنة الآن
-                            </button>
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <small>
-                                <i class="fas fa-info-circle me-1"></i>
-                                سيتم مزامنة ${allRequests.length} طلب
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+    if (!applicantName || !category || !requestTitle || !requestSummary) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
     
-    $('body').append(modalHtml);
-    const modal = new bootstrap.Modal(document.getElementById('syncModal'));
-    modal.show();
+    const newId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
     
-    $('#manualSyncBtn').click(async () => {
-        $('#manualSyncBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>جاري المزامنة...');
+    const newRequest = {
+        id: newId,
+        nationalId: nationalId,
+        applicantName: applicantName,
+        requestTitle: requestTitle,
+        requestSummary: requestSummary,
+        requestDate: new Date().toISOString().split('T')[0],
+        category: category,
+        status: 'submitted',
+        file: null,
+        comments: '',
+        priority: priority,
+        createdAt: new Date().toISOString(),
+        createdBy: currentUser ? currentUser.username : 'system'
+    };
+    
+    // محاولة الحفظ في Supabase أولاً
+    let supabaseSuccess = false;
+    if (window.supabaseFunctions) {
+        supabaseSuccess = await saveNewRequestToSupabase(newRequest);
+    }
+    
+    if (!supabaseSuccess) {
+        // إذا فشل الحفظ في Supabase، احفظ محلياً
+        showNotification('تم الحفظ محلياً (لا يوجد اتصال بالسيرفر)', 'warning');
+    } else {
+        showNotification('تم إضافة الطلب بنجاح إلى قاعدة البيانات', 'success');
+    }
+    
+    // حفظ محلياً في جميع الأحوال
+    allRequests.unshift(newRequest);
+    saveDataToLocalStorage();
+    
+    $('#newRequestModal').modal('hide');
+    
+    // تحديث البيانات
+    refreshData();
+    
+    // إضافة للأنشطة
+    addActivity('طلب جديد', `تم إضافة طلب جديد #${newId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
+}
+
+// تعديل دالة تسجيل الدخول
+async function loginUser() {
+    const username = $('#username').val().trim();
+    const password = $('#password').val().trim();
+    
+    if (!username || !password) {
+        showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
+        return;
+    }
+    
+    // محاولة التسجيل عبر Supabase أولاً
+    if (window.supabaseFunctions) {
+        const supabaseResult = await loginWithSupabaseWrapper(username, password);
         
-        const success = await supabaseManager.syncWithLocalData(allRequests);
-        
-        if (success && success.length > 0) {
-            allRequests = success;
-            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+        if (supabaseResult.success) {
+            showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
             
-            refreshData();
-            showNotification('تمت المزامنة بنجاح', 'success');
-            modal.hide();
             setTimeout(() => {
-                $('#syncModal').remove();
-            }, 300);
-        } else {
-            showNotification('فشلت المزامنة', 'error');
-            $('#manualSyncBtn').prop('disabled', false).html('<i class="fas fa-sync-alt me-2"></i>مزامنة الآن');
+                startApplication();
+            }, 1500);
+            return;
         }
-    });
+    }
     
-    $('#syncModal').on('hidden.bs.modal', function() {
-        $(this).remove();
-    });
-});
+    // إذا فشل Supabase، استخدم النظام المحلي
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if (!user) {
+        showAuthAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
+        return;
+    }
+    
+    if (!user.isActive) {
+        showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
+        return;
+    }
+    
+    const sessionData = {
+        id: user.id,
+        username: user.username,
+        fullName: user.fullName,
+        role: user.role,
+        email: user.email,
+        loggedInAt: new Date().toISOString()
+    };
+    
+    localStorage.setItem('currentUser', JSON.stringify(sessionData));
+    currentUser = sessionData;
+    
+    showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+    
+    setTimeout(() => {
+        startApplication();
+    }, 1500);
+}
+
+// تعديل دالة تهيئة التطبيق
+function initializeApp() {
+    saveDataToLocalStorage();
+    populateCategoryFilters();
+    updateUserInterface();
+    
+    // محاولة تحميل البيانات من Supabase أولاً
+    if (window.supabaseFunctions) {
+        loadRequestsFromSupabase().then(success => {
+            if (!success) {
+                // إذا فشل، استخدم البيانات المحلية
+                renderRequestsTable();
+                updateStatistics();
+                renderCategoryChart();
+                loadUrgentRequests();
+            }
+        });
+    } else {
+        // إذا لم يكن Supabase متوفراً، استخدم البيانات المحلية
+        renderRequestsTable();
+        updateStatistics();
+        renderCategoryChart();
+        loadUrgentRequests();
+    }
+    
+    setupMainEventListeners();
+    
+    // تهيئة صفحات جديدة
+    initSearchPage();
+    initCategoriesPage();
+    initReportsPage();
+    initSettingsPage();
+    initUsersPage();
+    initProfilePage();
+    
+    const today = new Date().toISOString().split('T')[0];
+    $('#requestDate').val(today);
+    
+    checkUnreadNotifications();
+    setInterval(checkNewRequests, 30000);
+}
+
+// دالة النسخ الاحتياطي التلقائي
+setInterval(async () => {
+    if (window.supabaseFunctions && currentUser?.role === 'admin') {
+        await window.supabaseFunctions.backupDataToSupabase();
+    }
+}, 3600000); // كل ساعة
+
+// ==================== نهاية تكامل Supabase ====================
     </script>
+	<script src="supabase-config.js"></script>
 </body>
 </html>
