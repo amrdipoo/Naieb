@@ -1575,6 +1575,220 @@
                     </div>
                 </div>
             </div>
+			<!-- صفحة المستخدمين -->
+<div id="usersSection" class="page-section" style="display: none;">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-users me-2"></i>إدارة المستخدمين
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchUsers" placeholder="ابحث عن مستخدم...">
+                                <button class="btn btn-primary" id="searchUsersBtn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-success" id="addUserBtn">
+                                <i class="fas fa-user-plus me-2"></i>إضافة مستخدم
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="usersTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>اسم المستخدم</th>
+                                    <th>الاسم الكامل</th>
+                                    <th>البريد الإلكتروني</th>
+                                    <th>الدور</th>
+                                    <th>الحالة</th>
+                                    <th>تاريخ التسجيل</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- سيتم تعبئة المستخدمين ديناميكيًا -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="text-center py-3 d-none" id="noUsersMessage">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">لا يوجد مستخدمين</h5>
+                        <p class="text-muted">أضف مستخدمين جديدين للنظام</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- صفحة الملف الشخصي -->
+<div id="profileSection" class="page-section" style="display: none;">
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-circle me-2"></i>الملف الشخصي
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <div class="user-avatar mb-3" style="width: 100px; height: 100px; font-size: 40px;">
+                        <i class="fas fa-user-circle" id="profileAvatarIcon"></i>
+                    </div>
+                    <h4 id="profileFullName">عضو مجلس النواب</h4>
+                    <p class="text-muted" id="profileRole">المسؤول</p>
+                    <div class="mt-4">
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <div class="stats-number" id="profileRequestsCount">0</div>
+                                <div class="stats-label">الطلبات</div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="stats-number" id="profileActivityCount">0</div>
+                                <div class="stats-label">الأنشطة</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card shadow mt-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>مؤشرات الأداء
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>معدل الإنجاز</span>
+                            <span id="profileCompletionRate">0%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" id="profileCompletionBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span>سرعة الاستجابة</span>
+                            <span id="profileResponseRate">0%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" id="profileResponseBar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-8">
+            <div class="card shadow h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>تعديل المعلومات الشخصية
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="profileForm">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="profileUsername" class="form-label">اسم المستخدم</label>
+                                <input type="text" class="form-control" id="profileUsername" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profileFullNameInput" class="form-label">الاسم الكامل</label>
+                                <input type="text" class="form-control" id="profileFullNameInput" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="profileEmail" class="form-label">البريد الإلكتروني</label>
+                                <input type="email" class="form-control" id="profileEmail" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profilePhone" class="form-label">رقم الهاتف</label>
+                                <input type="tel" class="form-control" id="profilePhone" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="profileRoleSelect" class="form-label">الدور</label>
+                                <select class="form-select" id="profileRoleSelect" disabled>
+                                    <option value="admin">المسؤول</option>
+                                    <option value="assistant">مساعد</option>
+                                    <option value="coordinator">منسق</option>
+                                    <option value="viewer">مستعرض</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profileStatus" class="form-label">الحالة</label>
+                                <select class="form-select" id="profileStatus" disabled>
+                                    <option value="active">نشط</option>
+                                    <option value="inactive">غير نشط</option>
+                                    <option value="suspended">موقوف</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h6 class="mb-3">تغيير كلمة المرور</h6>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="currentPassword" class="form-label">كلمة المرور الحالية</label>
+                                <input type="password" class="form-control" id="currentPassword">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="newPassword" class="form-label">كلمة المرور الجديدة</label>
+                                <input type="password" class="form-control" id="newPassword">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="confirmNewPassword" class="form-label">تأكيد كلمة المرور</label>
+                                <input type="password" class="form-control" id="confirmNewPassword">
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-secondary" id="cancelProfileChanges">
+                                <i class="fas fa-times me-2"></i>إلغاء
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="saveProfileBtn">
+                                <i class="fas fa-save me-2"></i>حفظ التغييرات
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card shadow mt-4">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>آخر الأنشطة
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="profileActivities">
+                        <!-- سيتم تعبئة أنشطة المستخدم ديناميكيًا -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
         </main>
 
         <!-- زر إضافة طلب جديد (عائم) -->
@@ -4189,7 +4403,810 @@
                 default: return 'غير محدد';
             }
         }
+// تهيئة صفحة المستخدمين
+function initUsersPage() {
+    loadUsers();
+    setupUsersPageEvents();
+}
 
+// تهيئة صفحة الملف الشخصي
+function initProfilePage() {
+    loadProfileData();
+    setupProfilePageEvents();
+}
+
+// تحديث الدالة showPage لتشمل الصفحات الجديدة
+function showPage(pageId) {
+    // إخفاء جميع الصفحات
+    $('.page-section').hide();
+    
+    // إظهار الصفحة المطلوبة
+    $(`#${pageId}Section`).show();
+    
+    // إخفاء/إظهار زر الإضافة العائم
+    if (pageId === 'dashboard' || pageId === 'allRequests') {
+        $('#floatingAddBtn').show();
+    } else {
+        $('#floatingAddBtn').hide();
+    }
+    
+    // تحديث المخططات إذا لزم الأمر
+    if (pageId === 'reports') {
+        updateReportsPage();
+    }
+    
+    // تحميل بيانات الصفحات المحددة
+    if (pageId === 'users') {
+        initUsersPage();
+    }
+    
+    if (pageId === 'profile') {
+        initProfilePage();
+    }
+}
+
+// تحميل المستخدمين
+function loadUsers() {
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const tableBody = $('#usersTableBody');
+    const noUsersMessage = $('#noUsersMessage');
+    
+    if (users.length === 0) {
+        tableBody.html('');
+        noUsersMessage.removeClass('d-none');
+        return;
+    }
+    
+    noUsersMessage.addClass('d-none');
+    
+    let html = '';
+    users.forEach((user, index) => {
+        const roleName = getRoleName(user.role);
+        const statusBadge = user.isActive ? 
+            '<span class="badge bg-success">نشط</span>' : 
+            '<span class="badge bg-danger">غير نشط</span>';
+        
+        html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>
+                    <div class="fw-bold">${user.username}</div>
+                    <small class="text-muted">ID: ${user.id}</small>
+                </td>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td>
+                    <span class="badge bg-primary">${roleName}</span>
+                </td>
+                <td>${statusBadge}</td>
+                <td>${formatDate(user.createdAt)}</td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-outline-primary" onclick="editUser(${user.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="toggleUserStatus(${user.id}, ${!user.isActive})">
+                            <i class="fas ${user.isActive ? 'fa-user-slash' : 'fa-user-check'}"></i>
+                        </button>
+                        ${user.id !== currentUser?.id ? `
+                            <button class="btn btn-outline-danger" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableBody.html(html);
+}
+
+// إعداد أحداث صفحة المستخدمين
+function setupUsersPageEvents() {
+    $('#searchUsersBtn').click(function() {
+        searchUsers();
+    });
+    
+    $('#searchUsers').on('keypress', function(e) {
+        if (e.which === 13) {
+            searchUsers();
+        }
+    });
+    
+    $('#addUserBtn').click(function() {
+        openAddUserModal();
+    });
+}
+
+// البحث في المستخدمين
+function searchUsers() {
+    const searchTerm = $('#searchUsers').val().toLowerCase().trim();
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const tableBody = $('#usersTableBody');
+    
+    if (!searchTerm) {
+        loadUsers();
+        return;
+    }
+    
+    const filteredUsers = users.filter(user => 
+        user.username.toLowerCase().includes(searchTerm) ||
+        user.fullName.toLowerCase().includes(searchTerm) ||
+        user.email.toLowerCase().includes(searchTerm) ||
+        user.role.toLowerCase().includes(searchTerm)
+    );
+    
+    if (filteredUsers.length === 0) {
+        tableBody.html(`
+            <tr>
+                <td colspan="8" class="text-center py-4 text-muted">
+                    <i class="fas fa-search fa-2x mb-3"></i>
+                    <h5>لا توجد نتائج للبحث</h5>
+                </td>
+            </tr>
+        `);
+        return;
+    }
+    
+    let html = '';
+    filteredUsers.forEach((user, index) => {
+        const roleName = getRoleName(user.role);
+        const statusBadge = user.isActive ? 
+            '<span class="badge bg-success">نشط</span>' : 
+            '<span class="badge bg-danger">غير نشط</span>';
+        
+        html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${user.username}</td>
+                <td>${user.fullName}</td>
+                <td>${user.email}</td>
+                <td>${roleName}</td>
+                <td>${statusBadge}</td>
+                <td>${formatDate(user.createdAt)}</td>
+                <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button class="btn btn-outline-primary" onclick="editUser(${user.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="toggleUserStatus(${user.id}, ${!user.isActive})">
+                            <i class="fas ${user.isActive ? 'fa-user-slash' : 'fa-user-check'}"></i>
+                        </button>
+                        ${user.id !== currentUser?.id ? `
+                            <button class="btn btn-outline-danger" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </td>
+            </tr>
+        `;
+    });
+    
+    tableBody.html(html);
+}
+
+// فتح نموذج إضافة مستخدم
+function openAddUserModal() {
+    const modalHtml = `
+        <div class="modal fade" id="addUserModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-plus me-2"></i>إضافة مستخدم جديد
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="newUserFullName" class="form-label">الاسم الكامل</label>
+                                    <input type="text" class="form-control" id="newUserFullName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="newUserUsername" class="form-label">اسم المستخدم</label>
+                                    <input type="text" class="form-control" id="newUserUsername" required>
+                                    <div class="form-text">يجب أن يكون اسم المستخدم فريداً</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="newUserEmail" class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" id="newUserEmail" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="newUserPhone" class="form-label">رقم الهاتف</label>
+                                    <input type="tel" class="form-control" id="newUserPhone">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="newUserPassword" class="form-label">كلمة المرور</label>
+                                    <input type="password" class="form-control" id="newUserPassword" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="newUserConfirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                                    <input type="password" class="form-control" id="newUserConfirmPassword" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="newUserRole" class="form-label">الدور</label>
+                                    <select class="form-select" id="newUserRole" required>
+                                        <option value="admin">المسؤول</option>
+                                        <option value="assistant">مساعد</option>
+                                        <option value="coordinator">منسق</option>
+                                        <option value="viewer">مستعرض</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="newUserStatus" class="form-label">الحالة</label>
+                                    <select class="form-select" id="newUserStatus" required>
+                                        <option value="active">نشط</option>
+                                        <option value="inactive">غير نشط</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-primary" id="saveNewUserBtn">
+                            <i class="fas fa-save me-2"></i>حفظ المستخدم
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    $('body').append(modalHtml);
+    $('#addUserModal').modal('show');
+    
+    // إضافة حدث لحفظ المستخدم
+    $('#saveNewUserBtn').off('click').on('click', function() {
+        saveNewUser();
+    });
+    
+    // تنظيف النموذج بعد الإغلاق
+    $('#addUserModal').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
+}
+
+// حفظ المستخدم الجديد
+function saveNewUser() {
+    const fullName = $('#newUserFullName').val().trim();
+    const username = $('#newUserUsername').val().trim();
+    const email = $('#newUserEmail').val().trim();
+    const phone = $('#newUserPhone').val().trim();
+    const password = $('#newUserPassword').val();
+    const confirmPassword = $('#newUserConfirmPassword').val();
+    const role = $('#newUserRole').val();
+    const status = $('#newUserStatus').val();
+    const isActive = status === 'active';
+    
+    // التحقق من البيانات
+    if (!fullName || !username || !email || !password || !confirmPassword) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showNotification('كلمات المرور غير متطابقة', 'error');
+        return;
+    }
+    
+    // التحقق من عدم تكرار اسم المستخدم
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const isUsernameTaken = users.some(user => user.username === username);
+    
+    if (isUsernameTaken) {
+        showNotification('اسم المستخدم مستخدم مسبقاً', 'error');
+        return;
+    }
+    
+    // إنشاء مستخدم جديد
+    const newUser = {
+        id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+        username: username,
+        password: password,
+        fullName: fullName,
+        email: email,
+        phone: phone,
+        role: role,
+        isActive: isActive,
+        createdAt: new Date().toISOString(),
+        lastLogin: null
+    };
+    
+    users.push(newUser);
+    localStorage.setItem('systemUsers', JSON.stringify(users));
+    
+    $('#addUserModal').modal('hide');
+    showNotification('تم إضافة المستخدم بنجاح', 'success');
+    
+    // تحديث قائمة المستخدمين
+    loadUsers();
+    
+    // إضافة للنشاطات
+    addActivity('مستخدم جديد', `تم إضافة مستخدم جديد ${fullName} بواسطة ${currentUser.fullName}`);
+}
+
+// تعديل مستخدم
+function editUser(userId) {
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const user = users.find(u => u.id === userId);
+    
+    if (!user) {
+        showNotification('المستخدم غير موجود', 'error');
+        return;
+    }
+    
+    const modalHtml = `
+        <div class="modal fade" id="editUserModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-user-edit me-2"></i>تعديل المستخدم
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editUserForm">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editUserFullName" class="form-label">الاسم الكامل</label>
+                                    <input type="text" class="form-control" id="editUserFullName" value="${user.fullName}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editUserUsername" class="form-label">اسم المستخدم</label>
+                                    <input type="text" class="form-control" id="editUserUsername" value="${user.username}" required readonly>
+                                    <div class="form-text">لا يمكن تغيير اسم المستخدم</div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editUserEmail" class="form-label">البريد الإلكتروني</label>
+                                    <input type="email" class="form-control" id="editUserEmail" value="${user.email}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editUserPhone" class="form-label">رقم الهاتف</label>
+                                    <input type="tel" class="form-control" id="editUserPhone" value="${user.phone || ''}">
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editUserRole" class="form-label">الدور</label>
+                                    <select class="form-select" id="editUserRole" ${user.id === currentUser?.id ? 'disabled' : ''}>
+                                        <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>المسؤول</option>
+                                        <option value="assistant" ${user.role === 'assistant' ? 'selected' : ''}>مساعد</option>
+                                        <option value="coordinator" ${user.role === 'coordinator' ? 'selected' : ''}>منسق</option>
+                                        <option value="viewer" ${user.role === 'viewer' ? 'selected' : ''}>مستعرض</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editUserStatus" class="form-label">الحالة</label>
+                                    <select class="form-select" id="editUserStatus" ${user.id === currentUser?.id ? 'disabled' : ''}>
+                                        <option value="active" ${user.isActive ? 'selected' : ''}>نشط</option>
+                                        <option value="inactive" ${!user.isActive ? 'selected' : ''}>غير نشط</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            <h6>تغيير كلمة المرور (اختياري)</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editUserPassword" class="form-label">كلمة المرور الجديدة</label>
+                                    <input type="password" class="form-control" id="editUserPassword">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="editUserConfirmPassword" class="form-label">تأكيد كلمة المرور</label>
+                                    <input type="password" class="form-control" id="editUserConfirmPassword">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                        <button type="button" class="btn btn-warning" onclick="updateUser(${user.id})">
+                            <i class="fas fa-save me-2"></i>حفظ التغييرات
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    $('body').append(modalHtml);
+    $('#editUserModal').modal('show');
+    
+    // تنظيف النموذج بعد الإغلاق
+    $('#editUserModal').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
+}
+
+// تحديث المستخدم
+function updateUser(userId) {
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+        showNotification('المستخدم غير موجود', 'error');
+        return;
+    }
+    
+    const fullName = $('#editUserFullName').val().trim();
+    const email = $('#editUserEmail').val().trim();
+    const phone = $('#editUserPhone').val().trim();
+    const role = $('#editUserRole').val();
+    const status = $('#editUserStatus').val();
+    const password = $('#editUserPassword').val();
+    const confirmPassword = $('#editUserConfirmPassword').val();
+    const isActive = status === 'active';
+    
+    // التحقق من البيانات
+    if (!fullName || !email) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    // التحقق من كلمة المرور إذا تم إدخالها
+    if (password && password !== confirmPassword) {
+        showNotification('كلمات المرور غير متطابقة', 'error');
+        return;
+    }
+    
+    // تحديث بيانات المستخدم
+    users[userIndex].fullName = fullName;
+    users[userIndex].email = email;
+    users[userIndex].phone = phone;
+    
+    // لا تحديث الدور أو الحالة للمستخدم الحالي
+    if (users[userIndex].id !== currentUser?.id) {
+        users[userIndex].role = role;
+        users[userIndex].isActive = isActive;
+    }
+    
+    // تحديث كلمة المرور إذا تم إدخالها
+    if (password) {
+        users[userIndex].password = password;
+    }
+    
+    users[userIndex].updatedAt = new Date().toISOString();
+    users[userIndex].updatedBy = currentUser.username;
+    
+    localStorage.setItem('systemUsers', JSON.stringify(users));
+    
+    $('#editUserModal').modal('hide');
+    showNotification('تم تحديث بيانات المستخدم بنجاح', 'success');
+    
+    // تحديث قائمة المستخدمين
+    loadUsers();
+    
+    // إضافة للنشاطات
+    addActivity('تحديث مستخدم', `تم تحديث بيانات المستخدم ${fullName} بواسطة ${currentUser.fullName}`);
+}
+
+// تبديل حالة المستخدم
+function toggleUserStatus(userId, newStatus) {
+    if (userId === currentUser?.id) {
+        showNotification('لا يمكن تغيير حالة حسابك الخاص', 'error');
+        return;
+    }
+    
+    if (!confirm('هل أنت متأكد من تغيير حالة المستخدم؟')) {
+        return;
+    }
+    
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+        showNotification('المستخدم غير موجود', 'error');
+        return;
+    }
+    
+    users[userIndex].isActive = newStatus;
+    users[userIndex].updatedAt = new Date().toISOString();
+    users[userIndex].updatedBy = currentUser.username;
+    
+    localStorage.setItem('systemUsers', JSON.stringify(users));
+    
+    showNotification(`تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم بنجاح`, 'success');
+    
+    // تحديث قائمة المستخدمين
+    loadUsers();
+    
+    // إضافة للنشاطات
+    addActivity('تغيير حالة مستخدم', `تم ${newStatus ? 'تفعيل' : 'تعطيل'} حساب المستخدم ${users[userIndex].fullName}`);
+}
+
+// حذف مستخدم
+function deleteUser(userId) {
+    if (userId === currentUser?.id) {
+        showNotification('لا يمكن حذف حسابك الخاص', 'error');
+        return;
+    }
+    
+    if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.')) {
+        return;
+    }
+    
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const userIndex = users.findIndex(u => u.id === userId);
+    
+    if (userIndex === -1) {
+        showNotification('المستخدم غير موجود', 'error');
+        return;
+    }
+    
+    const userName = users[userIndex].fullName;
+    users.splice(userIndex, 1);
+    
+    localStorage.setItem('systemUsers', JSON.stringify(users));
+    
+    showNotification('تم حذف المستخدم بنجاح', 'success');
+    
+    // تحديث قائمة المستخدمين
+    loadUsers();
+    
+    // إضافة للنشاطات
+    addActivity('حذف مستخدم', `تم حذف المستخدم ${userName} بواسطة ${currentUser.fullName}`);
+}
+
+// تحميل بيانات الملف الشخصي
+function loadProfileData() {
+    if (!currentUser) return;
+    
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const user = users.find(u => u.id === currentUser.id);
+    
+    if (!user) return;
+    
+    // تحديث البيانات في النموذج
+    $('#profileUsername').val(user.username);
+    $('#profileFullNameInput').val(user.fullName);
+    $('#profileEmail').val(user.email);
+    $('#profilePhone').val(user.phone || '');
+    $('#profileRoleSelect').val(user.role);
+    $('#profileStatus').val(user.isActive ? 'active' : 'inactive');
+    
+    // تحديث البيانات المعروضة
+    $('#profileFullName').text(user.fullName);
+    $('#profileRole').text(getRoleName(user.role));
+    $('#profileAvatarIcon').removeClass().addClass(getUserIconByRole(user.role));
+    
+    // حساب الإحصائيات
+    const userRequests = allRequests.filter(r => r.createdBy === user.username);
+    const completedRequests = userRequests.filter(r => r.status === 'approved');
+    
+    $('#profileRequestsCount').text(userRequests.length);
+    $('#profileActivityCount').text(userRequests.length * 2); // قيمة افتراضية
+    
+    const completionRate = userRequests.length > 0 ? 
+        Math.round((completedRequests.length / userRequests.length) * 100) : 0;
+    
+    $('#profileCompletionRate').text(completionRate + '%');
+    $('#profileCompletionBar').css('width', completionRate + '%');
+    
+    // حساب معدل الاستجابة (طلبات تم الرد عليها خلال 3 أيام)
+    const respondedRequests = userRequests.filter(r => {
+        if (!r.updatedAt) return false;
+        const start = new Date(r.createdAt);
+        const response = new Date(r.updatedAt);
+        const days = Math.ceil((response - start) / (1000 * 60 * 60 * 24));
+        return days <= 3;
+    });
+    
+    const responseRate = userRequests.length > 0 ? 
+        Math.round((respondedRequests.length / userRequests.length) * 100) : 0;
+    
+    $('#profileResponseRate').text(responseRate + '%');
+    $('#profileResponseBar').css('width', responseRate + '%');
+    
+    // تحميل الأنشطة
+    loadProfileActivities(user.username);
+}
+
+// إعداد أحداث صفحة الملف الشخصي
+function setupProfilePageEvents() {
+    $('#profileForm').submit(function(e) {
+        e.preventDefault();
+        saveProfileChanges();
+    });
+    
+    $('#cancelProfileChanges').click(function() {
+        loadProfileData(); // إعادة تحميل البيانات الأصلية
+    });
+    
+    $('#saveProfileBtn').click(function() {
+        saveProfileChanges();
+    });
+}
+
+// تحميل أنشطة المستخدم
+function loadProfileActivities(username) {
+    const container = $('#profileActivities');
+    
+    // جمع أنشطة المستخدم
+    let activities = [];
+    
+    // إضافة أنشطة الطلبات الخاصة بالمستخدم
+    const userRequests = allRequests.filter(r => r.createdBy === username);
+    userRequests.forEach(request => {
+        activities.push({
+            type: 'request',
+            title: `طلب جديد #${request.id}`,
+            description: request.requestTitle,
+            date: request.createdAt,
+            icon: 'fas fa-file-alt'
+        });
+        
+        if (request.updatedAt) {
+            activities.push({
+                type: 'update',
+                title: `تحديث الطلب #${request.id}`,
+                description: `تم تحديث حالة الطلب إلى ${statuses[request.status].name}`,
+                date: request.updatedAt,
+                icon: 'fas fa-sync'
+            });
+        }
+    });
+    
+    // ترتيب حسب التاريخ
+    activities.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // عرض أول 5 أنشطة
+    const recentActivities = activities.slice(0, 5);
+    
+    if (recentActivities.length === 0) {
+        container.html(`
+            <div class="text-center py-3 text-muted">
+                <i class="fas fa-history fa-2x mb-2"></i>
+                <p class="mb-0">لا توجد أنشطة سابقة</p>
+            </div>
+        `);
+        return;
+    }
+    
+    let html = '<div class="list-group">';
+    recentActivities.forEach(activity => {
+        const timeAgo = getTimeAgo(activity.date);
+        
+        html += `
+            <div class="list-group-item list-group-item-action border-0">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="${activity.icon} me-3 text-primary"></i>
+                        <div>
+                            <h6 class="mb-1">${activity.title}</h6>
+                            <p class="mb-0 small text-muted">${activity.description}</p>
+                        </div>
+                    </div>
+                    <small class="text-muted">${timeAgo}</small>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    
+    container.html(html);
+}
+
+// حفظ تغييرات الملف الشخصي
+function saveProfileChanges() {
+    if (!currentUser) return;
+    
+    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+    const userIndex = users.findIndex(u => u.id === currentUser.id);
+    
+    if (userIndex === -1) {
+        showNotification('المستخدم غير موجود', 'error');
+        return;
+    }
+    
+    const fullName = $('#profileFullNameInput').val().trim();
+    const email = $('#profileEmail').val().trim();
+    const phone = $('#profilePhone').val().trim();
+    const currentPassword = $('#currentPassword').val();
+    const newPassword = $('#newPassword').val();
+    const confirmNewPassword = $('#confirmNewPassword').val();
+    
+    // التحقق من البيانات
+    if (!fullName || !email) {
+        showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    // التحقق من كلمة المرور الحالية إذا تم إدخال كلمة مرور جديدة
+    if (newPassword) {
+        if (!currentPassword) {
+            showNotification('الرجاء إدخال كلمة المرور الحالية', 'error');
+            return;
+        }
+        
+        if (currentPassword !== users[userIndex].password) {
+            showNotification('كلمة المرور الحالية غير صحيحة', 'error');
+            return;
+        }
+        
+        if (newPassword !== confirmNewPassword) {
+            showNotification('كلمات المرور الجديدة غير متطابقة', 'error');
+            return;
+        }
+        
+        if (newPassword.length < 6) {
+            showNotification('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+            return;
+        }
+        
+        users[userIndex].password = newPassword;
+    }
+    
+    // تحديث بيانات المستخدم
+    users[userIndex].fullName = fullName;
+    users[userIndex].email = email;
+    users[userIndex].phone = phone;
+    users[userIndex].updatedAt = new Date().toISOString();
+    
+    localStorage.setItem('systemUsers', JSON.stringify(users));
+    
+    // تحديث بيانات الجلسة الحالية
+    currentUser.fullName = fullName;
+    currentUser.email = email;
+    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    
+    // تحديث واجهة المستخدم
+    updateUserInterface();
+    
+    showNotification('تم تحديث بياناتك الشخصية بنجاح', 'success');
+    
+    // إعادة تعيين حقول كلمات المرور
+    $('#currentPassword').val('');
+    $('#newPassword').val('');
+    $('#confirmNewPassword').val('');
+    
+    // إضافة للنشاطات
+    addActivity('تحديث الملف الشخصي', `تم تحديث بيانات الملف الشخصي بواسطة ${fullName}`);
+}
+
+// تحديث تهيئة التطبيق لتشمل الصفحات الجديدة
+function initializeApp() {
+    saveDataToLocalStorage();
+    populateCategoryFilters();
+    updateUserInterface();
+    renderRequestsTable();
+    updateStatistics();
+    setupMainEventListeners();
+    renderCategoryChart();
+    loadUrgentRequests();
+    
+    // تهيئة الصفحات
+    initSearchPage();
+    initCategoriesPage();
+    initReportsPage();
+    initSettingsPage();
+    initUsersPage(); // إضافة تهيئة صفحة المستخدمين
+    initProfilePage(); // إضافة تهيئة صفحة الملف الشخصي
+    
+    const today = new Date().toISOString().split('T')[0];
+    $('#requestDate').val(today);
+    
+    checkUnreadNotifications();
+    setInterval(checkNewRequests, 30000);
+}
         // تعريف دالة الحصول على اسم الدور للاستخدام العام
         window.getRoleName = getRoleName;
         window.getUserIconByRole = getUserIconByRole;
