@@ -4203,606 +4203,457 @@
         // تسجيل رسالة نجاح التحميل
         console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
     </script>
-    <!-- إضافة هذا الكود قبل نهاية الجسم (قبل </body>) -->
+  <!-- إضافة هذا الكود قبل </body> مباشرة -->
 <script>
-// نظام مزامنة GitHub التلقائي
-class GitHubSync {
-    constructor() {
-        this.config = {
-            repo: 'citizen-requests-system', // اسم المستودع
-            owner: 'amrdipoo', // اسم المستخدم في GitHub
-            token: '', // سيتم تخزينه في localStorage
-            branch: 'main'
-        };
-        this.syncInterval = 30000; // 30 ثانية
-        this.isSyncing = false;
-        this.lastSync = null;
-        this.init();
+// نظام مزامنة GitHub التلقائي - إضافة فقط بدون تعديل أي شيء موجود
+(function() {
+    'use strict';
+    
+    // التحقق من أن النظام الأصلي موجود أولاً
+    if (typeof allRequests === 'undefined') {
+        console.warn('النظام الأساسي غير محمل بعد، سيتم الانتظار...');
+        setTimeout(arguments.callee, 1000);
+        return;
     }
-
-    async init() {
-        // تحميل الإعدادات من localStorage
-        const savedConfig = localStorage.getItem('githubConfig');
-        if (savedConfig) {
-            this.config = { ...this.config, ...JSON.parse(savedConfig) };
+    
+    console.log('بدء تحميل نظام مزامنة GitHub...');
+    
+    class GitHubSync {
+        constructor() {
+            this.config = {
+                repo: 'citizen-requests-system',
+                owner: 'your-username',
+                token: '',
+                branch: 'main'
+            };
+            this.syncInterval = 30000;
+            this.isSyncing = false;
+            this.lastSync = null;
+            this.init();
         }
         
-        // عرض واجهة إعداد GitHub إذا لم يكن هناك token
-        if (!this.config.token) {
-            this.showSetupModal();
-        } else {
-            this.startAutoSync();
+        async init() {
+            // تحميل الإعدادات المسبقة
+            const savedConfig = localStorage.getItem('githubSyncConfig');
+            if (savedConfig) {
+                this.config = { ...this.config, ...JSON.parse(savedConfig) };
+            }
+            
+            // بدء النظام
+            setTimeout(() => {
+                this.setupUI();
+                this.setupListeners();
+            }, 2000);
         }
-    }
-
-    showSetupModal() {
-        const modalHtml = `
-            <div class="modal fade" id="githubSetupModal" tabindex="-1">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-dark text-white">
-                            <h5 class="modal-title">
-                                <i class="fab fa-github me-2"></i>إعداد مزامنة GitHub
-                            </h5>
-                        </div>
-                        <div class="modal-body">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle me-2"></i>
-                                لإعداد المزامنة التلقائية، يرجى اتباع الخطوات التالية:
+        
+        setupUI() {
+            // إضافة زر صغير في الزاوية
+            const buttonHTML = `
+                <div id="githubSyncButton" style="
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 9999;
+                    opacity: 0.8;
+                    transition: all 0.3s;
+                ">
+                    <button class="btn btn-sm btn-dark" style="
+                        border-radius: 20px;
+                        padding: 5px 15px;
+                        font-size: 12px;
+                    ">
+                        <i class="fab fa-github"></i>
+                        <span id="syncStatusText">GitHub</span>
+                    </button>
+                </div>
+            `;
+            
+            if (!$('#githubSyncButton').length) {
+                $('body').append(buttonHTML);
+                this.setupButtonEvents();
+            }
+        }
+        
+        setupButtonEvents() {
+            $('#githubSyncButton').hover(
+                function() { $(this).css('opacity', '1'); },
+                function() { $(this).css('opacity', '0.8'); }
+            );
+            
+            $('#githubSyncButton button').click(() => {
+                this.showConfigModal();
+            });
+        }
+        
+        showConfigModal() {
+            // حفظ الإعدادات الحالية
+            const currentUser = localStorage.getItem('currentUser') ? 
+                JSON.parse(localStorage.getItem('currentUser')).username : 'admin';
+            
+            const modalHTML = `
+                <div class="modal fade" id="githubConfigModal">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header bg-dark text-white py-2">
+                                <h6 class="modal-title mb-0">
+                                    <i class="fab fa-github me-2"></i>إعداد GitHub
+                                </h6>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                             </div>
-                            
-                            <ol class="mb-3">
-                                <li>أنشئ مستودعًا جديدًا على GitHub</li>
-                                <li>أنشئ Personal Access Token مع صلاحيات repo</li>
-                                <li>أدخل المعلومات أدناه</li>
-                            </ol>
-                            
-                            <form id="githubConfigForm">
+                            <div class="modal-body p-3">
                                 <div class="mb-3">
-                                    <label for="githubUsername" class="form-label">اسم المستخدم على GitHub</label>
-                                    <input type="text" class="form-control" id="githubUsername" 
-                                           placeholder="اسم المستخدم" required>
+                                    <label class="form-label small">اسم المستخدم</label>
+                                    <input type="text" class="form-control form-control-sm" 
+                                           id="githubOwner" value="${this.config.owner}">
                                 </div>
-                                
                                 <div class="mb-3">
-                                    <label for="githubRepo" class="form-label">اسم المستودع</label>
-                                    <input type="text" class="form-control" id="githubRepo" 
-                                           placeholder="citizen-requests-system" required>
+                                    <label class="form-label small">اسم المستودع</label>
+                                    <input type="text" class="form-control form-control-sm" 
+                                           id="githubRepo" value="${this.config.repo}">
                                 </div>
-                                
                                 <div class="mb-3">
-                                    <label for="githubToken" class="form-label">Personal Access Token</label>
-                                    <input type="password" class="form-control" id="githubToken" 
-                                           placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
+                                    <label class="form-label small">Token</label>
+                                    <input type="password" class="form-control form-control-sm" 
+                                           id="githubToken" value="${this.config.token}">
                                     <small class="text-muted">
-                                        <a href="https://github.com/settings/tokens" target="_blank">
-                                            أنشئ Token من هنا
-                                        </a>
+                                        <a href="https://github.com/settings/tokens" target="_blank">إنشاء Token</a>
                                     </small>
                                 </div>
-                                
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="autoSync" checked>
-                                    <label class="form-check-label" for="autoSync">
-                                        المزامنة التلقائية كل 30 ثانية
-                                    </label>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" 
+                                           id="autoSync" ${this.config.token ? 'checked' : ''}>
+                                    <label class="form-check-label small">المزامنة التلقائية</label>
                                 </div>
-                            </form>
-                            
-                            <div class="alert alert-warning">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                سيتم تخزين الـ Token محليًا فقط في متصفحك
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-sm btn-success" onclick="window.githubSync.saveConfig()">
+                                        <i class="fas fa-save me-1"></i>حفظ
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="window.githubSync.syncNow()">
+                                        <i class="fas fa-sync me-1"></i>مزامنة الآن
+                                    </button>
+                                    ${this.config.token ? `
+                                    <button class="btn btn-sm btn-warning" onclick="window.githubSync.restoreData()">
+                                        <i class="fas fa-download me-1"></i>استعادة
+                                    </button>
+                                    ` : ''}
+                                </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" onclick="this.closeSetup()">
-                                إلغاء
-                            </button>
-                            <button type="button" class="btn btn-success" onclick="githubSync.saveConfig()">
-                                <i class="fab fa-github me-2"></i>حفظ الإعدادات
-                            </button>
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
-        
-        $('body').append(modalHtml);
-        $('#githubSetupModal').modal({backdrop: 'static', keyboard: false});
-        
-        // تعبئة البيانات إذا كانت موجودة
-        if (this.config.owner !== 'your-username') {
-            $('#githubUsername').val(this.config.owner);
-        }
-        if (this.config.repo !== 'citizen-requests-system') {
-            $('#githubRepo').val(this.config.repo);
-        }
-    }
-
-    closeSetup() {
-        $('#githubSetupModal').modal('hide');
-        setTimeout(() => {
-            $('#githubSetupModal').remove();
-        }, 500);
-    }
-
-    saveConfig() {
-        const username = $('#githubUsername').val().trim();
-        const repo = $('#githubRepo').val().trim();
-        const token = $('#githubToken').val().trim();
-        const autoSync = $('#autoSync').is(':checked');
-        
-        if (!username || !repo || !token) {
-            showNotification('يرجى ملء جميع الحقول', 'error');
-            return;
-        }
-        
-        this.config.owner = username;
-        this.config.repo = repo;
-        this.config.token = token;
-        
-        // حفظ الإعدادات
-        localStorage.setItem('githubConfig', JSON.stringify(this.config));
-        
-        // إغلاق النموذج
-        this.closeSetup();
-        
-        // بدء المزامنة
-        this.startAutoSync();
-        
-        showNotification('تم حفظ إعدادات GitHub بنجاح', 'success');
-        
-        // اختبار الاتصال
-        this.testConnection();
-    }
-
-    async testConnection() {
-        try {
-            const response = await this.githubRequest('GET', '/user');
-            if (response.login === this.config.owner) {
-                showNotification('تم الاتصال بـ GitHub بنجاح', 'success');
-                return true;
-            }
-        } catch (error) {
-            console.error('فشل اختبار الاتصال:', error);
-            showNotification('فشل الاتصال بـ GitHub، تحقق من الإعدادات', 'error');
-            return false;
-        }
-    }
-
-    async githubRequest(method, endpoint, data = null) {
-        const url = `https://api.github.com${endpoint}`;
-        
-        const headers = {
-            'Authorization': `token ${this.config.token}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Content-Type': 'application/json'
-        };
-        
-        const options = {
-            method: method,
-            headers: headers
-        };
-        
-        if (data) {
-            options.body = JSON.stringify(data);
-        }
-        
-        const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            throw new Error(`GitHub API error: ${response.status}`);
-        }
-        
-        return response.json();
-    }
-
-    async getFileSHA(path) {
-        try {
-            const endpoint = `/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
-            const file = await this.githubRequest('GET', endpoint);
-            return file.sha;
-        } catch (error) {
-            return null; // الملف غير موجود
-        }
-    }
-
-    async syncData() {
-        if (this.isSyncing) return;
-        
-        this.isSyncing = true;
-        
-        try {
-            console.log('بدء مزامنة البيانات مع GitHub...');
+            `;
             
-            // البيانات التي سيتم مزامنتها
-            const dataToSync = {
-                requests: allRequests,
-                users: JSON.parse(localStorage.getItem('systemUsers') || '[]'),
-                settings: JSON.parse(localStorage.getItem('appSettings') || '{}'),
-                activities: JSON.parse(localStorage.getItem('systemActivities') || '[]'),
-                syncTime: new Date().toISOString()
+            if (!$('#githubConfigModal').length) {
+                $('body').append(modalHTML);
+            }
+            
+            $('#githubConfigModal').modal('show');
+        }
+        
+        saveConfig() {
+            this.config.owner = $('#githubOwner').val().trim();
+            this.config.repo = $('#githubRepo').val().trim();
+            this.config.token = $('#githubToken').val().trim();
+            
+            localStorage.setItem('githubSyncConfig', JSON.stringify(this.config));
+            
+            // اختبار الاتصال
+            this.testConnection().then(success => {
+                if (success) {
+                    this.showNotification('تم حفظ الإعدادات بنجاح', 'success');
+                    $('#githubConfigModal').modal('hide');
+                    this.updateButtonStatus();
+                    
+                    if ($('#autoSync').is(':checked')) {
+                        this.startAutoSync();
+                    }
+                }
+            });
+        }
+        
+        async testConnection() {
+            if (!this.config.token) return false;
+            
+            try {
+                const response = await fetch('https://api.github.com/user', {
+                    headers: {
+                        'Authorization': `token ${this.config.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const user = await response.json();
+                    if (user.login === this.config.owner) {
+                        return true;
+                    }
+                }
+                return false;
+            } catch (error) {
+                console.error('فشل اختبار الاتصال:', error);
+                this.showNotification('فشل الاتصال بـ GitHub', 'error');
+                return false;
+            }
+        }
+        
+        async syncNow() {
+            if (this.isSyncing) return;
+            
+            this.isSyncing = true;
+            this.updateButtonStatus('جاري المزامنة...', 'warning');
+            
+            try {
+                // جمع البيانات
+                const syncData = {
+                    requests: allRequests,
+                    users: JSON.parse(localStorage.getItem('systemUsers') || '[]'),
+                    settings: JSON.parse(localStorage.getItem('appSettings') || '{}'),
+                    activities: JSON.parse(localStorage.getItem('systemActivities') || '[]'),
+                    timestamp: new Date().toISOString(),
+                    version: '1.0'
+                };
+                
+                // تحويل إلى JSON ومشفر
+                const content = JSON.stringify(syncData, null, 2);
+                const encoded = btoa(unescape(encodeURIComponent(content)));
+                
+                // رفع البيانات
+                await this.uploadToGitHub('data/latest.json', encoded);
+                
+                // حفظ نسخة بتاريخ
+                const date = new Date();
+                const datedFile = `data/backup_${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}_${date.getHours()}.json`;
+                await this.uploadToGitHub(datedFile, encoded);
+                
+                this.lastSync = new Date();
+                localStorage.setItem('lastGitHubSync', this.lastSync.toISOString());
+                
+                this.showNotification('تمت المزامنة بنجاح', 'success');
+                
+            } catch (error) {
+                console.error('خطأ في المزامنة:', error);
+                this.showNotification('فشلت المزامنة', 'error');
+            } finally {
+                this.isSyncing = false;
+                this.updateButtonStatus();
+            }
+        }
+        
+        async uploadToGitHub(path, content) {
+            const url = `https://api.github.com/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
+            
+            // التحقق إذا الملف موجود
+            let sha = null;
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${this.config.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const file = await response.json();
+                    sha = file.sha;
+                }
+            } catch (error) {
+                // الملف غير موجود، هذا طبيعي
+            }
+            
+            // رفع الملف
+            const data = {
+                message: `Auto-sync: ${new Date().toLocaleString('ar-EG')}`,
+                content: content,
+                branch: this.config.branch
             };
             
-            const content = JSON.stringify(dataToSync, null, 2);
-            const contentEncoded = btoa(unescape(encodeURIComponent(content)));
-            
-            // اسم الملف مع التاريخ
-            const date = new Date();
-            const fileName = `backup/data_${date.getFullYear()}_${date.getMonth() + 1}_${date.getDate()}_${date.getHours()}.json`;
-            const latestFileName = 'backup/latest.json';
-            
-            // التحقق من وجود الملف
-            const sha = await this.getFileSHA(fileName);
-            const latestSHA = await this.getFileSHA(latestFileName);
-            
-            // رفع الملف مع التاريخ
-            await this.uploadFile(fileName, contentEncoded, sha);
-            
-            // رفع الملف الأحدث
-            await this.uploadFile(latestFileName, contentEncoded, latestSHA);
-            
-            // تحديث وقت المزامنة الأخيرة
-            this.lastSync = new Date();
-            localStorage.setItem('lastGitHubSync', this.lastSync.toISOString());
-            
-            console.log('تمت المزامنة بنجاح:', fileName);
-            
-            // عرض إشعار
-            if (document.hasFocus()) {
-                showNotification('تمت مزامنة البيانات مع GitHub', 'success');
+            if (sha) {
+                data.sha = sha;
             }
             
-            // تحديث واجهة حالة المزامنة
-            this.updateSyncStatus();
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${this.config.token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
             
-        } catch (error) {
-            console.error('خطأ في المزامنة:', error);
-            showNotification('فشلت المزامنة مع GitHub', 'error');
-        } finally {
-            this.isSyncing = false;
-        }
-    }
-
-    async uploadFile(path, content, sha = null) {
-        const endpoint = `/repos/${this.config.owner}/${this.config.repo}/contents/${path}`;
-        
-        const data = {
-            message: `Auto-sync: ${new Date().toLocaleString('ar-EG')}`,
-            content: content,
-            branch: this.config.branch
-        };
-        
-        if (sha) {
-            data.sha = sha;
+            if (!response.ok) {
+                throw new Error(`فشل الرفع: ${response.status}`);
+            }
+            
+            return response.json();
         }
         
-        return await this.githubRequest('PUT', endpoint, data);
-    }
-
-    startAutoSync() {
-        // المزامنة الأولى بعد 5 ثوانٍ
-        setTimeout(() => {
-            this.syncData();
-        }, 5000);
-        
-        // المزامنة الدورية
-        setInterval(() => {
-            if (this.config.token && document.visibilityState === 'visible') {
-                this.syncData();
-            }
-        }, this.syncInterval);
-        
-        // المزامنة عند تغيير البيانات
-        this.setupDataChangeListeners();
-        
-        // تحديث حالة المزامنة في الواجهة
-        this.addSyncStatusUI();
-    }
-
-    setupDataChangeListeners() {
-        // استبدال دالة حفظ البيانات الأصلية
-        const originalSaveData = saveDataToLocalStorage;
-        
-        saveDataToLocalStorage = function() {
-            // استدعاء الدالة الأصلية
-            originalSaveData();
-            
-            // تشغيل المزامنة
-            if (githubSync && githubSync.config.token) {
-                setTimeout(() => {
-                    githubSync.syncData();
-                }, 1000);
-            }
-        };
-        
-        // مراقبة تغييرات localStorage
-        window.addEventListener('storage', (event) => {
-            if (event.key && event.key.includes('citizen') && githubSync.config.token) {
-                setTimeout(() => {
-                    githubSync.syncData();
-                }, 1000);
-            }
-        });
-    }
-
-    addSyncStatusUI() {
-        // إضافة زر حالة المزامنة في الشريط الجانبي
-        const syncStatusHTML = `
-            <div class="sync-status mt-3 p-2 text-center" id="syncStatus">
-                <div class="mb-2">
-                    <i class="fab fa-github fa-lg"></i>
-                </div>
-                <div class="sync-indicator">
-                    <span class="sync-dot"></span>
-                    <small class="sync-text">جاري المزامنة...</small>
-                </div>
-                <small class="last-sync text-white-50" id="lastSyncTime"></small>
-            </div>
-        `;
-        
-        $('.sidebar .mt-auto').before(syncStatusHTML);
-        
-        // إضافة CSS للعناصر
-        const style = document.createElement('style');
-        style.textContent = `
-            .sync-indicator {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 5px;
+        async restoreData() {
+            if (!confirm('هل تريد استعادة البيانات من GitHub؟ سيتم استبدال البيانات الحالية.')) {
+                return;
             }
             
-            .sync-dot {
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
-                background-color: #10b981;
-                animation: pulse 2s infinite;
+            try {
+                const url = `https://api.github.com/repos/${this.config.owner}/${this.config.repo}/contents/data/latest.json`;
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `token ${this.config.token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                
+                if (!response.ok) throw new Error('فشل جلب البيانات');
+                
+                const file = await response.json();
+                const content = atob(file.content);
+                const data = JSON.parse(content);
+                
+                // استعادة البيانات
+                if (data.requests) {
+                    // لا تعيد تعيين allRequests مباشرة، أضف إلى المصفوفة
+                    allRequests.length = 0;
+                    Array.prototype.push.apply(allRequests, data.requests);
+                    localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+                }
+                
+                if (data.users) {
+                    localStorage.setItem('systemUsers', JSON.stringify(data.users));
+                }
+                
+                if (data.settings) {
+                    localStorage.setItem('appSettings', JSON.stringify(data.settings));
+                }
+                
+                if (data.activities) {
+                    localStorage.setItem('systemActivities', JSON.stringify(data.activities));
+                }
+                
+                this.showNotification('تمت استعادة البيانات بنجاح', 'success');
+                
+                // تحديث الواجهة إذا كانت الدالة موجودة
+                if (typeof refreshData === 'function') {
+                    refreshData();
+                }
+                
+            } catch (error) {
+                console.error('خطأ في الاستعادة:', error);
+                this.showNotification('فشلت استعادة البيانات', 'error');
             }
-            
-            @keyframes pulse {
-                0% { opacity: 1; }
-                50% { opacity: 0.3; }
-                100% { opacity: 1; }
-            }
-            
-            .sync-text {
-                font-size: 0.75rem;
-            }
-            
-            .last-sync {
-                font-size: 0.7rem;
-                display: block;
-                margin-top: 5px;
-            }
-        `;
-        document.head.appendChild(style);
-        
-        this.updateSyncStatus();
-    }
-
-    updateSyncStatus() {
-        const lastSyncTime = document.getElementById('lastSyncTime');
-        const syncDot = document.querySelector('.sync-dot');
-        const syncText = document.querySelector('.sync-text');
-        
-        if (this.lastSync) {
-            const timeAgo = this.getTimeAgo(this.lastSync);
-            lastSyncTime.textContent = `آخر مزامنة: ${timeAgo}`;
         }
         
-        if (this.isSyncing) {
-            syncDot.style.backgroundColor = '#f59e0b';
-            syncDot.style.animation = 'pulse 1s infinite';
-            syncText.textContent = 'جاري المزامنة...';
-        } else {
-            syncDot.style.backgroundColor = '#10b981';
-            syncDot.style.animation = 'pulse 2s infinite';
-            syncText.textContent = 'متزامن';
+        startAutoSync() {
+            // مزامنة أولية
+            setTimeout(() => this.syncNow(), 5000);
+            
+            // مزامنة دورية
+            setInterval(() => {
+                if (this.config.token && document.visibilityState === 'visible') {
+                    this.syncNow();
+                }
+            }, this.syncInterval);
+            
+            // مراقبة تغييرات البيانات
+            this.setupDataWatchers();
+        }
+        
+        setupDataWatchers() {
+            // مراقبة التغييرات في allRequests
+            const originalMethods = {};
+            
+            // مراقبة Array.push
+            const originalPush = Array.prototype.push;
+            const self = this;
+            
+            Array.prototype.push = function() {
+                const result = originalPush.apply(this, arguments);
+                if (this === allRequests) {
+                    setTimeout(() => self.syncNow(), 2000);
+                }
+                return result;
+            };
+            
+            // مراقبة localStorage
+            const originalSetItem = Storage.prototype.setItem;
+            Storage.prototype.setItem = function(key, value) {
+                const result = originalSetItem.call(this, key, value);
+                if (key.includes('citizen') || key.includes('system')) {
+                    setTimeout(() => self.syncNow(), 3000);
+                }
+                return result;
+            };
+        }
+        
+        setupListeners() {
+            // مراقبة التغييرات في البيانات الأصلية
+            const originalSaveData = window.saveDataToLocalStorage;
+            if (originalSaveData) {
+                window.saveDataToLocalStorage = function() {
+                    const result = originalSaveData();
+                    if (window.githubSync && window.githubSync.config.token) {
+                        setTimeout(() => window.githubSync.syncNow(), 1000);
+                    }
+                    return result;
+                };
+            }
+        }
+        
+        updateButtonStatus(text = null, color = 'dark') {
+            const button = $('#githubSyncButton button');
+            const statusText = $('#syncStatusText');
+            
+            if (text) {
+                statusText.text(text);
+            } else if (this.config.token) {
+                statusText.text('GitHub ✓');
+                button.removeClass('btn-dark btn-warning btn-success')
+                      .addClass('btn-success');
+            } else {
+                statusText.text('GitHub');
+                button.removeClass('btn-dark btn-warning btn-success')
+                      .addClass('btn-dark');
+            }
+            
+            if (color === 'warning') {
+                button.removeClass('btn-dark btn-success')
+                      .addClass('btn-warning');
+            }
+        }
+        
+        showNotification(message, type) {
+            // استخدام نظام الإشعارات الموجود إذا كان متاحاً
+            if (typeof showNotification === 'function') {
+                showNotification(message, type);
+            } else {
+                // إشعار بسيط
+                const notification = `
+                    <div class="position-fixed bottom-0 start-50 translate-middle-x mb-3" 
+                         style="z-index: 10000;">
+                        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                            ${message}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                `;
+                $('body').append(notification);
+                setTimeout(() => $('.alert').alert('close'), 3000);
+            }
         }
     }
-
-    getTimeAgo(date) {
-        const now = new Date();
-        const diffMs = now - date;
-        const diffMins = Math.floor(diffMs / 60000);
-        
-        if (diffMins < 1) return 'الآن';
-        if (diffMins === 1) return 'منذ دقيقة';
-        if (diffMins < 60) return `منذ ${diffMins} دقيقة`;
-        
-        const diffHours = Math.floor(diffMins / 60);
-        if (diffHours === 1) return 'منذ ساعة';
-        if (diffHours < 24) return `منذ ${diffHours} ساعة`;
-        
-        const diffDays = Math.floor(diffHours / 24);
-        if (diffDays === 1) return 'منذ يوم';
-        return `منذ ${diffDays} يوم`;
-    }
-
-    // دالة لاستعادة البيانات من GitHub
-    async restoreFromGitHub() {
-        try {
-            const endpoint = `/repos/${this.config.owner}/${this.config.repo}/contents/backup/latest.json`;
-            const file = await this.githubRequest('GET', endpoint);
-            
-            const content = atob(file.content);
-            const data = JSON.parse(content);
-            
-            // استعادة البيانات
-            if (data.requests) {
-                allRequests = data.requests;
-                localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-            }
-            
-            if (data.users) {
-                localStorage.setItem('systemUsers', JSON.stringify(data.users));
-            }
-            
-            if (data.settings) {
-                localStorage.setItem('appSettings', JSON.stringify(data.settings));
-            }
-            
-            if (data.activities) {
-                localStorage.setItem('systemActivities', JSON.stringify(data.activities));
-            }
-            
-            showNotification('تم استعادة البيانات من GitHub بنجاح', 'success');
-            
-            // تحديث الواجهة
-            if (typeof refreshData === 'function') {
-                refreshData();
-            }
-            
-            return true;
-        } catch (error) {
-            console.error('خطأ في استعادة البيانات:', error);
-            showNotification('فشل استعادة البيانات من GitHub', 'error');
-            return false;
-        }
-    }
-}
-
-// تهيئة نظام المزامنة
-let githubSync;
-
-// بدء النظام بعد تحميل الصفحة
-$(document).ready(function() {
+    
+    // تهيئة النظام بعد تحميل الصفحة
     setTimeout(() => {
-        githubSync = new GitHubSync();
-        
-        // إضافة عنصر تحكم في الإعدادات
-        addGitHubControlsToSettings();
-    }, 3000);
-});
-
-// إضافة عناصر تحكم GitHub للإعدادات
-function addGitHubControlsToSettings() {
-    const settingsHTML = `
-        <div class="col-md-12 mb-4">
-            <div class="card">
-                <div class="card-header bg-dark text-white">
-                    <h6 class="mb-0">
-                        <i class="fab fa-github me-2"></i>مزامنة GitHub
-                    </h6>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6>حالة المزامنة</h6>
-                                    <div class="sync-status-display" id="syncStatusDisplay">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <span class="sync-dot me-2"></span>
-                                            <span>جاري التحميل...</span>
-                                        </div>
-                                        <small class="text-muted" id="syncDetails"></small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <h6>الإجراءات</h6>
-                                    <div class="d-grid gap-2">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="githubSync.syncData()">
-                                            <i class="fas fa-sync me-1"></i>مزامنة يدوية
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-success" onclick="githubSync.restoreFromGitHub()">
-                                            <i class="fas fa-download me-1"></i>استعادة البيانات
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-warning" onclick="githubSync.showSetupModal()">
-                                            <i class="fas fa-cog me-1"></i>تغيير الإعدادات
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <small>
-                            يتم مزامنة البيانات تلقائيًا كل 30 ثانية مع GitHub.
-                            يمكنك استعادة البيانات في أي وقت من آخر نسخة محفوظة.
-                        </small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // إضافة إلى صفحة الإعدادات
-    $('#settingsSection .row').first().append(settingsHTML);
-    
-    // تحديث حالة المزامنة
-    updateSyncStatusDisplay();
-    setInterval(updateSyncStatusDisplay, 5000);
-}
-
-function updateSyncStatusDisplay() {
-    if (!githubSync) return;
-    
-    const display = $('#syncStatusDisplay');
-    const details = $('#syncDetails');
-    
-    if (githubSync.config.token) {
-        const lastSync = githubSync.lastSync ? 
-            `آخر مزامنة: ${githubSync.getTimeAgo(githubSync.lastSync)}` : 
-            'لم تتم المزامنة بعد';
-        
-        details.text(lastSync);
-        
-        if (githubSync.isSyncing) {
-            display.html(`
-                <div class="d-flex align-items-center mb-2">
-                    <span class="sync-dot me-2" style="background-color: #f59e0b; animation: pulse 1s infinite;"></span>
-                    <span>جاري المزامنة...</span>
-                </div>
-                <small class="text-muted">${lastSync}</small>
-            `);
-        } else {
-            display.html(`
-                <div class="d-flex align-items-center mb-2">
-                    <span class="sync-dot me-2" style="background-color: #10b981;"></span>
-                    <span>نظام المزامنة نشط</span>
-                </div>
-                <small class="text-muted">${lastSync}</small>
-            `);
+        if (!window.githubSync) {
+            window.githubSync = new GitHubSync();
+            console.log('تم تحميل نظام مزامنة GitHub بنجاح');
         }
-    } else {
-        display.html(`
-            <div class="d-flex align-items-center mb-2">
-                <span class="sync-dot me-2" style="background-color: #ef4444;"></span>
-                <span>المزامنة غير نشطة</span>
-            </div>
-            <small class="text-muted">يرجى إعداد اتصال GitHub</small>
-        `);
-    }
-}
-
-// إضافة زر GitHub إلى شريط الأدوات
-function addGitHubToToolbar() {
-    const toolbarHTML = `
-        <div class="position-fixed bottom-0 start-0 m-3" style="z-index: 1030;">
-            <div class="btn-group-vertical" role="group">
-                <button class="btn btn-dark btn-sm" onclick="githubSync.syncData()" 
-                        title="مزامنة مع GitHub" id="githubSyncBtn">
-                    <i class="fab fa-github"></i>
-                </button>
-            </div>
-        </div>
-    `;
+    }, 3000);
     
-    $('body').append(toolbarHTML);
-}
-
-// بدء إضافة العناصر بعد تحميل التطبيق
-setTimeout(addGitHubToToolbar, 5000);
+})();
 </script>
+
+<!-- إضافة Font Awesome للـ GitHub icon -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/brands.min.js"></script>
 </body>
 </html>
-
