@@ -6,8 +6,6 @@
     <title>نظام متابعة طلبات المواطنين - عضو مجلس النواب</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-	
     <style>
         /* الأنماط العامة */
         :root {
@@ -527,31 +525,6 @@
             flex-wrap: wrap;
             justify-content: center;
         }
-		/* أنماط إضافية للمزامنة */
-.sync-status {
-    position: fixed;
-    bottom: 10px;
-    right: 10px;
-    z-index: 1000;
-    font-size: 12px;
-}
-
-.sync-online {
-    color: #10b981;
-}
-
-.sync-offline {
-    color: #ef4444;
-}
-
-.sync-pending {
-    color: #f59e0b;
-}
-
-.offline-mode {
-    border: 2px solid #f59e0b;
-    background-color: #fef3c7;
-}
     </style>
 </head>
 <body>
@@ -837,11 +810,11 @@
                     </a>
                 </li>
 				<li class="nav-item">
-    <a class="nav-link" href="#" id="syncLink">
-        <i class="fas fa-sync-alt"></i>
-        <span>مزامنة البيانات</span>
-    </a>
-</li>
+					<a class="nav-link" href="#" id="usersLink">
+						<i class="fas fa-users"></i>
+						<span>المستخدمين</span>
+					</a>
+				</li>
                 <li class="nav-item">
                     <a class="nav-link" href="#" id="profileLink">
                         <i class="fas fa-user-circle"></i>
@@ -1870,88 +1843,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<!-- مكتبة Supabase -->
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-	<!-- مكتبة compression للمشاركة عبر الرابط (اختياري) -->
-	<script src="https://cdn.jsdelivr.net/npm/lz-string@1.4.4/libs/lz-string.min.js"></script>
     
     <!-- التطبيق الرئيسي -->
     <script>
-	// ==================== إعدادات Supabase ====================
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'; // ⬅️ غير هذا
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY'; // ⬅️ غير هذا
-
-let supabase = null;
-let currentUser = null;
-let syncInterval = null;
-
-// تهيئة Supabase
-function initSupabase() {
-    if (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY) {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('✅ Supabase initialized');
-        return true;
-    } else {
-        console.warn('⚠️ Supabase not configured');
-        return false;
-    }
-}
-
-// ==================== إعدادات GitHub Backup ====================
-const GITHUB_CONFIG = {
-    enabled: false,
-    token: null,
-    user: 'YOUR_USERNAME', // ⬅️ غير هذا
-    repo: 'YOUR_REPO',     // ⬅️ غير هذا
-    branch: 'main'
-};
-
-// ==================== البيانات ====================
-const categories = {
-    'electricity': { name: 'كهرباء', color: '#f97316', bgColor: '#ffedd5', icon: 'fas fa-bolt' },
-    'health': { name: 'صحة', color: '#ec4899', bgColor: '#fce7f3', icon: 'fas fa-hospital' },
-    'water': { name: 'مياه', color: '#0ea5e9', bgColor: '#e0f2fe', icon: 'fas fa-tint' },
-    'sanitation': { name: 'صرف صحي', color: '#8b5cf6', bgColor: '#f3e8ff', icon: 'fas fa-toilet' },
-    'education': { name: 'تعليم', color: '#84cc16', bgColor: '#f0fdf4', icon: 'fas fa-graduation-cap' },
-    'transport': { name: 'مواصلات', color: '#6366f1', bgColor: '#eef2ff', icon: 'fas fa-bus' },
-    'telecom': { name: 'اتصالات', color: '#06b6d4', bgColor: '#ecfeff', icon: 'fas fa-wifi' },
-    'housing': { name: 'إسكان', color: '#14b8a6', bgColor: '#f0fdfa', icon: 'fas fa-home' }
-};
-
-const statuses = {
-    'submitted': { name: 'تم التقديم', color: '#3b82f6', bgColor: '#dbeafe', icon: 'fas fa-file-import' },
-    'pending': { name: 'انتظار الرد', color: '#f59e0b', bgColor: '#fef3c7', icon: 'fas fa-clock' },
-    'approved': { name: 'موافقة', color: '#10b981', bgColor: '#d1fae5', icon: 'fas fa-check-circle' },
-    'rejected': { name: 'غير موافقة', color: '#ef4444', bgColor: '#fee2e2', icon: 'fas fa-times-circle' }
-};
-
-let allRequests = [];
-let currentPage = 1;
-const itemsPerPage = 10;
-let filteredRequests = [];
-let activeFilters = {
-    searchTerm: '',
-    searchType: 'both',
-    status: '',
-    category: '',
-    dateFilter: ''
-};
-
-// ==================== دوال Supabase الرئيسية ====================
-
-// 1. تسجيل الدخول مع Supabase
-async function loginWithSupabase(email, password) {
-    try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password
-        });
-        
-        if (error) throw error;
-        
-        // الحصول على بيانات المستخدم الإضافية
-        const { data: profile }
         // تعريف البيانات
         const categories = {
             'electricity': {
@@ -2439,9 +2333,7 @@ class GitHubDataManager {
 
 // إنشاء مدير GitHub
 const gitHubManager = new GitHubDataManager();
-
-        // بيانات التطبيق
-		// ==================== إعدادات GitHub ====================
+// ==================== إعدادات GitHub ====================
 const GITHUB_CONFIG = {
     ENABLED: false, // تغيير لـ true بعد إعداد GitHub
     USERNAME: 'YOUR_GITHUB_USERNAME', // ⬅️ غير هذا
@@ -2456,6 +2348,7 @@ const GITHUB_CONFIG = {
 let isSyncing = false;
 let lastSyncTime = null;
 let syncInterval = null;
+        // بيانات التطبيق
         let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
             {
                 id: 1001,
@@ -2949,6 +2842,7 @@ let syncInterval = null;
         }
 
         // بدء التطبيق
+       // بدء التطبيق
 async function startApplication() {
     $('#welcomeScreen').hide();
     $('#loginPage').hide();
@@ -3029,8 +2923,6 @@ function updateSyncStatus() {
             
             checkUnreadNotifications();
             setInterval(checkNewRequests, 30000);
-			    // تحديث حالة المزامنة
-    updateSyncStatus();
         }
 
         // تحديث واجهة المستخدم
@@ -4424,12 +4316,6 @@ $('#syncLink').click(async function(e) {
             // تنظيف النموذج بعد الإغلاق
             $('#newRequestModal').on('hidden.bs.modal', function() {
                 $(this).remove();
-				    // مزامنة مع GitHub بعد الإضافة
-    if (GITHUB_CONFIG.ENABLED) {
-        setTimeout(() => {
-            gitHubManager.sync();
-        }, 1000);
-    }
             });
         }
 
@@ -4482,6 +4368,12 @@ $('#syncLink').click(async function(e) {
             
             // إضافة للأنشطة
             addActivity('طلب جديد', `تم إضافة طلب جديد #${newId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
+			    // مزامنة مع GitHub بعد الإضافة
+				if (GITHUB_CONFIG.ENABLED) {
+					setTimeout(() => {
+						gitHubManager.sync();
+					}, 1000);
+    }
         }
 
         // عرض تفاصيل الطلب
@@ -4623,12 +4515,12 @@ $('#syncLink').click(async function(e) {
             
             // إضافة للأنشطة
             addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-			    // مزامنة مع GitHub بعد الإضافة
-    if (GITHUB_CONFIG.ENABLED) {
-        setTimeout(() => {
-            gitHubManager.sync();
-        }, 1000);
-    }
+					    // مزامنة مع GitHub بعد الإضافة
+			if (GITHUB_CONFIG.ENABLED) {
+				setTimeout(() => {
+					gitHubManager.sync();
+				}, 1000);
+			}
         }
 
         // تحديث حالة الطلب مباشرة
@@ -4648,12 +4540,12 @@ $('#syncLink').click(async function(e) {
             
             // إضافة للأنشطة
             addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-			    // مزامنة مع GitHub بعد الإضافة
-    if (GITHUB_CONFIG.ENABLED) {
-        setTimeout(() => {
-            gitHubManager.sync();
-        }, 1000);
-    }
+					    // مزامنة مع GitHub بعد الإضافة
+				if (GITHUB_CONFIG.ENABLED) {
+					setTimeout(() => {
+						gitHubManager.sync();
+					}, 1000);
+				}
         }
 
         // تعديل الطلب
@@ -4661,11 +4553,11 @@ $('#syncLink').click(async function(e) {
             // في هذا المثال، سنقوم بفتح تفاصيل الطلب للتحرير
             showRequestDetails(requestId);
 			    // مزامنة مع GitHub بعد الإضافة
-    if (GITHUB_CONFIG.ENABLED) {
-        setTimeout(() => {
-            gitHubManager.sync();
-        }, 1000);
-    }
+			if (GITHUB_CONFIG.ENABLED) {
+				setTimeout(() => {
+					gitHubManager.sync();
+				}, 1000);
+			}
         }
 
         // تحديث البيانات
@@ -5085,26 +4977,27 @@ $('#syncLink').click(async function(e) {
             
             return `الآن`;
         }
-// دالة لعرض وقت المزامنة بشكل مناسب
-function formatSyncTime(dateString) {
-    if (!dateString) return 'لم تتم';
-    
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return 'الآن';
-    if (diffMins < 60) return `قبل ${diffMins} دقيقة`;
-    
-    const diffHours = Math.floor(diffMins / 60);
-    if (diffHours < 24) return `قبل ${diffHours} ساعة`;
-    
-    const diffDays = Math.floor(diffHours / 24);
-    if (diffDays < 7) return `قبل ${diffDays} يوم`;
-    
-    return date.toLocaleDateString('ar-EG');
-}
+		// دالة لعرض وقت المزامنة بشكل مناسب
+			function formatSyncTime(dateString) {
+				if (!dateString) return 'لم تتم';
+				
+				const date = new Date(dateString);
+				const now = new Date();
+				const diffMs = now - date;
+				const diffMins = Math.floor(diffMs / 60000);
+				
+				if (diffMins < 1) return 'الآن';
+				if (diffMins < 60) return `قبل ${diffMins} دقيقة`;
+				
+				const diffHours = Math.floor(diffMins / 60);
+				if (diffHours < 24) return `قبل ${diffHours} ساعة`;
+				
+				const diffDays = Math.floor(diffHours / 24);
+				if (diffDays < 7) return `قبل ${diffDays} يوم`;
+				
+				return date.toLocaleDateString('ar-EG');
+			}
+
         // تحويل الأولوية للنص العربي
         function getPriorityText(priority) {
             switch(priority) {
@@ -5917,6 +5810,8 @@ function initializeApp() {
     
     checkUnreadNotifications();
     setInterval(checkNewRequests, 30000);
+	    // تحديث حالة المزامنة
+    updateSyncStatus();
 }
         // تعريف دالة الحصول على اسم الدور للاستخدام العام
         window.getRoleName = getRoleName;
