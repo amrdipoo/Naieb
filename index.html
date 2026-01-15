@@ -5224,86 +5224,361 @@ function initializeApp() {
         console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
 		// ==================== تكامل مع Supabase ====================
 
-// دالة للتسجيل الدخول مع Supabase
-async function loginWithSupabaseWrapper(username, password) {
-    const result = await window.supabaseFunctions?.loginWithSupabase(username, password);
+		// دالة للتسجيل الدخول مع Supabase
+		async function loginWithSupabaseWrapper(username, password) {
+			const result = await window.supabaseFunctions?.loginWithSupabase(username, password);
+			
+			if (result?.success) {
+				const sessionData = {
+					id: result.user.id,
+					username: result.user.username,
+					fullName: result.user.full_name,
+					role: result.user.role,
+					email: result.user.email,
+					loggedInAt: new Date().toISOString()
+				};
+				
+				localStorage.setItem('currentUser', JSON.stringify(sessionData));
+				currentUser = sessionData;
+				
+				return { success: true };
+			}
+			
+			return { success: false, message: result?.message || 'حدث خطأ في المصادقة' };
+		}
+
+		// دالة لجلب الطلبات من Supabase
+		async function loadRequestsFromSupabase() {
+			const result = await window.supabaseFunctions?.getRequestsFromSupabase(activeFilters);
+			
+			if (result?.success) {
+				// تحويل البيانات من Supabase إلى تنسيق النظام
+				allRequests = result.requests.map(req => ({
+					id: req.id,
+					nationalId: req.national_id,
+					applicantName: req.applicant_name,
+					requestTitle: req.request_title,
+					requestSummary: req.request_summary,
+					requestDate: req.request_date,
+					category: req.category,
+					status: req.status,
+					file: req.file_url,
+					comments: req.comments,
+					priority: req.priority,
+					createdAt: req.created_at,
+					createdBy: req.created_by
+				}));
+				
+				localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+				filteredRequests = [...allRequests];
+				
+				renderRequestsTable();
+				updateStatistics();
+				renderCategoryChart();
+				loadUrgentRequests();
+				
+				return true;
+			}
+			
+			return false;
+		}
+
+		// دالة لحفظ طلب جديد في Supabase
+		async function saveNewRequestToSupabase(requestData) {
+			if (!currentUser) return false;
+			
+			const result = await window.supabaseFunctions?.saveRequestToSupabase({
+				nationalId: requestData.nationalId,
+				applicantName: requestData.applicantName,
+				requestTitle: requestData.requestTitle,
+				requestSummary: requestData.requestSummary,
+				requestDate: requestData.requestDate,
+				category: requestData.category,
+				status: requestData.status,
+				priority: requestData.priority,
+				createdBy: currentUser.id
+			});
+			
+			return result?.success || false;
+		}
+
+		// تعديل دالة حفظ الطلب الجديد للعمل مع Supabase
+		async function saveNewRequest() {
+			const nationalId = $('#newNationalId').val().trim();
+			const applicantName = $('#newApplicantName').val().trim();
+			const category = $('#newCategory').val();
+			const priority = $('#newPriority').val();
+			const requestTitle = $('#newRequestTitle').val().trim();
+			const requestSummary = $('#newRequestSummary').val().trim();
+			
+			// التحقق من البيانات
+			if (!nationalId || nationalId.length !== 14 || !/^\d+$/.test(nationalId)) {
+				showNotification('الرجاء إدخال رقم قومي صحيح مكون من 14 رقم', 'error');
+				return;
+			}
+			
+			if (!applicantName || !category || !requestTitle || !requestSummary) {
+				showNotification('الرجاء ملء جميع الحقول المطلوبة', 'error');
+				return;
+			}
+			
+			const newId = allRequests.length > 0 ? Math.max(...allRequests.map(r => r.id)) + 1 : 1001;
+			
+			const newRequest = {
+				id: newId,
+				nationalId: nationalId,
+				applicantName: applicantName,
+				requestTitle: requestTitle,
+				requestSummary: requestSummary,
+				requestDate: new Date().toISOString().split('T')[0],
+				category: category,
+				status: 'submitted',
+				file: null,
+				comments: '',
+				priority: priority,
+				createdAt: new Date().toISOString(),
+				createdBy: currentUser ? currentUser.username : 'system'
+			};
+			
+			// محاولة الحفظ في Supabase أولاً
+			let supabaseSuccess = false;
+			if (window.supabaseFunctions) {
+				supabaseSuccess = await saveNewRequestToSupabase(newRequest);
+			}
+			
+			if (!supabaseSuccess) {
+				// إذا فشل الحفظ في Supabase، احفظ محلياً
+				showNotification('تم الحفظ محلياً (لا يوجد اتصال بالسيرفر)', 'warning');
+			} else {
+				showNotification('تم إضافة الطلب بنجاح إلى قاعدة البيانات', 'success');
+			}
+			
+			// حفظ محلياً في جميع الأحوال
+			allRequests.unshift(newRequest);
+			saveDataToLocalStorage();
+			
+			$('#newRequestModal').modal('hide');
+			
+			// تحديث البيانات
+			refreshData();
+			
+			// إضافة للأنشطة
+			addActivity('طلب جديد', `تم إضافة طلب جديد #${newId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
+		}
+
+		// تعديل دالة تسجيل الدخول
+		async function loginUser() {
+			const username = $('#username').val().trim();
+			const password = $('#password').val().trim();
+			
+			if (!username || !password) {
+				showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
+				return;
+			}
+			
+			// محاولة التسجيل عبر Supabase أولاً
+			if (window.supabaseFunctions) {
+				const supabaseResult = await loginWithSupabaseWrapper(username, password);
+				
+				if (supabaseResult.success) {
+					showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+					
+					setTimeout(() => {
+						startApplication();
+					}, 1500);
+					return;
+				}
+			}
+			
+			// إذا فشل Supabase، استخدم النظام المحلي
+			const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+			const user = users.find(u => u.username === username && u.password === password);
+			
+			if (!user) {
+				showAuthAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
+				return;
+			}
+			
+			if (!user.isActive) {
+				showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
+				return;
+			}
+			
+			const sessionData = {
+				id: user.id,
+				username: user.username,
+				fullName: user.fullName,
+				role: user.role,
+				email: user.email,
+				loggedInAt: new Date().toISOString()
+			};
+			
+			localStorage.setItem('currentUser', JSON.stringify(sessionData));
+			currentUser = sessionData;
+			
+			showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+			
+			setTimeout(() => {
+				startApplication();
+			}, 1500);
+		}
+
+		// تعديل دالة تهيئة التطبيق
+		function initializeApp() {
+			saveDataToLocalStorage();
+			populateCategoryFilters();
+			updateUserInterface();
+			
+			// محاولة تحميل البيانات من Supabase أولاً
+			if (window.supabaseFunctions) {
+				loadRequestsFromSupabase().then(success => {
+					if (!success) {
+						// إذا فشل، استخدم البيانات المحلية
+						renderRequestsTable();
+						updateStatistics();
+						renderCategoryChart();
+						loadUrgentRequests();
+					}
+				});
+			} else {
+				// إذا لم يكن Supabase متوفراً، استخدم البيانات المحلية
+				renderRequestsTable();
+				updateStatistics();
+				renderCategoryChart();
+				loadUrgentRequests();
+			}
+			
+			setupMainEventListeners();
+			
+			// تهيئة صفحات جديدة
+			initSearchPage();
+			initCategoriesPage();
+			initReportsPage();
+			initSettingsPage();
+			initUsersPage();
+			initProfilePage();
+			
+			const today = new Date().toISOString().split('T')[0];
+			$('#requestDate').val(today);
+			
+			checkUnreadNotifications();
+			setInterval(checkNewRequests, 30000);
+		}
+
+		// دالة النسخ الاحتياطي التلقائي
+		setInterval(async () => {
+			if (window.supabaseFunctions && currentUser?.role === 'admin') {
+				await window.supabaseFunctions.backupDataToSupabase();
+			}
+		}, 3600000); // كل ساعة
+
+		// ==================== نهاية تكامل Supabase ====================
+		// ==================== دمج Supabase مع النظام ====================
+
+// متغير لتتبع حالة الاتصال
+let isSupabaseConnected = false;
+
+// دالة تهيئة متقدمة
+async function initializeAppWithSupabase() {
+    console.log('🚀 بدء التهيئة مع Supabase');
     
-    if (result?.success) {
-        const sessionData = {
-            id: result.user.id,
-            username: result.user.username,
-            fullName: result.user.full_name,
-            role: result.user.role,
-            email: result.user.email,
-            loggedInAt: new Date().toISOString()
-        };
-        
-        localStorage.setItem('currentUser', JSON.stringify(sessionData));
-        currentUser = sessionData;
-        
-        return { success: true };
+    // 1. تهيئة التخزين المحلي أولاً
+    saveDataToLocalStorage();
+    populateCategoryFilters();
+    updateUserInterface();
+    
+    // 2. محاولة الاتصال بـ Supabase
+    if (window.supabaseFunctions && window.supabaseFunctions.hybridStorage) {
+        try {
+            isSupabaseConnected = await window.supabaseFunctions.hybridStorage.initialize();
+            
+            if (isSupabaseConnected) {
+                console.log('🌐 النظام يعمل مع Supabase');
+                showNotification('تم الاتصال بقاعدة البيانات السحابية', 'success');
+                
+                // جلب البيانات من Supabase
+                await loadDataFromSupabase();
+            } else {
+                console.log('💻 النظام يعمل محلياً');
+                showNotification('جاري العمل بالنسخة المحلية', 'info');
+                
+                // استخدام البيانات المحلية
+                renderRequestsTable();
+                updateStatistics();
+                renderCategoryChart();
+                loadUrgentRequests();
+            }
+        } catch (error) {
+            console.error('❌ خطأ في التهيئة:', error);
+            isSupabaseConnected = false;
+            
+            // الاستمرار بالبيانات المحلية
+            renderRequestsTable();
+            updateStatistics();
+            renderCategoryChart();
+            loadUrgentRequests();
+        }
+    } else {
+        // إذا لم يكن Supabase متاحاً
+        console.log('📁 Supabase غير متاح، استخدام النسخة المحلية');
+        renderRequestsTable();
+        updateStatistics();
+        renderCategoryChart();
+        loadUrgentRequests();
     }
     
-    return { success: false, message: result?.message || 'حدث خطأ في المصادقة' };
+    // 3. تهيئة بقية النظام
+    setupMainEventListeners();
+    initSearchPage();
+    initCategoriesPage();
+    initReportsPage();
+    initSettingsPage();
+    initUsersPage();
+    initProfilePage();
+    
+    // 4. إعدادات إضافية
+    const today = new Date().toISOString().split('T')[0];
+    $('#requestDate').val(today);
+    
+    checkUnreadNotifications();
+    setInterval(checkNewRequests, 30000);
 }
 
-// دالة لجلب الطلبات من Supabase
-async function loadRequestsFromSupabase() {
-    const result = await window.supabaseFunctions?.getRequestsFromSupabase(activeFilters);
+// دالة جلب البيانات من Supabase
+async function loadDataFromSupabase() {
+    if (!window.supabaseFunctions?.hybridStorage) return;
     
-    if (result?.success) {
-        // تحويل البيانات من Supabase إلى تنسيق النظام
-        allRequests = result.requests.map(req => ({
-            id: req.id,
-            nationalId: req.national_id,
-            applicantName: req.applicant_name,
-            requestTitle: req.request_title,
-            requestSummary: req.request_summary,
-            requestDate: req.request_date,
-            category: req.category,
-            status: req.status,
-            file: req.file_url,
-            comments: req.comments,
-            priority: req.priority,
-            createdAt: req.created_at,
-            createdBy: req.created_by
-        }));
+    try {
+        console.log('📥 جلب البيانات من Supabase...');
+        const requests = await window.supabaseFunctions.hybridStorage.getRequests();
         
-        localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-        filteredRequests = [...allRequests];
+        if (requests && requests.length > 0) {
+            // تحديث البيانات المحلية
+            allRequests = requests;
+            filteredRequests = [...requests];
+            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+            
+            console.log(`✅ تم جلب ${requests.length} طلب من السحابة`);
+        }
         
+        // تحديث الواجهة
         renderRequestsTable();
         updateStatistics();
         renderCategoryChart();
         loadUrgentRequests();
         
-        return true;
+    } catch (error) {
+        console.error('❌ فشل جلب البيانات:', error);
+        // الاستمرار بالبيانات المحلية
+        renderRequestsTable();
+        updateStatistics();
+        renderCategoryChart();
+        loadUrgentRequests();
     }
-    
-    return false;
 }
 
-// دالة لحفظ طلب جديد في Supabase
-async function saveNewRequestToSupabase(requestData) {
-    if (!currentUser) return false;
-    
-    const result = await window.supabaseFunctions?.saveRequestToSupabase({
-        nationalId: requestData.nationalId,
-        applicantName: requestData.applicantName,
-        requestTitle: requestData.requestTitle,
-        requestSummary: requestData.requestSummary,
-        requestDate: requestData.requestDate,
-        category: requestData.category,
-        status: requestData.status,
-        priority: requestData.priority,
-        createdBy: currentUser.id
-    });
-    
-    return result?.success || false;
-}
-
-// تعديل دالة حفظ الطلب الجديد للعمل مع Supabase
-async function saveNewRequest() {
+// تعديل دالة حفظ الطلب الجديد
+async function saveNewRequestEnhanced() {
     const nationalId = $('#newNationalId').val().trim();
     const applicantName = $('#newApplicantName').val().trim();
     const category = $('#newCategory').val();
@@ -5340,22 +5615,25 @@ async function saveNewRequest() {
         createdBy: currentUser ? currentUser.username : 'system'
     };
     
-    // محاولة الحفظ في Supabase أولاً
-    let supabaseSuccess = false;
-    if (window.supabaseFunctions) {
-        supabaseSuccess = await saveNewRequestToSupabase(newRequest);
-    }
-    
-    if (!supabaseSuccess) {
-        // إذا فشل الحفظ في Supabase، احفظ محلياً
-        showNotification('تم الحفظ محلياً (لا يوجد اتصال بالسيرفر)', 'warning');
+    // استخدام نظام التخزين الهجين
+    let saveResult;
+    if (window.supabaseFunctions?.hybridStorage) {
+        saveResult = await window.supabaseFunctions.hybridStorage.saveRequest(newRequest);
     } else {
-        showNotification('تم إضافة الطلب بنجاح إلى قاعدة البيانات', 'success');
+        // الحفظ المحلي فقط
+        allRequests.unshift(newRequest);
+        saveDataToLocalStorage();
+        saveResult = { success: true, local: true };
     }
     
-    // حفظ محلياً في جميع الأحوال
-    allRequests.unshift(newRequest);
-    saveDataToLocalStorage();
+    // إظهار الرسالة المناسبة
+    if (saveResult.cloud) {
+        showNotification('✅ تم إضافة الطلب إلى قاعدة البيانات السحابية', 'success');
+    } else if (saveResult.local && saveResult.fallback) {
+        showNotification('⚠️ تم الحفظ محلياً (لا يوجد اتصال بالسيرفر)', 'warning');
+    } else if (saveResult.local) {
+        showNotification('💾 تم الحفظ محلياً', 'info');
+    }
     
     $('#newRequestModal').modal('hide');
     
@@ -5366,114 +5644,105 @@ async function saveNewRequest() {
     addActivity('طلب جديد', `تم إضافة طلب جديد #${newId} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
 }
 
-// تعديل دالة تسجيل الدخول
-async function loginUser() {
-    const username = $('#username').val().trim();
-    const password = $('#password').val().trim();
+// استبدال دالة الحفظ الأصلية
+$('#submitNewRequestBtn').off('click').on('click', saveNewRequestEnhanced);
+
+// تعديل دالة التحديث
+async function updateRequestDetailsEnhanced(requestId) {
+    const requestIndex = allRequests.findIndex(r => r.id === requestId);
+    if (requestIndex === -1) return;
     
-    if (!username || !password) {
-        showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
-        return;
-    }
+    const newComments = $('#updateComments').val().trim();
+    const newStatus = $('#updateStatus').val();
     
-    // محاولة التسجيل عبر Supabase أولاً
-    if (window.supabaseFunctions) {
-        const supabaseResult = await loginWithSupabaseWrapper(username, password);
-        
-        if (supabaseResult.success) {
-            showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
-            
-            setTimeout(() => {
-                startApplication();
-            }, 1500);
-            return;
+    // تحديث محلي
+    allRequests[requestIndex].comments = newComments;
+    allRequests[requestIndex].status = newStatus;
+    allRequests[requestIndex].updatedAt = new Date().toISOString();
+    allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
+    
+    // تحديث في Supabase إذا كان متصلاً
+    if (isSupabaseConnected && window.supabaseFunctions?.supabase) {
+        try {
+            await window.supabaseFunctions.supabase
+                .from('requests')
+                .update({
+                    status: newStatus,
+                    comments: newComments,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', requestId);
+                
+            showNotification('✅ تم تحديث حالة الطلب في السحابة', 'success');
+        } catch (error) {
+            console.warn('⚠️ فشل تحديث السحابة:', error);
+            showNotification('💾 تم التحديث محلياً فقط', 'warning');
         }
-    }
-    
-    // إذا فشل Supabase، استخدم النظام المحلي
-    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-    const user = users.find(u => u.username === username && u.password === password);
-    
-    if (!user) {
-        showAuthAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
-        return;
-    }
-    
-    if (!user.isActive) {
-        showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
-        return;
-    }
-    
-    const sessionData = {
-        id: user.id,
-        username: user.username,
-        fullName: user.fullName,
-        role: user.role,
-        email: user.email,
-        loggedInAt: new Date().toISOString()
-    };
-    
-    localStorage.setItem('currentUser', JSON.stringify(sessionData));
-    currentUser = sessionData;
-    
-    showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
-    
-    setTimeout(() => {
-        startApplication();
-    }, 1500);
-}
-
-// تعديل دالة تهيئة التطبيق
-function initializeApp() {
-    saveDataToLocalStorage();
-    populateCategoryFilters();
-    updateUserInterface();
-    
-    // محاولة تحميل البيانات من Supabase أولاً
-    if (window.supabaseFunctions) {
-        loadRequestsFromSupabase().then(success => {
-            if (!success) {
-                // إذا فشل، استخدم البيانات المحلية
-                renderRequestsTable();
-                updateStatistics();
-                renderCategoryChart();
-                loadUrgentRequests();
-            }
-        });
     } else {
-        // إذا لم يكن Supabase متوفراً، استخدم البيانات المحلية
-        renderRequestsTable();
-        updateStatistics();
-        renderCategoryChart();
-        loadUrgentRequests();
+        showNotification('💾 تم التحديث محلياً', 'info');
     }
     
-    setupMainEventListeners();
+    saveDataToLocalStorage();
+    $('#requestDetailsModal').modal('hide');
     
-    // تهيئة صفحات جديدة
-    initSearchPage();
-    initCategoriesPage();
-    initReportsPage();
-    initSettingsPage();
-    initUsersPage();
-    initProfilePage();
+    // تحديث البيانات
+    refreshData();
     
-    const today = new Date().toISOString().split('T')[0];
-    $('#requestDate').val(today);
-    
-    checkUnreadNotifications();
-    setInterval(checkNewRequests, 30000);
+    // إضافة للأنشطة
+    addActivity('تحديث طلب', `تم تحديث حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
 }
 
-// دالة النسخ الاحتياطي التلقائي
-setInterval(async () => {
-    if (window.supabaseFunctions && currentUser?.role === 'admin') {
-        await window.supabaseFunctions.backupDataToSupabase();
-    }
-}, 3600000); // كل ساعة
+// استبدال دالة initializeApp الأصلية
+function initializeApp() {
+    initializeAppWithSupabase();
+}
 
-// ==================== نهاية تكامل Supabase ====================
-    </script>
-	<script src="supabase-config.js"></script>
+// إضافة زر إعادة الاتصال في الواجهة
+function addReconnectButton() {
+    const reconnectHtml = `
+        <div id="reconnectBar" class="alert alert-warning alert-dismissible fade show mb-3" style="display: none;">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-wifi-slash me-3"></i>
+                <div class="flex-grow-1">
+                    النظام يعمل محلياً. 
+                    <a href="#" id="tryReconnectLink" class="alert-link">اضغط هنا لمحاولة إعادة الاتصال</a>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    `;
+    
+    $('.main-content').prepend(reconnectHtml);
+    
+    $('#tryReconnectLink').click(async function(e) {
+        e.preventDefault();
+        
+        showNotification('🔄 جاري محاولة إعادة الاتصال...', 'info');
+        
+        if (window.supabaseFunctions?.hybridStorage) {
+            const reconnected = await window.supabaseFunctions.hybridStorage.initialize();
+            
+            if (reconnected) {
+                showNotification('✅ تم إعادة الاتصال بنجاح!', 'success');
+                $('#reconnectBar').hide();
+                await loadDataFromSupabase();
+            } else {
+                showNotification('❌ لا يزال الاتصال غير متاح', 'error');
+            }
+        }
+    });
+    
+    // إظهار الزر إذا كان النظام يعمل محلياً
+    if (!isSupabaseConnected) {
+        $('#reconnectBar').show();
+    }
+}
+
+// استدعاء إضافة الزر عند التهيئة
+setTimeout(addReconnectButton, 2000);
+
+// ==================== نهاية الدمج ====================
+			</script>
+			<script src="supabase-config.js"></script>
 </body>
 </html>
