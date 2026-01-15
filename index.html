@@ -5825,6 +5825,351 @@ function initializeApp() {
 
         // تسجيل رسالة نجاح التحميل
         console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
+		// ==================== Supabase Integration ====================
+const SUPABASE_CONFIG = {
+    url: 'https://YOUR_PROJECT.supabase.co',
+    anonKey: 'YOUR_ANON_KEY'
+};
+
+class SupabaseManager {
+    constructor() {
+        this.supabase = null;
+        this.initialized = false;
+    }
+    
+    async init() {
+        try {
+            // تحميل مكتبة Supabase
+            await this.loadSupabaseScript();
+            
+            // تهيئة Supabase
+            this.supabase = window.supabase.createClient(
+                SUPABASE_CONFIG.url,
+                SUPABASE_CONFIG.anonKey
+            );
+            
+            this.initialized = true;
+            console.log('✅ Supabase initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('❌ Supabase initialization failed:', error);
+            return false;
+        }
+    }
+    
+    async loadSupabaseScript() {
+        return new Promise((resolve, reject) => {
+            if (window.supabase) {
+                resolve();
+                return;
+            }
+            
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/@supabase/supabase-js@2';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+    
+    // ========== إدارة المستخدمين ==========
+    async login(username, password) {
+        try {
+            // في الواقع، نستخدم المصادقة البريدية مع Supabase
+            // لكن لأجل التوافق مع نظامك الحالي:
+            const { data, error } = await this.supabase
+                .from('users')
+                .select('*')
+                .eq('username', username)
+                .eq('password', password)
+                .eq('is_active', true)
+                .single();
+                
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Login error:', error);
+            return null;
+        }
+    }
+    
+    async register(userData) {
+        try {
+            const { data, error } = await this.supabase
+                .from('users')
+                .insert([userData])
+                .select()
+                .single();
+                
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Registration error:', error);
+            return null;
+        }
+    }
+    
+    // ========== إدارة الطلبات ==========
+    async saveRequest(request) {
+        try {
+            const { data, error } = await this.supabase
+                .from('requests')
+                .upsert(request) // إدخال أو تحديث
+                .select()
+                .single();
+                
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Save request error:', error);
+            return null;
+        }
+    }
+    
+    async loadRequests(filters = {}) {
+        try {
+            let query = this.supabase.from('requests').select('*');
+            
+            // تطبيق الفلاتر
+            if (filters.status) {
+                query = query.eq('status', filters.status);
+            }
+            if (filters.category) {
+                query = query.eq('category', filters.category);
+            }
+            if (filters.search) {
+                query = query.or(`applicant_name.ilike.%${filters.search}%,national_id.ilike.%${filters.search}%`);
+            }
+            
+            const { data, error } = await query.order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Load requests error:', error);
+            return [];
+        }
+    }
+    
+    async updateRequestStatus(requestId, status, comments) {
+        try {
+            const { data, error } = await this.supabase
+                .from('requests')
+                .update({ 
+                    status: status, 
+                    comments: comments,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', requestId)
+                .select()
+                .single();
+                
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Update request error:', error);
+            return null;
+        }
+    }
+    
+    // ========== التقارير والإحصائيات ==========
+    async getStatistics() {
+        try {
+            const { data, error } = await this.supabase.rpc('get_statistics');
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Get statistics error:', error);
+            return null;
+        }
+    }
+    
+    async getCategoryDistribution() {
+        try {
+            const { data, error } = await this.supabase
+                .from('requests')
+                .select('category, status');
+                
+            if (error) throw error;
+            return data;
+        } catch (error) {
+            console.error('Get category distribution error:', error);
+            return [];
+        }
+    }
+    
+    // ========== المزامنة ==========
+    async syncLocalData(localRequests) {
+        try {
+            // رفع البيانات المحلية للسحابة
+            for (const request of localRequests) {
+                await this.saveRequest(request);
+            }
+            
+            // جلب أحدث البيانات من السحابة
+            const cloudRequests = await this.loadRequests();
+            return cloudRequests;
+        } catch (error) {
+            console.error('Sync error:', error);
+            return localRequests;
+        }
+    }
+    
+    // ========== الاستعلامات المتقدمة ==========
+    async advancedSearch(params) {
+        try {
+            let query = this.supabase.from('requests').select('*');
+            
+            if (params.nationalId) {
+                query = query.ilike('national_id', `%${params.nationalId}%`);
+            }
+            if (params.applicantName) {
+                query = query.ilike('applicant_name', `%${params.applicantName}%`);
+            }
+            if (params.requestTitle) {
+                query = query.ilike('request_title', `%${params.requestTitle}%`);
+            }
+            if (params.category) {
+                query = query.eq('category', params.category);
+            }
+            if (params.status) {
+                query = query.eq('status', params.status);
+            }
+            if (params.dateFrom && params.dateTo) {
+                query = query.gte('request_date', params.dateFrom)
+                           .lte('request_date', params.dateTo);
+            }
+            
+            const { data, error } = await query.order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            return data || [];
+        } catch (error) {
+            console.error('Advanced search error:', error);
+            return [];
+        }
+    }
+}
+
+// إنشاء مدير Supabase
+const supabaseManager = new SupabaseManager();
+
+// ==================== تعديل الدوال الرئيسية ====================
+
+// تعديل startApplication
+async function startApplication() {
+    $('#welcomeScreen').hide();
+    $('#loginPage').hide();
+    $('#registerPage').hide();
+    $('#appContent').show();
+    
+    // تهيئة Supabase
+    const supabaseReady = await supabaseManager.init();
+    
+    if (supabaseReady) {
+        // تحميل البيانات من Supabase
+        const supabaseRequests = await supabaseManager.loadRequests();
+        if (supabaseRequests && supabaseRequests.length > 0) {
+            allRequests = supabaseRequests;
+            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+        }
+        showNotification('✓ متصل بقاعدة البيانات السحابية', 'success');
+    } else {
+        showNotification('⚠ استخدام البيانات المحلية فقط', 'warning');
+    }
+    
+    initializeApp();
+}
+
+// تعديل saveNewRequest
+async function saveNewRequest() {
+    // ... الكود الحالي ...
+    
+    // حفظ في Supabase
+    if (supabaseManager.initialized) {
+        const saved = await supabaseManager.saveRequest(newRequest);
+        if (saved) {
+            console.log('✅ Request saved to Supabase');
+        }
+    }
+    
+   // ==================== Supabase Configuration ====================
+// ⬇️⬇️⬇️ ضع هنا القيم التي نسختها من Supabase ⬇️⬇️⬇️
+const SUPABASE_CONFIG = {
+    url: 'https://gcgjzqiumgesultletws.supabase.co',  // ← ضع URL هنا
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJoE'               // ← ضع anon key هنا
+};
+// إضافة حدث زر المزامنة
+$('#syncLink').click(async function(e) {
+    e.preventDefault();
+    
+    if (!supabaseManager.initialized) {
+        showNotification('غير متصل بقاعدة البيانات السحابية', 'error');
+        return;
+    }
+    
+    // عرض نافذة المزامنة
+    const modalHtml = `
+        <div class="modal fade" id="syncModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-sync-alt me-2"></i>مزامنة البيانات
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <h5>مزامنة مع السحابة</h5>
+                            <p class="text-muted">مزامنة جميع البيانات مع قاعدة البيانات السحابية</p>
+                            <button class="btn btn-primary" id="manualSyncBtn">
+                                <i class="fas fa-sync-alt me-2"></i>مزامنة الآن
+                            </button>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <small>
+                                <i class="fas fa-info-circle me-1"></i>
+                                سيتم مزامنة ${allRequests.length} طلب
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    $('body').append(modalHtml);
+    const modal = new bootstrap.Modal(document.getElementById('syncModal'));
+    modal.show();
+    
+    $('#manualSyncBtn').click(async () => {
+        $('#manualSyncBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>جاري المزامنة...');
+        
+        const success = await supabaseManager.syncWithLocalData(allRequests);
+        
+        if (success && success.length > 0) {
+            allRequests = success;
+            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+            
+            refreshData();
+            showNotification('تمت المزامنة بنجاح', 'success');
+            modal.hide();
+            setTimeout(() => {
+                $('#syncModal').remove();
+            }, 300);
+        } else {
+            showNotification('فشلت المزامنة', 'error');
+            $('#manualSyncBtn').prop('disabled', false).html('<i class="fas fa-sync-alt me-2"></i>مزامنة الآن');
+        }
+    });
+    
+    $('#syncModal').on('hidden.bs.modal', function() {
+        $(this).remove();
+    });
+});
     </script>
 </body>
 </html>
