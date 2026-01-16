@@ -5349,28 +5349,61 @@ function initializeApp() {
 		// ==================== تكامل مع Supabase ====================
 
 		// دالة للتسجيل الدخول مع Supabase
-		async function loginWithSupabaseWrapper(username, password) {
-			const result = await window.supabaseFunctions?.loginWithSupabase(username, password);
-			
-			if (result?.success) {
-				const sessionData = {
-					id: result.user.id,
-					username: result.user.username,
-					fullName: result.user.full_name,
-					role: result.user.role,
-					email: result.user.email,
-					loggedInAt: new Date().toISOString()
-				};
-				
-				localStorage.setItem('currentUser', JSON.stringify(sessionData));
-				currentUser = sessionData;
-				
-				return { success: true };
-			}
-			
-			return { success: false, message: result?.message || 'حدث خطأ في المصادقة' };
-		}
-
+		// ✅ الكود المصحح لـ Supabase v2
+async function loginWithSupabaseWrapper(username, password) {
+    try {
+        // 1. التحقق من وجود Supabase connection
+        if (!window.supabaseConnection || !window.supabaseConnection.client) {
+            console.error('❌ Supabase غير متصل');
+            return { success: false, message: 'Supabase غير متصل' };
+        }
+        
+        // 2. محاولة تسجيل الدخول باستخدام auth.signIn
+        const { data, error } = await window.supabaseConnection.client.auth.signInWithPassword({
+            email: username, // يمكن استخدام username كـ email
+            password: password
+        });
+        
+        if (error) {
+            console.error('❌ خطأ في تسجيل الدخول:', error.message);
+            return { success: false, message: error.message };
+        }
+        
+        if (data?.user) {
+            // 3. البحث عن المستخدم في جدول users (إذا كان لديك جدول)
+            const { data: userData, error: userError } = await window.supabaseConnection.client
+                .from('users')
+                .select('*')
+                .eq('email', username)
+                .single();
+            
+            if (userError) {
+                console.warn('⚠️ لم يتم العثور على بيانات المستخدم:', userError.message);
+                // الاستمرار مع بيانات افتراضية
+            }
+            
+            const sessionData = {
+                id: data.user.id,
+                username: username,
+                fullName: userData?.full_name || 'مستخدم',
+                role: userData?.role || 'user',
+                email: username,
+                loggedInAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(sessionData));
+            currentUser = sessionData;
+            
+            return { success: true, user: sessionData };
+        }
+        
+        return { success: false, message: 'فشل تسجيل الدخول' };
+        
+    } catch (error) {
+        console.error('❌ استثناء في تسجيل الدخول:', error);
+        return { success: false, message: 'حدث خطأ غير متوقع' };
+    }
+}
 		// دالة لجلب الطلبات من Supabase
 		async function loadRequestsFromSupabase() {
 			const result = await window.supabaseFunctions?.getRequestsFromSupabase(activeFilters);
@@ -5491,113 +5524,159 @@ function initializeApp() {
 		}
 
 		// تعديل دالة تسجيل الدخول
-		async function loginUser() {
-			const username = $('#username').val().trim();
-			const password = $('#password').val().trim();
-			
-			if (!username || !password) {
-				showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
-				return;
-			}
-			
-			// محاولة التسجيل عبر Supabase أولاً
-			if (window.supabaseFunctions) {
-				const supabaseResult = await loginWithSupabaseWrapper(username, password);
-				
-				if (supabaseResult.success) {
-					showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
-					
-					setTimeout(() => {
-						startApplication();
-					}, 1500);
-					return;
-				}
-			}
-			
-			// إذا فشل Supabase، استخدم النظام المحلي
-			const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-			const user = users.find(u => u.username === username && u.password === password);
-			
-			if (!user) {
-				showAuthAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
-				return;
-			}
-			
-			if (!user.isActive) {
-				showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
-				return;
-			}
-			
-			const sessionData = {
-				id: user.id,
-				username: user.username,
-				fullName: user.fullName,
-				role: user.role,
-				email: user.email,
-				loggedInAt: new Date().toISOString()
-			};
-			
-			localStorage.setItem('currentUser', JSON.stringify(sessionData));
-			currentUser = sessionData;
-			
-			showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
-			
-			setTimeout(() => {
-				startApplication();
-			}, 1500);
-		}
-
+		// ✅ دالة تسجيل الدخول المصححة
+async function loginUser() {
+    const username = $('#username').val().trim();
+    const password = $('#password').val().trim();
+    
+    if (!username || !password) {
+        showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
+        return;
+    }
+    
+    // إظهار حالة التحميل
+    $('#loginBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-2"></i>جاري تسجيل الدخول...');
+    
+    try {
+        // 1. أولاً جرب Supabase إذا كان متصلاً
+        let loginResult = null;
+        
+        if (window.supabaseConnection && window.supabaseConnection.client) {
+            console.log('🔐 محاولة تسجيل الدخول عبر Supabase...');
+            loginResult = await loginWithSupabaseWrapper(username, password);
+        }
+        
+        // 2. إذا نجح Supabase
+        if (loginResult?.success) {
+            showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+            
+            setTimeout(() => {
+                startApplication();
+            }, 1500);
+            return;
+        }
+        
+        // 3. إذا فشل Supabase، استخدم النظام المحلي
+        console.log('💾 استخدام النظام المحلي للتسجيل...');
+        const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+        const user = users.find(u => u.username === username && u.password === password);
+        
+        if (!user) {
+            showAuthAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
+            $('#loginBtn').prop('disabled', false).html('<i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول');
+            return;
+        }
+        
+        if (!user.isActive) {
+            showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
+            $('#loginBtn').prop('disabled', false).html('<i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول');
+            return;
+        }
+        
+        const sessionData = {
+            id: user.id,
+            username: user.username,
+            fullName: user.fullName,
+            role: user.role,
+            email: user.email,
+            loggedInAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(sessionData));
+        currentUser = sessionData;
+        
+        showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+        
+        setTimeout(() => {
+            startApplication();
+        }, 1500);
+        
+    } catch (error) {
+        console.error('❌ خطأ في تسجيل الدخول:', error);
+        showAuthAlert('حدث خطأ أثناء تسجيل الدخول', 'error', 'login');
+    } finally {
+        $('#loginBtn').prop('disabled', false).html('<i class="fas fa-sign-in-alt me-2"></i>تسجيل الدخول');
+    }
+}
+		// ✅ دالة اختبار اتصال Supabase
+async function testSupabaseConnection() {
+    try {
+        if (!window.supabaseConnection || !window.supabaseConnection.client) {
+            console.log('❌ Supabase client غير مهيأ');
+            return false;
+        }
+        
+        // اختبار بسيط للاتصال
+        const { data, error } = await window.supabaseConnection.client
+            .from('requests')
+            .select('id')
+            .limit(1);
+        
+        if (error) {
+            console.error('❌ فشل اختبار الاتصال:', error.message);
+            return false;
+        }
+        
+        console.log('✅ اتصال Supabase نشط');
+        return true;
+        
+    } catch (error) {
+        console.error('❌ استثناء في اختبار الاتصال:', error);
+        return false;
+    }
+}
 		// تعديل دالة تهيئة التطبيق
-		function initializeApp() {
-			saveDataToLocalStorage();
-			populateCategoryFilters();
-			updateUserInterface();
-			
-			// محاولة تحميل البيانات من Supabase أولاً
-			if (window.supabaseFunctions) {
-				loadRequestsFromSupabase().then(success => {
-					if (!success) {
-						// إذا فشل، استخدم البيانات المحلية
-						renderRequestsTable();
-						updateStatistics();
-						renderCategoryChart();
-						loadUrgentRequests();
-					}
-				});
-			} else {
-				// إذا لم يكن Supabase متوفراً، استخدم البيانات المحلية
-				renderRequestsTable();
-				updateStatistics();
-				renderCategoryChart();
-				loadUrgentRequests();
-			}
-			
-			setupMainEventListeners();
-			
-			// تهيئة صفحات جديدة
-			initSearchPage();
-			initCategoriesPage();
-			initReportsPage();
-			initSettingsPage();
-			initUsersPage();
-			initProfilePage();
-			
-			const today = new Date().toISOString().split('T')[0];
-			$('#requestDate').val(today);
-			
-			checkUnreadNotifications();
-			setInterval(checkNewRequests, 30000);
-		}
-
-		// دالة النسخ الاحتياطي التلقائي
-		setInterval(async () => {
-			if (window.supabaseFunctions && currentUser?.role === 'admin') {
-				await window.supabaseFunctions.backupDataToSupabase();
-			}
-		}, 3600000); // كل ساعة
-
-		// ==================== نهاية تكامل Supabase ====================
-		// ==================== دمج Supabase مع النظام ====================
+		// ✅ دالة التهيئة المصححة
+async function initializeApp() {
+    console.log('🚀 بدء تهيئة التطبيق...');
+    
+    // 1. تهيئة التخزين المحلي
+    saveDataToLocalStorage();
+    populateCategoryFilters();
+    updateUserInterface();
+    
+    // 2. التحقق من Supabase
+    const isSupabaseConnected = await testSupabaseConnection();
+    
+    if (isSupabaseConnected) {
+        console.log('🌐 جاري تحميل البيانات من Supabase...');
+        try {
+            await loadDataFromSupabase();
+            showNotification('✅ تم الاتصال بقاعدة البيانات السحابية', 'success');
+        } catch (error) {
+            console.error('❌ فشل تحميل البيانات من Supabase:', error);
+            showNotification('⚠️ استخدام النسخة المحلية', 'warning');
+            renderRequestsTable();
+            updateStatistics();
+            renderCategoryChart();
+            loadUrgentRequests();
+        }
+    } else {
+        console.log('💻 استخدام النسخة المحلية');
+        showNotification('جاري العمل بالنسخة المحلية', 'info');
+        renderRequestsTable();
+        updateStatistics();
+        renderCategoryChart();
+        loadUrgentRequests();
+    }
+    
+    // 3. تهيئة بقية النظام
+    setupMainEventListeners();
+    initSearchPage();
+    initCategoriesPage();
+    initReportsPage();
+    initSettingsPage();
+    initUsersPage();
+    initProfilePage();
+    
+    // 4. إعدادات إضافية
+    const today = new Date().toISOString().split('T')[0];
+    $('#requestDate').val(today);
+    
+    checkUnreadNotifications();
+    setInterval(checkNewRequests, 30000);
+}
+	
 
 // متغير لتتبع حالة الاتصال
 let isSupabaseConnected = false;
@@ -5869,6 +5948,7 @@ setTimeout(addReconnectButton, 2000);
 </body>
 
 </html>
+
 
 
 
