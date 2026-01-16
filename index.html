@@ -1838,7 +1838,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	
     
     <!-- التطبيق الرئيسي -->
     <script>
@@ -5267,7 +5267,270 @@ function initializeApp() {
 		});
 
         // تسجيل رسالة نجاح التحميل
-        console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
+       // console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
+	   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+	   <!-- أضف هذا السكريبت في نهاية ملف HTML قبل </body> -->
+<script>
+// حل مشكلة أزرار الشاشة الرئيسية
+$(document).ready(function() {
+    // زر تسجيل الدخول من شاشة الترحيب
+    $('#loginWelcomeBtn').click(function(e) {
+        e.preventDefault();
+        console.log('زر تسجيل الدخول تم النقر عليه');
+        document.getElementById("welcomeScreen").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("loginPage").style.display = "flex"; // إضافة هذا السطر
+        setupLoginPageEvents();
+    });
+    
+    // زر إنشاء حساب جديد من شاشة الترحيب
+    $('#registerWelcomeBtn').click(function(e) {
+        e.preventDefault();
+        console.log('زر إنشاء حساب جديد تم النقر عليه');
+        document.getElementById("welcomeScreen").style.display = "none";
+        document.getElementById("registerPage").style.display = "block";
+        document.getElementById("registerPage").style.display = "flex"; // إضافة هذا السطر
+        setupRegisterPageEvents();
+    });
+    
+    // زر عرض صفحة التسجيل من صفحة تسجيل الدخول
+    $('#showRegisterLink').click(function(e) {
+        e.preventDefault();
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("registerPage").style.display = "block";
+        document.getElementById("registerPage").style.display = "flex";
+        setupRegisterPageEvents();
+    });
+    
+    // زر عرض صفحة تسجيل الدخول من صفحة التسجيل
+    $('#showLoginLink').click(function(e) {
+        e.preventDefault();
+        document.getElementById("registerPage").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("loginPage").style.display = "flex";
+        setupLoginPageEvents();
+    });
+    
+    // اختبار جلسة المستخدم مباشرة
+    checkUserSession();
+});
+
+// إعداد أحداث صفحة تسجيل الدخول
+function setupLoginPageEvents() {
+    console.log('إعداد أحداث تسجيل الدخول');
+    
+    // زر عرض/إخفاء كلمة المرور
+    $('#togglePassword').click(function() {
+        const passwordInput = $('#password');
+        const icon = $(this).find('i');
+        
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // فورم تسجيل الدخول
+    $('#loginForm').off('submit').on('submit', async function(e) {
+        e.preventDefault();
+        console.log('فورم تسجيل الدخول تم إرساله');
+        
+        const email = $('#username').value; 
+        const password = $('#password').value;
+        
+        console.log('بيانات الدخول:', { email, password });
+
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            console.error('خطأ في تسجيل الدخول:', error.message);
+            document.getElementById("loginAlert").classList.remove("d-none");
+            document.getElementById("loginAlertMessage").innerText = error.message;
+            return;
+        }
+
+        console.log('تم تسجيل الدخول بنجاح');
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("appContent").style.display = "block";
+        startApplication();
+    });
+    
+    // رابط نسيت كلمة المرور
+    $('#forgotPasswordLink').click(function(e) {
+        e.preventDefault();
+        $('#loginAlert').removeClass('d-none alert-danger').addClass('alert-info');
+        $('#loginAlertMessage').text('سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+    });
+}
+
+// إعداد أحداث صفحة التسجيل
+function setupRegisterPageEvents() {
+    console.log('إعداد أحداث إنشاء حساب');
+    
+    // أزرار عرض/إخفاء كلمة المرور
+    $('#toggleRegPassword').click(function() {
+        togglePasswordVisibility('#regPassword', $(this));
+    });
+    
+    $('#toggleConfirmPassword').click(function() {
+        togglePasswordVisibility('#confirmPassword', $(this));
+    });
+    
+    // فورم إنشاء حساب
+    $('#registerForm').off('submit').on('submit', async function(e) {
+        e.preventDefault();
+        console.log('فورم إنشاء حساب تم إرساله');
+        
+        const email = $('#email').value;
+        const password = $('#regPassword').value;
+        const fullName = $('#fullName').value;
+        const phone = $('#phone').value;
+        const role = $('#role').value;
+
+        const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName,
+                    phone: phone,
+                    role: role
+                }
+            }
+        });
+
+        if (error) {
+            console.error('خطأ في إنشاء الحساب:', error.message);
+            document.getElementById("registerAlert").classList.remove("d-none");
+            document.getElementById("registerAlertMessage").innerText = error.message;
+            return;
+        }
+
+        alert("تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب.");
+        
+        // العودة لصفحة تسجيل الدخول
+        document.getElementById("registerPage").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("loginPage").style.display = "flex";
+        setupLoginPageEvents();
+    });
+    
+    // رابط الشروط والأحكام
+    $('#showTermsLink').click(function(e) {
+        e.preventDefault();
+        $('#termsModal').modal('show');
+    });
+    
+    $('#agreeTermsBtn').click(function() {
+        $('#agreeTerms').prop('checked', true);
+        $('#termsModal').modal('hide');
+    });
+}
+
+// وظيفة تغيير رؤية كلمة المرور
+function togglePasswordVisibility(inputId, button) {
+    const passwordInput = $(inputId);
+    const icon = button.find('i');
+    
+    if (passwordInput.attr('type') === 'password') {
+        passwordInput.attr('type', 'text');
+        icon.removeClass('fa-eye').addClass('fa-eye-slash');
+    } else {
+        passwordInput.attr('type', 'password');
+        icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    }
+}
+
+// استماع لتغير حالة المصادقة
+supabase.auth.onAuthStateChange((event, session) => {
+    console.log('حدث تغيير حالة المصادقة:', event, session);
+    
+    if (event === 'SIGNED_IN') {
+        console.log('تم تسجيل الدخول');
+        document.getElementById("welcomeScreen").style.display = "none";
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("registerPage").style.display = "none";
+        document.getElementById("appContent").style.display = "block";
+        
+        // حفظ بيانات المستخدم في localStorage
+        if (session && session.user) {
+            const userData = {
+                id: session.user.id,
+                email: session.user.email,
+                fullName: session.user.user_metadata?.full_name || 'مستخدم',
+                role: session.user.user_metadata?.role || 'viewer',
+                loggedInAt: new Date().toISOString()
+            };
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            currentUser = userData;
+        }
+        
+        startApplication();
+    } else if (event === 'SIGNED_OUT') {
+        console.log('تم تسجيل الخروج');
+        localStorage.removeItem('currentUser');
+        currentUser = null;
+        
+        document.getElementById("appContent").style.display = "none";
+        document.getElementById("welcomeScreen").style.display = "flex";
+    }
+});
+
+// زر تسجيل الخروج
+$('#logoutBtn').click(async function(e) {
+    e.preventDefault();
+    console.log('زر تسجيل الخروج تم النقر عليه');
+    
+    if (confirm('هل تريد تسجيل الخروج؟')) {
+        await supabase.auth.signOut();
+    }
+});
+
+// التحقق من جلسة المستخدم عند تحميل الصفحة
+function checkUserSession() {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        console.log('فحص الجلسة الحالية:', session);
+        
+        if (session) {
+            console.log('يوجد جلسة نشطة');
+            document.getElementById("welcomeScreen").style.display = "none";
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("registerPage").style.display = "none";
+            document.getElementById("appContent").style.display = "block";
+            
+            const userData = {
+                id: session.user.id,
+                email: session.user.email,
+                fullName: session.user.user_metadata?.full_name || 'مستخدم',
+                role: session.user.user_metadata?.role || 'viewer',
+                loggedInAt: new Date().toISOString()
+            };
+            localStorage.setItem('currentUser', JSON.stringify(userData));
+            currentUser = userData;
+            
+            startApplication();
+        } else {
+            console.log('لا توجد جلسة نشطة');
+            showWelcomePage();
+        }
+    });
+}
+
+// عرض شاشة الترحيب
+function showWelcomePage() {
+    document.getElementById("welcomeScreen").style.display = "flex";
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("registerPage").style.display = "none";
+    document.getElementById("appContent").style.display = "none";
+}
+</script>
+		
     </script>
 	
 
