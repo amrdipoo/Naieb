@@ -3,32 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>نظام متابعة طلبات المواطنين - عضو مجلس النواب</title>
-  <!-- Bootstrap 5 RTL -->
+  <title>نظام متابعة طلبات المواطنين</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet"/>
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --primary-color: #1e3a8a;
       --secondary-color: #3b82f6;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --danger-color: #ef4444;
-      --electricity-color: #f97316;
-      --health-color: #ec4899;
-      --water-color: #0ea5e9;
-      --sanitation-color: #8b5cf6;
-      --education-color: #84cc16;
-      --transport-color: #6366f1;
-      --telecom-color: #06b6d4;
-      --housing-color: #14b8a6;
-    }
-    body {
-      font-family: 'Tajawal', sans-serif;
-      overflow-x: hidden;
     }
     .auth-page, .welcome-screen {
       display: none;
@@ -36,34 +18,13 @@
       align-items: center;
       min-height: 100vh;
     }
-    .category-badge {
+    .category-badge, .status-badge {
       padding: 5px 12px;
       border-radius: 15px;
       font-size: 0.8rem;
       font-weight: 600;
       display: inline-block;
     }
-    .category-electricity { background-color: #ffedd5; color: var(--electricity-color); }
-    .category-health { background-color: #fce7f3; color: var(--health-color); }
-    .category-water { background-color: #e0f2fe; color: var(--water-color); }
-    .category-sanitation { background-color: #f3e8ff; color: var(--sanitation-color); }
-    .category-education { background-color: #f0fdf4; color: var(--education-color); }
-    .category-transport { background-color: #eef2ff; color: var(--transport-color); }
-    .category-telecom { background-color: #ecfeff; color: var(--telecom-color); }
-    .category-housing { background-color: #f0fdfa; color: var(--housing-color); }
-
-    .status-badge {
-      padding: 6px 15px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: inline-block;
-    }
-    .status-submitted { background-color: #dbeafe; color: var(--primary-color); }
-    .status-pending { background-color: #fef3c7; color: var(--warning-color); }
-    .status-approved { background-color: #d1fae5; color: var(--success-color); }
-    .status-rejected { background-color: #fee2e2; color: var(--danger-color); }
-
     .sidebar {
       background: linear-gradient(180deg, var(--primary-color), #1e40af);
       color: white;
@@ -71,10 +32,7 @@
       width: 250px;
       height: 100vh;
     }
-    .main-content {
-      margin-right: 250px;
-      padding: 20px;
-    }
+    .main-content { margin-right: 250px; padding: 20px; }
     @media (max-width: 992px) {
       .sidebar { width: 0; }
       .main-content { margin-right: 0; }
@@ -86,69 +44,56 @@
 <!-- شاشة الترحيب -->
 <div id="welcomeScreen" class="welcome-screen" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); color: white;">
   <div class="text-center p-4 bg-white rounded shadow" style="width: 90%; max-width: 450px; color: var(--dark);">
-    <h3 class="mb-4">مرحباً بك في نظام متابعة طلبات المواطنين</h3>
+    <h3 class="mb-4">مرحباً بك</h3>
     <button id="loginWelcomeBtn" class="btn btn-primary w-100 mb-3">تسجيل الدخول</button>
     <button id="registerWelcomeBtn" class="btn btn-outline-primary w-100">إنشاء حساب</button>
   </div>
 </div>
 
-<!-- صفحة تسجيل الدخول -->
+<!-- تسجيل الدخول -->
 <div id="loginPage" class="auth-page" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
-  <div class="p-4 bg-white rounded shadow" style="width: 90%; max-width: 450px; color: var(--dark);">
+  <div class="p-4 bg-white rounded shadow" style="width: 90%; max-width: 450px;">
     <h4 class="text-center mb-4">تسجيل الدخول</h4>
     <form id="loginForm">
       <div class="mb-3">
-        <label>البريد الإلكتروني</label>
-        <input type="email" id="username" class="form-control" required />
+        <input type="email" id="email" class="form-control" placeholder="البريد الإلكتروني" required />
       </div>
       <div class="mb-3">
-        <label>كلمة المرور</label>
-        <input type="password" id="password" class="form-control" required />
+        <input type="password" id="password" class="form-control" placeholder="كلمة المرور" required />
       </div>
-      <button type="submit" class="btn btn-primary w-100">تسجيل الدخول</button>
+      <button type="submit" class="btn btn-primary w-100">دخول</button>
       <div class="text-center mt-3">
-        <a href="#" id="showRegisterLink">ليس لديك حساب؟ سجل الآن</a>
+        <a href="#" id="showRegisterLink">ليس لديك حساب؟</a>
       </div>
     </form>
     <div id="loginAlert" class="alert d-none mt-3"></div>
   </div>
 </div>
 
-<!-- صفحة التسجيل -->
+<!-- التسجيل -->
 <div id="registerPage" class="auth-page" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));">
-  <div class="p-4 bg-white rounded shadow" style="width: 90%; max-width: 450px; color: var(--dark);">
-    <h4 class="text-center mb-4">إنشاء حساب جديد</h4>
+  <div class="p-4 bg-white rounded shadow" style="width: 90%; max-width: 450px;">
+    <h4 class="text-center mb-4">إنشاء حساب</h4>
     <form id="registerForm">
       <div class="mb-3">
-        <label>الاسم الكامل</label>
-        <input type="text" id="fullName" class="form-control" required />
+        <input type="text" id="fullName" class="form-control" placeholder="الاسم الكامل" required />
       </div>
       <div class="mb-3">
-        <label>البريد الإلكتروني</label>
-        <input type="email" id="email" class="form-control" required />
+        <input type="email" id="regEmail" class="form-control" placeholder="البريد الإلكتروني" required />
       </div>
       <div class="mb-3">
-        <label>الدور</label>
-        <select id="role" class="form-select" required>
-          <option value="">اختر الدور</option>
-          <option value="admin">مدير النظام</option>
-          <option value="viewer">مستخدم عادي</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label>كلمة المرور</label>
-        <input type="password" id="regPassword" class="form-control" minlength="6" required />
+        <input type="password" id="regPassword" class="form-control" placeholder="كلمة المرور" required minlength="6" />
       </div>
       <button type="submit" class="btn btn-primary w-100">إنشاء الحساب</button>
       <div class="text-center mt-3">
-        <a href="#" id="showLoginLink">لديك حساب؟ سجل الدخول</a>
+        <a href="#" id="showLoginLink">لديك حساب؟</a>
       </div>
     </form>
     <div id="registerAlert" class="alert d-none mt-3"></div>
   </div>
 </div>
 
-<!-- التطبيق الرئيسي -->
+<!-- التطبيق -->
 <div id="appContent" class="app-content" style="display: none;">
   <nav class="sidebar">
     <div class="p-4 text-center border-bottom">
@@ -156,298 +101,184 @@
       <small id="sidebarUserRole">--</small>
     </div>
     <ul class="nav flex-column mt-4">
-      <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-tachometer-alt me-2"></i> لوحة التحكم</a></li>
-      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-list me-2"></i> جميع الطلبات</a></li>
-      <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user-circle me-2"></i> الملف الشخصي</a></li>
+      <li class="nav-item"><a class="nav-link active" href="#"><i class="fas fa-home me-2"></i> لوحة التحكم</a></li>
     </ul>
     <div class="mt-auto p-3 text-center">
-      <button class="btn btn-sm btn-outline-light w-100" id="logoutBtn">
-        <i class="fas fa-sign-out-alt me-1"></i> تسجيل الخروج
-      </button>
+      <button class="btn btn-sm btn-outline-light w-100" id="logoutBtn">تسجيل الخروج</button>
     </div>
   </nav>
-
   <main class="main-content">
     <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="card-header">
         <h5>الطلبات</h5>
-        <button class="btn btn-sm btn-primary" id="newRequestBtn">إضافة طلب</button>
       </div>
       <div class="card-body">
-        <table class="table table-hover" id="requestsTable">
-          <thead><tr>
-            <th>#</th><th>الاسم</th><th>الطلب</th><th>الهيئة</th><th>الحالة</th><th>الإجراءات</th>
-          </tr></thead>
-          <tbody id="requestsTableBody"></tbody>
+        <table class="table" id="requestsTable">
+          <thead><tr><th>#</th><th>الاسم</th><th>الطلب</th><th>الإجراءات</th></tr></thead>
+          <tbody></tbody>
         </table>
       </div>
     </div>
   </main>
 </div>
 
-<!-- Modal عرض تفاصيل الطلب -->
+<!-- Modal التفاصيل -->
 <div class="modal fade" id="requestDetailsModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header">
         <h5 class="modal-title">تفاصيل الطلب #<span id="modalRequestId"></span></h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <div class="row">
-          <div class="col-md-6">
-            <h6>معلومات مقدم الطلب</h6>
-            <p><strong>الاسم:</strong> <span id="modalApplicantName"></span></p>
-            <p><strong>الرقم القومي:</strong> <span id="modalNationalId"></span></p>
-          </div>
-          <div class="col-md-6">
-            <h6>تفاصيل الطلب</h6>
-            <p><strong>الهيئة:</strong> <span id="modalCategory" class="category-badge"></span></p>
-            <p><strong>الأولوية:</strong> <span id="modalPriority"></span></p>
-            <p><strong>التاريخ:</strong> <span id="modalDate"></span></p>
-          </div>
-        </div>
-        <hr>
-        <h6>عنوان الطلب</h6>
-        <p id="modalTitle"></p>
-        <h6>وصف الطلب</h6>
-        <p id="modalSummary"></p>
-        <hr>
-        <div class="mb-3">
-          <label>الحالة الحالية</label>
-          <select class="form-select" id="modalStatus">
-            <option value="submitted">تم التقديم</option>
-            <option value="pending">قيد الانتظار</option>
-            <option value="approved">موافقة</option>
-            <option value="rejected">غير موافقة</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label>تعليقات (اختياري)</label>
-          <textarea class="form-control" id="modalComments" rows="3"></textarea>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-        <button type="button" class="btn btn-primary" id="saveRequestDetails">حفظ التحديثات</button>
-        <button type="button" class="btn btn-outline-secondary" id="exportRequestPDF">تصدير كـ PDF</button>
+        <p><strong>الاسم:</strong> <span id="modalName"></span></p>
+        <p><strong>الوصف:</strong> <span id="modalDesc"></span></p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- مكتبات خارجية -->
+<!-- المكتبات -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
 <script>
-  // ================= Supabase Config =================
-  const SUPABASE_URL = "https://gcgjzqiumgesultletws.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo";
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// === Supabase ===
+const SUPABASE_URL = "https://gcgjzqiumgesultletws.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ================= Data =================
-  const categories = {
-    electricity: { name: 'كهرباء', colorClass: 'category-electricity' },
-    health: { name: 'صحة', colorClass: 'category-health' },
-    water: { name: 'مياه', colorClass: 'category-water' },
-    sanitation: { name: 'صرف صحي', colorClass: 'category-sanitation' },
-    education: { name: 'تعليم', colorClass: 'category-education' },
-    transport: { name: 'مواصلات', colorClass: 'category-transport' },
-    telecom: { name: 'اتصالات', colorClass: 'category-telecom' },
-    housing: { name: 'إسكان', colorClass: 'category-housing' }
+// === بيانات الطلبات (محليًا) ===
+let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
+  { id: 1, name: "أحمد محمد", request: "طلب كهرباء", category: "electricity", status: "pending" }
+];
+let currentUser = null;
+
+// === DOM Ready ===
+$(document).ready(() => {
+  checkSession();
+  setupEvents();
+});
+
+function setupEvents() {
+  // Welcome
+  $('#loginWelcomeBtn').click(() => showPage('login'));
+  $('#registerWelcomeBtn').click(() => showPage('register'));
+  
+  // Login/Register links
+  $('#showRegisterLink').click((e) => { e.preventDefault(); showPage('register'); });
+  $('#showLoginLink').click((e) => { e.preventDefault(); showPage('login'); });
+
+  // Forms
+  $('#loginForm').submit(login);
+  $('#registerForm').submit(register);
+  $('#logoutBtn').click(logout);
+}
+
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session?.user) {
+    await loadUser(session.user);
+    showApp();
+  } else {
+    showPage('welcome');
+  }
+}
+
+async function loadUser(user) {
+  currentUser = {
+    id: user.id,
+    email: user.email,
+    fullName: user.user_metadata?.full_name || user.email.split('@')[0],
+    role: user.user_metadata?.role || 'viewer'
   };
-  const statuses = {
-    submitted: { name: 'تم التقديم', class: 'status-submitted' },
-    pending: { name: 'قيد الانتظار', class: 'status-pending' },
-    approved: { name: 'موافقة', class: 'status-approved' },
-    rejected: { name: 'غير موافقة', class: 'status-rejected' }
-  };
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+}
 
-  let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
-    { id: 1001, nationalId: "29801011234567", applicantName: "أحمد محمد", requestTitle: "طلب توصيل كهرباء", requestSummary: "منطقة بدون كهرباء منذ 3 أشهر", category: "electricity", status: "pending", priority: "high", requestDate: "2026-01-10" },
-    { id: 1002, nationalId: "29905052345678", applicantName: "سارة خالد", requestTitle: "إنشاء مركز صحي", requestSummary: "الحاجة لمركز صحي لـ5000 مواطن", category: "health", status: "approved", priority: "medium", requestDate: "2026-01-05" }
-  ];
-  let currentUser = null;
-  let currentRequestId = null;
-
-  // ================= DOM Ready =================
-  $(document).ready(function () {
-    checkUserSession();
-    setupWelcomePageEvents();
-  });
-
-  // ================= Authentication =================
-  async function checkUserSession() {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      await loadUserData(session.user);
-      showApp();
-    } else {
-      showWelcomePage();
-    }
+function showPage(page) {
+  $('#welcomeScreen, #loginPage, #registerPage, #appContent').hide();
+  switch(page) {
+    case 'welcome': $('#welcomeScreen').show().css('display', 'flex'); break;
+    case 'login': $('#loginPage').show().css('display', 'flex'); break;
+    case 'register': $('#registerPage').show().css('display', 'flex'); break;
   }
+}
 
-  async function loadUserData(user) {
-    const fullName = user.user_metadata?.full_name || user.email.split('@')[0];
-    const role = user.user_metadata?.role || 'viewer';
-    currentUser = { id: user.id, email: user.email, fullName, role };
-    localStorage.setItem('currentUser', JSON.stringify(currentUser));
-  }
+function showApp() {
+  showPage();
+  $('#appContent').show();
+  renderRequests();
+  $('#sidebarUserName').text(currentUser.fullName);
+  $('#sidebarUserRole').text(currentUser.role === 'admin' ? 'مدير' : 'مستخدم');
+}
 
-  function showWelcomePage() {
-    $('#welcomeScreen').show().css('display', 'flex');
-    $('#loginPage, #registerPage, #appContent').hide();
-  }
+async function login(e) {
+  e.preventDefault();
+  const email = $('#email').val().trim();
+  const password = $('#password').val().trim();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  showAlert(error?.message || 'تم الدخول!', !error, 'login');
+  if (!error) setTimeout(checkSession, 1500);
+}
 
-  function showApp() {
-    $('#welcomeScreen, #loginPage, #registerPage').hide();
-    $('#appContent').show();
-    renderRequestsTable();
-    updateUserInterface();
-  }
-
-  function updateUserInterface() {
-    if (currentUser) {
-      $('#sidebarUserName').text(currentUser.fullName);
-      $('#sidebarUserRole').text(currentUser.role === 'admin' ? 'مدير النظام' : 'مستخدم عادي');
-    }
-  }
-
-  // ================= Event Setup =================
-  function setupWelcomePageEvents() {
-    $('#loginWelcomeBtn').click(() => { $('#welcomeScreen').hide(); $('#loginPage').show().css('display', 'flex'); });
-    $('#registerWelcomeBtn').click(() => { $('#welcomeScreen').hide(); $('#registerPage').show().css('display', 'flex'); });
-    $('#showRegisterLink').click((e) => { e.preventDefault(); $('#loginPage').hide(); $('#registerPage').show().css('display', 'flex'); });
-    $('#showLoginLink').click((e) => { e.preventDefault(); $('#registerPage').hide(); $('#loginPage').show().css('display', 'flex'); });
-  }
-
-  $('#loginForm').submit(async (e) => {
-    e.preventDefault();
-    const email = $('#username').val().trim();
-    const password = $('#password').val().trim();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      $('#loginAlert').removeClass('d-none alert-success').addClass('alert-danger').text(error.message);
-    } else {
-      $('#loginAlert').removeClass('d-none alert-danger').addClass('alert-success').text('تم تسجيل الدخول!');
-      setTimeout(checkUserSession, 1500);
-    }
+async function register(e) {
+  e.preventDefault();
+  const email = $('#regEmail').val().trim();
+  const password = $('#regPassword').val();
+  const fullName = $('#fullName').val().trim();
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName, role: 'viewer' } }
   });
+  showAlert(error?.message || 'تم الإنشاء! تحقق من بريدك.', !error, 'register');
+  if (!error) setTimeout(() => showPage('login'), 2000);
+}
 
-  $('#registerForm').submit(async (e) => {
-    e.preventDefault();
-    const email = $('#email').val().trim();
-    const password = $('#regPassword').val();
-    const fullName = $('#fullName').val().trim();
-    const role = $('#role').val();
-    const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName, role } } });
-    if (error) {
-      $('#registerAlert').removeClass('d-none alert-success').addClass('alert-danger').text(error.message);
-    } else {
-      $('#registerAlert').removeClass('d-none alert-danger').addClass('alert-success').text('تم إنشاء الحساب! يرجى تأكيد بريدك.');
-      setTimeout(() => { $('#registerPage').hide(); $('#loginPage').show().css('display', 'flex'); }, 2500);
-    }
+function logout() {
+  supabase.auth.signOut();
+  localStorage.removeItem('currentUser');
+  currentUser = null;
+  showPage('welcome');
+}
+
+function renderRequests() {
+  const tbody = $('#requestsTable tbody');
+  tbody.empty();
+  allRequests.forEach(req => {
+    tbody.append(`
+      <tr>
+        <td>${req.id}</td>
+        <td>${req.name}</td>
+        <td>${req.request}</td>
+        <td><button class="btn btn-sm btn-primary" onclick="showDetails(${req.id})">عرض</button></td>
+      </tr>
+    `);
   });
+}
 
-  $('#logoutBtn').click(async () => {
-    await supabase.auth.signOut();
-    localStorage.removeItem('currentUser');
-    currentUser = null;
-    showWelcomePage();
-  });
+function showDetails(id) {
+  const req = allRequests.find(r => r.id === id);
+  if (!req) return;
+  $('#modalRequestId').text(req.id);
+  $('#modalName').text(req.name);
+  $('#modalDesc').text(req.request);
+  $('#requestDetailsModal').modal('show');
+}
 
-  // ================= Requests Table =================
-  function renderRequestsTable() {
-    const tbody = $('#requestsTableBody');
-    tbody.empty();
-    allRequests.forEach((req, i) => {
-      const cat = categories[req.category] || {};
-      const stat = statuses[req.status] || {};
-      const row = `
-        <tr>
-          <td>${req.id}</td>
-          <td>${req.applicantName}</td>
-          <td>${req.requestTitle}</td>
-          <td><span class="category-badge ${cat.colorClass}">${cat.name}</span></td>
-          <td><span class="status-badge ${stat.class}">${stat.name}</span></td>
-          <td><button class="btn btn-sm btn-outline-primary" onclick="showRequestDetails(${req.id})">عرض</button></td>
-        </tr>
-      `;
-      tbody.append(row);
-    });
-  }
+function showAlert(message, isSuccess, page) {
+  const alert = $(`#${page}Alert`);
+  alert.removeClass('d-none alert-danger alert-success')
+       .addClass(isSuccess ? 'alert-success' : 'alert-danger')
+       .text(message);
+  setTimeout(() => alert.addClass('d-none'), 5000);
+}
 
-  // ================= Request Details Modal =================
-  window.showRequestDetails = function(requestId) {
-    const req = allRequests.find(r => r.id === requestId);
-    if (!req) return;
-    currentRequestId = requestId;
-    const cat = categories[req.category] || {};
-    const priorityText = req.priority === 'high' ? 'عاجل' : req.priority === 'medium' ? 'متوسط' : 'منخفض';
-
-    $('#modalRequestId').text(req.id);
-    $('#modalApplicantName').text(req.applicantName);
-    $('#modalNationalId').text(req.nationalId);
-    $('#modalCategory').text(cat.name).removeClass().addClass(`category-badge ${cat.colorClass}`);
-    $('#modalPriority').text(priorityText);
-    $('#modalDate').text(req.requestDate);
-    $('#modalTitle').text(req.requestTitle);
-    $('#modalSummary').text(req.requestSummary);
-    $('#modalStatus').val(req.status);
-    $('#modalComments').val(req.comments || '');
-
-    $('#requestDetailsModal').modal('show');
-  };
-
-  $('#saveRequestDetails').click(function() {
-    const reqIndex = allRequests.findIndex(r => r.id === currentRequestId);
-    if (reqIndex === -1) return;
-    allRequests[reqIndex].status = $('#modalStatus').val();
-    allRequests[reqIndex].comments = $('#modalComments').val();
-    localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-    renderRequestsTable();
-    $('#requestDetailsModal').modal('hide');
-    alert('تم تحديث الطلب بنجاح!');
-  });
-
-  // تصدير كـ PDF (بسيط)
-  $('#exportRequestPDF').click(function() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text(`طلب #${$('#modalRequestId').text()}`, 20, 20);
-    doc.setFontSize(12);
-    doc.text(`الاسم: ${$('#modalApplicantName').text()}`, 20, 30);
-    doc.text(`الهيئة: ${$('#modalCategory').text()}`, 20, 40);
-    doc.text(`الحالة: ${statuses[$('#modalStatus').val()].name}`, 20, 50);
-    doc.text(`الوصف:`, 20, 60);
-    const desc = doc.splitTextToSize($('#modalSummary').text(), 170);
-    doc.text(desc, 20, 70);
-    doc.save(`طلب_${currentRequestId}.pdf`);
-  });
-
-  // ================= New Request (simple) =================
-  $('#newRequestBtn').click(function() {
-    const newId = Math.max(...allRequests.map(r => r.id), 0) + 1;
-    const newReq = {
-      id: newId,
-      nationalId: "00000000000000",
-      applicantName: "مستخدم تجريبي",
-      requestTitle: "طلب تجريبي",
-      requestSummary: "وصف تجريبي",
-      category: "electricity",
-      status: "submitted",
-      priority: "medium",
-      requestDate: new Date().toISOString().split('T')[0],
-      comments: ""
-    };
-    allRequests.unshift(newReq);
-    localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-    renderRequestsTable();
-    alert('تمت إضافة طلب تجريبي!');
-  });
+// Expose to global scope for onclick
+window.showDetails = showDetails;
 </script>
+
 </body>
 </html>
