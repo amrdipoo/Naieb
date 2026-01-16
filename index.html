@@ -1848,7 +1848,7 @@
 			  SUPABASE_URL,
 			  SUPABASE_ANON_KEY
 			);
-							document.getElementById("loginForm").addEventListener("submit", async function (e) {
+				document.getElementById("loginForm").addEventListener("submit", async function (e) {
 				  e.preventDefault();
 
 				  const email = document.getElementById("username").value; 
@@ -1868,7 +1868,7 @@
 				  document.getElementById("loginPage").style.display = "none";
 				  document.getElementById("appContent").style.display = "block";
 				});
-							document.getElementById("registerForm").addEventListener("submit", async function (e) {
+				document.getElementById("registerForm").addEventListener("submit", async function (e) {
 				  e.preventDefault();
 
 				  const email = document.getElementById("email").value;
@@ -5286,6 +5286,11 @@ function initializeApp() {
         window.selectSearchResult = selectSearchResult;
         window.showCategoryDetails = showCategoryDetails;
         window.showAllCategoryRequests = showAllCategoryRequests;
+		// ربط زر / فورم تسجيل الدخول
+		$('#loginForm').on('submit', function (e) {
+			e.preventDefault();
+			loginUser();
+		});
 
         // تسجيل رسالة نجاح التحميل
         console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
