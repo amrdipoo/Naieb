@@ -2116,83 +2116,126 @@
         }
 
         // إعداد أحداث صفحة تسجيل الدخول
-        function setupLoginPageEvents() {
-            $('#togglePassword').click(function() {
-                const passwordInput = $('#password');
-                const icon = $(this).find('i');
-                
-                if (passwordInput.attr('type') === 'password') {
-                    passwordInput.attr('type', 'text');
-                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
-                } else {
-                    passwordInput.attr('type', 'password');
-                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
-                }
-            });
-            
-            $('#loginForm').submit(function(e) {
-                e.preventDefault();
-                loginUser();
-            });
-            
-            $('#showRegisterLink').click(function(e) {
-                e.preventDefault();
-                $('#loginPage').hide();
-                $('#registerPage').show();
-                setupRegisterPageEvents();
-            });
-            
-            $('#forgotPasswordLink').click(function(e) {
-                e.preventDefault();
-                $('#loginAlert').removeClass('d-none alert-danger').addClass('alert-info');
-                $('#loginAlertMessage').text('سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
-            });
+       // إعداد أحداث صفحة تسجيل الدخول
+function setupLoginPageEvents() {
+    console.log('إعداد أحداث تسجيل الدخول');
+    
+    // زر عرض/إخفاء كلمة المرور
+    $('#togglePassword').click(function() {
+        const passwordInput = $('#password');
+        const icon = $(this).find('i');
+        
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // فورم تسجيل الدخول
+    $('#loginForm').off('submit').on('submit', async function(e) {
+        e.preventDefault();
+        console.log('فورم تسجيل الدخول تم إرساله');
+        
+        // التصحيح هنا: استخدام .val() بدلاً من .value
+        const email = $('#username').val(); 
+        const password = $('#password').val();
+        
+        console.log('بيانات الدخول:', { email, password });
+
+        const { error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+        if (error) {
+            console.error('خطأ في تسجيل الدخول:', error.message);
+            document.getElementById("loginAlert").classList.remove("d-none");
+            document.getElementById("loginAlertMessage").innerText = error.message;
+            return;
         }
 
+        console.log('تم تسجيل الدخول بنجاح');
+        document.getElementById("loginPage").style.display = "none";
+        document.getElementById("appContent").style.display = "block";
+        startApplication();
+    });
+    
+    // رابط نسيت كلمة المرور
+    $('#forgotPasswordLink').click(function(e) {
+        e.preventDefault();
+        $('#loginAlert').removeClass('d-none alert-danger').addClass('alert-info');
+        $('#loginAlertMessage').text('سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+    });
+}
+
         // إعداد أحداث صفحة التسجيل
-        function setupRegisterPageEvents() {
-            $('#toggleRegPassword').click(function() {
-                togglePasswordVisibility('#regPassword', $(this));
-            });
-            
-            $('#toggleConfirmPassword').click(function() {
-                togglePasswordVisibility('#confirmPassword', $(this));
-            });
-            
-            $('#regUsername').on('input', function() {
-                checkUsernameAvailability($(this).val());
-            });
-            
-            $('#regPassword').on('input', function() {
-                checkPasswordStrength($(this).val());
-            });
-            
-            $('#confirmPassword').on('input', function() {
-                checkPasswordMatch();
-            });
-            
-            $('#registerForm').submit(function(e) {
-                e.preventDefault();
-                registerUser();
-            });
-            
-            $('#showLoginLink').click(function(e) {
-                e.preventDefault();
-                $('#registerPage').hide();
-                $('#loginPage').show();
-                setupLoginPageEvents();
-            });
-            
-            $('#showTermsLink').click(function(e) {
-                e.preventDefault();
-                $('#termsModal').modal('show');
-            });
-            
-            $('#agreeTermsBtn').click(function() {
-                $('#agreeTerms').prop('checked', true);
-                $('#termsModal').modal('hide');
-            });
+       // إعداد أحداث صفحة التسجيل
+function setupRegisterPageEvents() {
+    console.log('إعداد أحداث إنشاء حساب');
+    
+    // أزرار عرض/إخفاء كلمة المرور
+    $('#toggleRegPassword').click(function() {
+        togglePasswordVisibility('#regPassword', $(this));
+    });
+    
+    $('#toggleConfirmPassword').click(function() {
+        togglePasswordVisibility('#confirmPassword', $(this));
+    });
+    
+    // فورم إنشاء حساب
+    $('#registerForm').off('submit').on('submit', async function(e) {
+        e.preventDefault();
+        console.log('فورم إنشاء حساب تم إرساله');
+        
+        // التصحيح هنا: استخدام .val() بدلاً من .value
+        const email = $('#email').val();
+        const password = $('#regPassword').val();
+        const fullName = $('#fullName').val();
+        const phone = $('#phone').val();
+        const role = $('#role').val();
+
+        const { error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName,
+                    phone: phone,
+                    role: role
+                }
+            }
+        });
+
+        if (error) {
+            console.error('خطأ في إنشاء الحساب:', error.message);
+            document.getElementById("registerAlert").classList.remove("d-none");
+            document.getElementById("registerAlertMessage").innerText = error.message;
+            return;
         }
+
+        alert("تم إنشاء الحساب بنجاح! يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب.");
+        
+        // العودة لصفحة تسجيل الدخول
+        document.getElementById("registerPage").style.display = "none";
+        document.getElementById("loginPage").style.display = "block";
+        document.getElementById("loginPage").style.display = "flex";
+        setupLoginPageEvents();
+    });
+    
+    // رابط الشروط والأحكام
+    $('#showTermsLink').click(function(e) {
+        e.preventDefault();
+        $('#termsModal').modal('show');
+    });
+    
+    $('#agreeTermsBtn').click(function() {
+        $('#agreeTerms').prop('checked', true);
+        $('#termsModal').modal('hide');
+    });
+}
 
         // تبديل رؤية كلمة المرور
         function togglePasswordVisibility(inputId, button) {
