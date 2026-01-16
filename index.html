@@ -1848,6 +1848,12 @@
 			  SUPABASE_URL,
 			  SUPABASE_ANON_KEY
 			);
+			// زر تسجيل الدخول من شاشة الترحيب → يفتح صفحة تسجيل الدخول
+				document.getElementById("loginWelcomeBtn").addEventListener("click", function() {
+					document.getElementById("welcomeScreen").style.display = "none";
+					document.getElementById("loginPage").style.display = "block";
+				});
+
 				document.getElementById("loginForm").addEventListener("submit", async function (e) {
 				  e.preventDefault();
 
