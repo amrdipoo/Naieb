@@ -1840,571 +1840,482 @@
     
     <!-- التطبيق الرئيسي -->
     <script>
-	// ============= تكوين Supabase (أضف هذا في بداية السكربت) =============
-		const SUPABASE_URL = 'https://your-project-id.supabase.co'; // استبدل برابط مشروعك
-		const SUPABASE_ANON_KEY = 'your-anon-key'; // استبدل بمفتاحك
+	// ============= تكوين Supabase =============
+    const SUPABASE_URL = 'https://your-project-id.supabase.co'; // استبدل برابط مشروعك
+    const SUPABASE_ANON_KEY = 'your-anon-key'; // استبدل بمفتاحك
+    
+    // إنشاء عميل Supabase
+    let supabase;
+    try {
+        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('Supabase تم التهيئة بنجاح');
+    } catch (error) {
+        console.warn('Supabase غير متاح، سيتم استخدام localStorage', error);
+        supabase = null;
+    }
 
-		// إنشاء عميل Supabase
-		let supabase;
-		try {
-			supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-			console.log('Supabase تم التهيئة بنجاح');
-		} catch (error) {
-			console.warn('Supabase غير متاح، سيتم استخدام localStorage', error);
-			supabase = null;
-		}
-
-		// ============= دالات Supabase (أضف هذه الدوال) =============
-
-		// دالة مساعدة للتحقق من اتصال Supabase
-		async function checkSupabaseConnection() {
-			if (!supabase) return false;
-			try {
-				const { data, error } = await supabase.from('requests').select('count');
-				return !error;
-			} catch {
-				return false;
-			}
-		}
-
-		// تحميل الطلبات من Supabase أو localStorage
-		async function loadRequestsFromSupabase() {
-			if (!supabase) {
-				console.log('استخدام localStorage للطلبات');
-				return JSON.parse(localStorage.getItem('citizenRequests')) || getDefaultRequests();
-			}
-			
-			try {
-				const { data: requests, error } = await supabase
-					.from('requests')
-					.select('*')
-					.order('created_at', { ascending: false });
-				
-				if (error) throw error;
-				
-				// تحويل تنسيق البيانات
-				return (requests || []).map(req => ({
-					id: req.id,
-					nationalId: req.national_id,
-					applicantName: req.applicant_name,
-					requestTitle: req.request_title,
-					requestSummary: req.request_summary,
-					requestDate: req.request_date,
-					category: req.category,
-					status: req.status,
-					priority: req.priority,
-					file: req.file_url,
-					comments: req.comments,
-					createdBy: req.created_by,
-					createdAt: req.created_at,
-					updatedAt: req.updated_at,
-					updatedBy: req.updated_by
-				}));
-				
-			} catch (error) {
-				console.error('خطأ في تحميل الطلبات من Supabase:', error);
-				return JSON.parse(localStorage.getItem('citizenRequests')) || getDefaultRequests();
-			}
-		}
-
-		// تحميل المستخدمين من Supabase أو localStorage
-		async function loadUsersFromSupabase() {
-			if (!supabase) {
-				console.log('استخدام localStorage للمستخدمين');
-				return JSON.parse(localStorage.getItem('systemUsers')) || initializeDefaultUsers();
-			}
-			
-			try {
-				const { data: users, error } = await supabase
-					.from('users')
-					.select('*');
-				
-				if (error) throw error;
-				
-				// تخزين محلياً للنسخ الاحتياطي
-				localStorage.setItem('systemUsers', JSON.stringify(users || []));
-				return users || [];
-				
-			} catch (error) {
-				console.error('خطأ في تحميل المستخدمين من Supabase:', error);
-				return JSON.parse(localStorage.getItem('systemUsers')) || initializeDefaultUsers();
-			}
-		}
-
-		// حفظ طلب في Supabase و localStorage
-		async function saveRequestToSupabase(request) {
-			// حفظ في localStorage أولاً (لضمان الاستمرارية)
-			const localRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [];
-			localRequests.unshift(request);
-			localStorage.setItem('citizenRequests', JSON.stringify(localRequests));
-			
-			// محاولة الحفظ في Supabase
-			if (!supabase) return request;
-			
-			try {
-				const supabaseRequest = {
-					national_id: request.nationalId,
-					applicant_name: request.applicantName,
-					request_title: request.requestTitle,
-					request_summary: request.requestSummary,
-					request_date: request.requestDate,
-					category: request.category,
-					status: request.status,
-					priority: request.priority,
-					file_url: request.file,
-					comments: request.comments,
-					created_by: request.createdBy || 'system'
-				};
-				
-				const { data, error } = await supabase
-					.from('requests')
-					.insert([supabaseRequest])
-					.select()
-					.single();
-				
-				if (error) throw error;
-				
-				// تحديث ID إذا تم إنشاؤه في Supabase
-				request.id = data.id;
-				
-			} catch (error) {
-				console.error('خطأ في حفظ الطلب في Supabase:', error);
-			}
-			
-			return request;
-		}
-
-		// تحديث طلب في Supabase و localStorage
-		async function updateRequestInSupabase(requestId, updates) {
-			// تحديث في localStorage
-			const localRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [];
-			const requestIndex = localRequests.findIndex(r => r.id === requestId);
-			
-			if (requestIndex !== -1) {
-				localRequests[requestIndex] = { ...localRequests[requestIndex], ...updates };
-				localStorage.setItem('citizenRequests', JSON.stringify(localRequests));
-			}
-			
-			// محاولة التحديث في Supabase
-			if (!supabase) return;
-			
-			try {
-				const supabaseUpdates = {
-					status: updates.status,
-					comments: updates.comments,
-					updated_at: new Date().toISOString(),
-					updated_by: currentUser ? currentUser.username : 'system'
-				};
-				
-				const { error } = await supabase
-					.from('requests')
-					.update(supabaseUpdates)
-					.eq('id', requestId);
-				
-				if (error) throw error;
-				
-			} catch (error) {
-				console.error('خطأ في تحديث الطلب في Supabase:', error);
-			}
-		}
-
-		// تسجيل الدخول مع Supabase مع fallback لـ localStorage
-		async function loginWithSupabase(username, password) {
-			// أولاً: جرب localStorage (للتوافق مع الكود الحالي)
-			const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-			const localUser = users.find(u => u.username === username && u.password === password);
-			
-			if (localUser) {
-				return {
-					success: true,
-					user: {
-						id: localUser.id,
-						username: localUser.username,
-						fullName: localUser.fullName || localUser.full_name,
-						role: localUser.role,
-						email: localUser.email,
-						isActive: localUser.is_active !== false
-					}
-				};
-			}
-			
-			// ثانياً: جرب Supabase إذا كان متاحاً
-			if (supabase) {
-				try {
-					const { data: user, error } = await supabase
-						.from('users')
-						.select('*')
-						.eq('username', username)
-						.eq('password', password)
-						.single();
-					
-					if (!error && user) {
-						return {
-							success: true,
-							user: {
-								id: user.id,
-								username: user.username,
-								fullName: user.full_name,
-								role: user.role,
-								email: user.email,
-								isActive: user.is_active
-							}
-						};
-					}
-				} catch (error) {
-					console.error('خطأ في تسجيل الدخول مع Supabase:', error);
-				}
-			}
-			
-			return { success: false, message: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
-		}
-
-		// ============= دالة تهيئة Supabase (أضف في initializeAuth) =============
-
-		// في دالة initializeAuth، أضف:
-		async function initializeAuth() {
-			// الكود الأصلي يبقى كما هو
-			if (!localStorage.getItem('systemUsers')) {
-				const defaultUsers = [
-					{
-						id: 1,
-						username: 'admin',
-						password: '123456',
-						fullName: 'عضو مجلس النواب',
-						email: 'mp@parliament.gov',
-						phone: '01012345678',
-						role: 'admin',
-						isActive: true,
-						createdAt: new Date().toISOString()
-					}
-				];
-				localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
-			}
-			
-			// محاولة تحميل من Supabase
-			try {
-				const users = await loadUsersFromSupabase();
-				if (users && users.length > 0) {
-					localStorage.setItem('systemUsers', JSON.stringify(users));
-				}
-			} catch (error) {
-				console.log('سيتم استخدام المستخدمين المحليين');
-			}
-		}
-        // تعريف البيانات
-        const categories = {
-            'electricity': {
-                name: 'كهرباء',
-                color: '#f97316',
-                bgColor: '#ffedd5',
-                icon: 'fas fa-bolt',
-                description: 'وزارة الكهرباء والطاقة المتجددة'
-            },
-            'health': {
-                name: 'صحة',
-                color: '#ec4899',
-                bgColor: '#fce7f3',
-                icon: 'fas fa-hospital',
-                description: 'وزارة الصحة والسكان'
-            },
-            'water': {
-                name: 'مياه',
-                color: '#0ea5e9',
-                bgColor: '#e0f2fe',
-                icon: 'fas fa-tint',
-                description: 'وزارة الموارد المائية والري'
-            },
-            'sanitation': {
-                name: 'صرف صحي',
-                color: '#8b5cf6',
-                bgColor: '#f3e8ff',
-                icon: 'fas fa-toilet',
-                description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
-            },
-            'education': {
-                name: 'تعليم',
-                color: '#84cc16',
-                bgColor: '#f0fdf4',
-                icon: 'fas fa-graduation-cap',
-                description: 'وزارة التربية والتعليم'
-            },
-            'transport': {
-                name: 'مواصلات',
-                color: '#6366f1',
-                bgColor: '#eef2ff',
-                icon: 'fas fa-bus',
-                description: 'وزارة النقل'
-            },
-            'telecom': {
-                name: 'اتصالات',
-                color: '#06b6d4',
-                bgColor: '#ecfeff',
-                icon: 'fas fa-wifi',
-                description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
-            },
-            'housing': {
-                name: 'إسكان',
-                color: '#14b8a6',
-                bgColor: '#f0fdfa',
-                icon: 'fas fa-home',
-                description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
-            }
-        };
-
-        const statuses = {
-            'submitted': {
-                name: 'تم التقديم',
-                color: '#3b82f6',
-                bgColor: '#dbeafe',
-                icon: 'fas fa-file-import'
-            },
-            'pending': {
-                name: 'انتظار الرد',
-                color: '#f59e0b',
-                bgColor: '#fef3c7',
-                icon: 'fas fa-clock'
-            },
-            'approved': {
-                name: 'موافقة',
-                color: '#10b981',
-                bgColor: '#d1fae5',
-                icon: 'fas fa-check-circle'
-            },
-            'rejected': {
-                name: 'غير موافقة',
-                color: '#ef4444',
-                bgColor: '#fee2e2',
-                icon: 'fas fa-times-circle'
-            }
-        };
-
-        // بيانات التطبيق
-        let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
-            {
-                id: 1001,
-                nationalId: "29801011234567",
-                applicantName: "أحمد محمد علي",
-                requestTitle: "طلب توصيل خدمة كهرباء",
-                requestSummary: "المنطقة التي أسكن بها تفتقد لخدمة الكهرباء منذ ثلاثة أشهر مما يسبب معاناة كبيرة للأهالي.",
-                requestDate: "2023-12-15",
-                category: "electricity",
-                status: "pending",
-                file: null,
-                comments: "جاري التواصل مع شركة الكهرباء",
-                priority: "high",
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 1002,
-                nationalId: "29905052345678",
-                applicantName: "سارة خالد حسن",
-                requestTitle: "طلب إنشاء مركز صحي",
-                requestSummary: "الحاجة إلى مركز صحي في الحي الجديد لخدمة أكثر من 5000 مواطن.",
-                requestDate: "2023-12-10",
-                category: "health",
-                status: "approved",
-                file: null,
-                comments: "تمت الموافقة على الطلب وتحويله لوزارة الصحة",
-                priority: "medium",
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 1003,
-                nationalId: "30011233445566",
-                applicantName: "محمود سعيد عبدالله",
-                requestTitle: "مشكلة انقطاع المياه المتكرر",
-                requestSummary: "انقطاع المياه بشكل متكرر في منطقة الزهور خلال الأسبوع الماضي.",
-                requestDate: "2023-12-05",
-                category: "water",
-                status: "submitted",
-                file: null,
-                comments: "",
-                priority: "high",
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 1004,
-                nationalId: "29708087654321",
-                applicantName: "فاطمة عادل مصطفى",
-                requestTitle: "طلب صرف صحي عاجل",
-                requestSummary: "انقطاع خدمة الصرف الصحي في شارع النخيل مما تسبب في مشاكل صحية كبيرة.",
-                requestDate: "2023-11-28",
-                category: "sanitation",
-                status: "rejected",
-                file: null,
-                comments: "تم رفض الطلب لوجود ميزانية محدودة للصيانة هذا العام",
-                priority: "medium",
-                createdAt: new Date().toISOString()
-            },
-            {
-                id: 1005,
-                nationalId: "29604049876543",
-                applicantName: "خالد سمير أحمد",
-                requestTitle: "تسريع إجراءات بناء مدرسة",
-                requestSummary: "تأخر إجراءات بناء المدرسة الجديدة في حي الأمل.",
-                requestDate: "2023-11-20",
-                category: "education",
-                status: "pending",
-                file: null,
-                comments: "قيد الدراسة من قبل إدارة التعليم",
-                priority: "low",
-                createdAt: new Date().toISOString()
-            }
-        ];
-
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let filteredRequests = [...allRequests];
-        let activeFilters = {
-            searchTerm: '',
-            searchType: 'both',
-            status: '',
-            category: '',
-            dateFilter: ''
-        };
-        let searchTimeout = null;
-        let categoryChart = null;
-        let monthlyChart = null;
-        let selectedRequestId = null;
-        let currentUser = null;
-
-        // التهيئة الرئيسية
-        $(document).ready(function() {
-            initializeAuth();
-            checkUserSession();
-        });
-
-        // تهيئة نظام المصادقة
-        function initializeAuth() {
-            if (!localStorage.getItem('systemUsers')) {
-                const defaultUsers = [
-                    {
-                        id: 1,
-                        username: 'admin',
-                        password: '123456',
-                        fullName: 'عضو مجلس النواب',
-                        email: 'mp@parliament.gov',
-                        phone: '01012345678',
-                        role: 'admin',
-                        isActive: true,
-                        createdAt: new Date().toISOString()
-                    },
-                    {
-                        id: 2,
-                        username: 'assistant',
-                        password: '123456',
-                        fullName: 'محمد أحمد',
-                        email: 'assistant@parliament.gov',
-                        phone: '01098765432',
-                        role: 'assistant',
-                        isActive: true,
-                        createdAt: new Date().toISOString()
-                    }
-                ];
-                localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
-            }
-            
-            setupWelcomePageEvents();
+    // ============= تعريف البيانات =============
+    const categories = {
+        'electricity': {
+            name: 'كهرباء',
+            color: '#f97316',
+            bgColor: '#ffedd5',
+            icon: 'fas fa-bolt',
+            description: 'وزارة الكهرباء والطاقة المتجددة'
+        },
+        'health': {
+            name: 'صحة',
+            color: '#ec4899',
+            bgColor: '#fce7f3',
+            icon: 'fas fa-hospital',
+            description: 'وزارة الصحة والسكان'
+        },
+        'water': {
+            name: 'مياه',
+            color: '#0ea5e9',
+            bgColor: '#e0f2fe',
+            icon: 'fas fa-tint',
+            description: 'وزارة الموارد المائية والري'
+        },
+        'sanitation': {
+            name: 'صرف صحي',
+            color: '#8b5cf6',
+            bgColor: '#f3e8ff',
+            icon: 'fas fa-toilet',
+            description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
+        },
+        'education': {
+            name: 'تعليم',
+            color: '#84cc16',
+            bgColor: '#f0fdf4',
+            icon: 'fas fa-graduation-cap',
+            description: 'وزارة التربية والتعليم'
+        },
+        'transport': {
+            name: 'مواصلات',
+            color: '#6366f1',
+            bgColor: '#eef2ff',
+            icon: 'fas fa-bus',
+            description: 'وزارة النقل'
+        },
+        'telecom': {
+            name: 'اتصالات',
+            color: '#06b6d4',
+            bgColor: '#ecfeff',
+            icon: 'fas fa-wifi',
+            description: 'وزارة الاتصالات وتكنولوجيا المعلومات'
+        },
+        'housing': {
+            name: 'إسكان',
+            color: '#14b8a6',
+            bgColor: '#f0fdfa',
+            icon: 'fas fa-home',
+            description: 'وزارة الإسكان والمرافق والمجتمعات العمرانية'
         }
+    };
 
-        // إعداد أحداث شاشة الترحيب
-        function setupWelcomePageEvents() {
-            $('#loginWelcomeBtn').click(function() {
-                $('#welcomeScreen').hide();
-                $('#loginPage').show();
-                setupLoginPageEvents();
-            });
-            
-            $('#registerWelcomeBtn').click(function() {
-                $('#welcomeScreen').hide();
-                $('#registerPage').show();
-                setupRegisterPageEvents();
-            });
+    const statuses = {
+        'submitted': {
+            name: 'تم التقديم',
+            color: '#3b82f6',
+            bgColor: '#dbeafe',
+            icon: 'fas fa-file-import'
+        },
+        'pending': {
+            name: 'انتظار الرد',
+            color: '#f59e0b',
+            bgColor: '#fef3c7',
+            icon: 'fas fa-clock'
+        },
+        'approved': {
+            name: 'موافقة',
+            color: '#10b981',
+            bgColor: '#d1fae5',
+            icon: 'fas fa-check-circle'
+        },
+        'rejected': {
+            name: 'غير موافقة',
+            color: '#ef4444',
+            bgColor: '#fee2e2',
+            icon: 'fas fa-times-circle'
         }
+    };
 
-        // إعداد أحداث صفحة تسجيل الدخول
-        function setupLoginPageEvents() {
-            $('#togglePassword').click(function() {
-                const passwordInput = $('#password');
-                const icon = $(this).find('i');
-                
-                if (passwordInput.attr('type') === 'password') {
-                    passwordInput.attr('type', 'text');
-                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
-                } else {
-                    passwordInput.attr('type', 'password');
-                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+    // بيانات التطبيق
+    let allRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [
+        {
+            id: 1001,
+            nationalId: "29801011234567",
+            applicantName: "أحمد محمد علي",
+            requestTitle: "طلب توصيل خدمة كهرباء",
+            requestSummary: "المنطقة التي أسكن بها تفتقد لخدمة الكهرباء منذ ثلاثة أشهر مما يسبب معاناة كبيرة للأهالي.",
+            requestDate: "2023-12-15",
+            category: "electricity",
+            status: "pending",
+            file: null,
+            comments: "جاري التواصل مع شركة الكهرباء",
+            priority: "high",
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 1002,
+            nationalId: "29905052345678",
+            applicantName: "سارة خالد حسن",
+            requestTitle: "طلب إنشاء مركز صحي",
+            requestSummary: "الحاجة إلى مركز صحي في الحي الجديد لخدمة أكثر من 5000 مواطن.",
+            requestDate: "2023-12-10",
+            category: "health",
+            status: "approved",
+            file: null,
+            comments: "تمت الموافقة على الطلب وتحويله لوزارة الصحة",
+            priority: "medium",
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 1003,
+            nationalId: "30011233445566",
+            applicantName: "محمود سعيد عبدالله",
+            requestTitle: "مشكلة انقطاع المياه المتكرر",
+            requestSummary: "انقطاع المياه بشكل متكرر في منطقة الزهور خلال الأسبوع الماضي.",
+            requestDate: "2023-12-05",
+            category: "water",
+            status: "submitted",
+            file: null,
+            comments: "",
+            priority: "high",
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 1004,
+            nationalId: "29708087654321",
+            applicantName: "فاطمة عادل مصطفى",
+            requestTitle: "طلب صرف صحي عاجل",
+            requestSummary: "انقطاع خدمة الصرف الصحي في شارع النخيل مما تسبب في مشاكل صحية كبيرة.",
+            requestDate: "2023-11-28",
+            category: "sanitation",
+            status: "rejected",
+            file: null,
+            comments: "تم رفض الطلب لوجود ميزانية محدودة للصيانة هذا العام",
+            priority: "medium",
+            createdAt: new Date().toISOString()
+        },
+        {
+            id: 1005,
+            nationalId: "29604049876543",
+            applicantName: "خالد سمير أحمد",
+            requestTitle: "تسريع إجراءات بناء مدرسة",
+            requestSummary: "تأخر إجراءات بناء المدرسة الجديدة في حي الأمل.",
+            requestDate: "2023-11-20",
+            category: "education",
+            status: "pending",
+            file: null,
+            comments: "قيد الدراسة من قبل إدارة التعليم",
+            priority: "low",
+            createdAt: new Date().toISOString()
+        }
+    ];
+
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let filteredRequests = [...allRequests];
+    let activeFilters = {
+        searchTerm: '',
+        searchType: 'both',
+        status: '',
+        category: '',
+        dateFilter: ''
+    };
+    let searchTimeout = null;
+    let categoryChart = null;
+    let monthlyChart = null;
+    let selectedRequestId = null;
+    let currentUser = null;
+
+    // ============= دالات Supabase =============
+
+    // تحميل الطلبات من Supabase
+    async function loadRequestsFromSupabase() {
+        if (!supabase) {
+            console.log('استخدام localStorage للطلبات');
+            return JSON.parse(localStorage.getItem('citizenRequests')) || allRequests;
+        }
+        
+        try {
+            const { data: requests, error } = await supabase
+                .from('requests')
+                .select('*')
+                .order('created_at', { ascending: false });
+            
+            if (error) throw error;
+            
+            // تحويل تنسيق البيانات
+            const formattedRequests = (requests || []).map(req => ({
+                id: req.id,
+                nationalId: req.national_id,
+                applicantName: req.applicant_name,
+                requestTitle: req.request_title,
+                requestSummary: req.request_summary,
+                requestDate: req.request_date,
+                category: req.category,
+                status: req.status,
+                priority: req.priority,
+                file: req.file_url,
+                comments: req.comments,
+                createdBy: req.created_by,
+                createdAt: req.created_at,
+                updatedAt: req.updated_at,
+                updatedBy: req.updated_by
+            }));
+            
+            // حفظ في localStorage للنسخ الاحتياطي
+            localStorage.setItem('citizenRequests', JSON.stringify(formattedRequests));
+            return formattedRequests;
+            
+        } catch (error) {
+            console.error('خطأ في تحميل الطلبات من Supabase:', error);
+            return JSON.parse(localStorage.getItem('citizenRequests')) || allRequests;
+        }
+    }
+
+    // تحميل المستخدمين من Supabase
+    async function loadUsersFromSupabase() {
+        if (!supabase) {
+            console.log('استخدام localStorage للمستخدمين');
+            return JSON.parse(localStorage.getItem('systemUsers')) || [];
+        }
+        
+        try {
+            const { data: users, error } = await supabase
+                .from('users')
+                .select('*');
+            
+            if (error) throw error;
+            
+            // تحويل تنسيق البيانات
+            const formattedUsers = (users || []).map(user => ({
+                id: user.id,
+                username: user.username,
+                password: user.password,
+                fullName: user.full_name,
+                email: user.email,
+                phone: user.phone,
+                role: user.role,
+                isActive: user.is_active,
+                createdAt: user.created_at,
+                lastLogin: user.last_login
+            }));
+            
+            // تخزين محلياً للنسخ الاحتياطي
+            localStorage.setItem('systemUsers', JSON.stringify(formattedUsers));
+            return formattedUsers;
+            
+        } catch (error) {
+            console.error('خطأ في تحميل المستخدمين من Supabase:', error);
+            return JSON.parse(localStorage.getItem('systemUsers')) || [];
+        }
+    }
+
+    // حفظ طلب في Supabase
+    async function saveRequestToSupabase(request) {
+        // أولاً: حفظ في localStorage
+        const localRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [];
+        localRequests.unshift(request);
+        localStorage.setItem('citizenRequests', JSON.stringify(localRequests));
+        
+        // ثانياً: محاولة الحفظ في Supabase إذا كان متاحاً
+        if (!supabase) return request;
+        
+        try {
+            const supabaseRequest = {
+                national_id: request.nationalId,
+                applicant_name: request.applicantName,
+                request_title: request.requestTitle,
+                request_summary: request.requestSummary,
+                request_date: request.requestDate,
+                category: request.category,
+                status: request.status,
+                priority: request.priority,
+                file_url: request.file,
+                comments: request.comments,
+                created_by: request.createdBy || 'system'
+            };
+            
+            const { data, error } = await supabase
+                .from('requests')
+                .insert([supabaseRequest])
+                .select()
+                .single();
+            
+            if (error) throw error;
+            
+            // تحديث ID إذا تم إنشاؤه في Supabase
+            request.id = data.id;
+            console.log('تم حفظ الطلب في Supabase:', data.id);
+            
+        } catch (error) {
+            console.error('خطأ في حفظ الطلب في Supabase:', error);
+        }
+        
+        return request;
+    }
+
+    // تحديث طلب في Supabase
+    async function updateRequestInSupabase(requestId, updates) {
+        // أولاً: تحديث في localStorage
+        const localRequests = JSON.parse(localStorage.getItem('citizenRequests')) || [];
+        const requestIndex = localRequests.findIndex(r => r.id === requestId);
+        
+        if (requestIndex !== -1) {
+            localRequests[requestIndex] = { ...localRequests[requestIndex], ...updates };
+            localStorage.setItem('citizenRequests', JSON.stringify(localRequests));
+        }
+        
+        // ثانياً: محاولة التحديث في Supabase
+        if (!supabase) return;
+        
+        try {
+            const supabaseUpdates = {
+                status: updates.status,
+                comments: updates.comments,
+                updated_at: new Date().toISOString(),
+                updated_by: currentUser ? currentUser.username : 'system'
+            };
+            
+            const { error } = await supabase
+                .from('requests')
+                .update(supabaseUpdates)
+                .eq('id', requestId);
+            
+            if (error) throw error;
+            
+            console.log('تم تحديث الطلب في Supabase:', requestId);
+            
+        } catch (error) {
+            console.error('خطأ في تحديث الطلب في Supabase:', error);
+        }
+    }
+
+    // تسجيل الدخول مع Supabase
+    async function loginWithSupabase(username, password) {
+        // أولاً: جرب localStorage (للتوافق مع الكود الحالي)
+        const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+        const localUser = users.find(u => u.username === username && u.password === password);
+        
+        if (localUser) {
+            return {
+                success: true,
+                user: {
+                    id: localUser.id,
+                    username: localUser.username,
+                    fullName: localUser.fullName,
+                    role: localUser.role,
+                    email: localUser.email,
+                    isActive: localUser.isActive !== false
                 }
-            });
-            
-            $('#loginForm').submit(function(e) {
-                e.preventDefault();
-                loginUser();
-            });
-            
-            $('#showRegisterLink').click(function(e) {
-                e.preventDefault();
-                $('#loginPage').hide();
-                $('#registerPage').show();
-                setupRegisterPageEvents();
-            });
-            
-            $('#forgotPasswordLink').click(function(e) {
-                e.preventDefault();
-                $('#loginAlert').removeClass('d-none alert-danger').addClass('alert-info');
-                $('#loginAlertMessage').text('سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
-            });
+            };
         }
-
-        // إعداد أحداث صفحة التسجيل
-        function setupRegisterPageEvents() {
-            $('#toggleRegPassword').click(function() {
-                togglePasswordVisibility('#regPassword', $(this));
-            });
-            
-            $('#toggleConfirmPassword').click(function() {
-                togglePasswordVisibility('#confirmPassword', $(this));
-            });
-            
-            $('#regUsername').on('input', function() {
-                checkUsernameAvailability($(this).val());
-            });
-            
-            $('#regPassword').on('input', function() {
-                checkPasswordStrength($(this).val());
-            });
-            
-            $('#confirmPassword').on('input', function() {
-                checkPasswordMatch();
-            });
-            
-            $('#registerForm').submit(function(e) {
-                e.preventDefault();
-                registerUser();
-            });
-            
-            $('#showLoginLink').click(function(e) {
-                e.preventDefault();
-                $('#registerPage').hide();
-                $('#loginPage').show();
-                setupLoginPageEvents();
-            });
-            
-            $('#showTermsLink').click(function(e) {
-                e.preventDefault();
-                $('#termsModal').modal('show');
-            });
-            
-            $('#agreeTermsBtn').click(function() {
-                $('#agreeTerms').prop('checked', true);
-                $('#termsModal').modal('hide');
-            });
+        
+        // ثانياً: جرب Supabase إذا كان متاحاً
+        if (supabase) {
+            try {
+                const { data: user, error } = await supabase
+                    .from('users')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('password', password)
+                    .single();
+                
+                if (!error && user) {
+                    return {
+                        success: true,
+                        user: {
+                            id: user.id,
+                            username: user.username,
+                            fullName: user.full_name,
+                            role: user.role,
+                            email: user.email,
+                            isActive: user.is_active
+                        }
+                    };
+                }
+            } catch (error) {
+                console.error('خطأ في تسجيل الدخول مع Supabase:', error);
+            }
         }
+        
+        return { success: false, message: 'اسم المستخدم أو كلمة المرور غير صحيحة' };
+    }
 
-        // تبديل رؤية كلمة المرور
-        function togglePasswordVisibility(inputId, button) {
-            const passwordInput = $(inputId);
-            const icon = button.find('i');
+    // ============= التهيئة الرئيسية =============
+    $(document).ready(function() {
+        initializeAuth();
+        checkUserSession();
+    });
+
+    // تهيئة نظام المصادقة
+    async function initializeAuth() {
+        // محاولة تحميل المستخدمين من Supabase
+        try {
+            const supabaseUsers = await loadUsersFromSupabase();
+            if (supabaseUsers && supabaseUsers.length > 0) {
+                localStorage.setItem('systemUsers', JSON.stringify(supabaseUsers));
+            }
+        } catch (error) {
+            console.log('سيتم استخدام المستخدمين المحليين');
+        }
+        
+        // إذا لم يكن هناك مستخدمين، ننشئ الافتراضيين
+        if (!localStorage.getItem('systemUsers')) {
+            const defaultUsers = [
+                {
+                    id: 1,
+                    username: 'admin',
+                    password: '123456',
+                    fullName: 'عضو مجلس النواب',
+                    email: 'mp@parliament.gov',
+                    phone: '01012345678',
+                    role: 'admin',
+                    isActive: true,
+                    createdAt: new Date().toISOString()
+                },
+                {
+                    id: 2,
+                    username: 'assistant',
+                    password: '123456',
+                    fullName: 'محمد أحمد',
+                    email: 'assistant@parliament.gov',
+                    phone: '01098765432',
+                    role: 'assistant',
+                    isActive: true,
+                    createdAt: new Date().toISOString()
+                }
+            ];
+            localStorage.setItem('systemUsers', JSON.stringify(defaultUsers));
+        }
+        
+        setupWelcomePageEvents();
+    }
+
+    // إعداد أحداث شاشة الترحيب
+    function setupWelcomePageEvents() {
+        $('#loginWelcomeBtn').click(function() {
+            $('#welcomeScreen').hide();
+            $('#loginPage').show();
+            setupLoginPageEvents();
+        });
+        
+        $('#registerWelcomeBtn').click(function() {
+            $('#welcomeScreen').hide();
+            $('#registerPage').show();
+            setupRegisterPageEvents();
+        });
+    }
+
+    // إعداد أحداث صفحة تسجيل الدخول
+    function setupLoginPageEvents() {
+        $('#togglePassword').click(function() {
+            const passwordInput = $('#password');
+            const icon = $(this).find('i');
             
             if (passwordInput.attr('type') === 'password') {
                 passwordInput.attr('type', 'text');
@@ -2413,438 +2324,523 @@
                 passwordInput.attr('type', 'password');
                 icon.removeClass('fa-eye-slash').addClass('fa-eye');
             }
+        });
+        
+        $('#loginForm').submit(function(e) {
+            e.preventDefault();
+            loginUser();
+        });
+        
+        $('#showRegisterLink').click(function(e) {
+            e.preventDefault();
+            $('#loginPage').hide();
+            $('#registerPage').show();
+            setupRegisterPageEvents();
+        });
+        
+        $('#forgotPasswordLink').click(function(e) {
+            e.preventDefault();
+            $('#loginAlert').removeClass('d-none alert-danger').addClass('alert-info');
+            $('#loginAlertMessage').text('سيتم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني');
+        });
+    }
+
+    // إعداد أحداث صفحة التسجيل
+    function setupRegisterPageEvents() {
+        $('#toggleRegPassword').click(function() {
+            togglePasswordVisibility('#regPassword', $(this));
+        });
+        
+        $('#toggleConfirmPassword').click(function() {
+            togglePasswordVisibility('#confirmPassword', $(this));
+        });
+        
+        $('#regUsername').on('input', function() {
+            checkUsernameAvailability($(this).val());
+        });
+        
+        $('#regPassword').on('input', function() {
+            checkPasswordStrength($(this).val());
+        });
+        
+        $('#confirmPassword').on('input', function() {
+            checkPasswordMatch();
+        });
+        
+        $('#registerForm').submit(function(e) {
+            e.preventDefault();
+            registerUser();
+        });
+        
+        $('#showLoginLink').click(function(e) {
+            e.preventDefault();
+            $('#registerPage').hide();
+            $('#loginPage').show();
+            setupLoginPageEvents();
+        });
+        
+        $('#showTermsLink').click(function(e) {
+            e.preventDefault();
+            $('#termsModal').modal('show');
+        });
+        
+        $('#agreeTermsBtn').click(function() {
+            $('#agreeTerms').prop('checked', true);
+            $('#termsModal').modal('hide');
+        });
+    }
+
+    // تبديل رؤية كلمة المرور
+    function togglePasswordVisibility(inputId, button) {
+        const passwordInput = $(inputId);
+        const icon = button.find('i');
+        
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
         }
+    }
 
-        // التحقق من توفر اسم المستخدم
-        function checkUsernameAvailability(username) {
-            if (!username.trim()) {
-                $('#usernameAvailable').addClass('d-none');
-                $('#usernameTaken').addClass('d-none');
-                return;
-            }
-            
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            const isTaken = users.some(user => user.username === username);
-            
-            if (isTaken) {
-                $('#usernameAvailable').addClass('d-none');
-                $('#usernameTaken').removeClass('d-none');
-                return false;
-            } else {
-                $('#usernameAvailable').removeClass('d-none');
-                $('#usernameTaken').addClass('d-none');
-                return true;
-            }
+    // التحقق من توفر اسم المستخدم
+    function checkUsernameAvailability(username) {
+        if (!username.trim()) {
+            $('#usernameAvailable').addClass('d-none');
+            $('#usernameTaken').addClass('d-none');
+            return;
         }
-
-        // التحقق من قوة كلمة المرور
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            let text = '';
-            let barClass = '';
-            
-            if (password.length >= 8) strength++;
-            if (/[A-Z]/.test(password)) strength++;
-            if (/[0-9]/.test(password)) strength++;
-            if (/[^A-Za-z0-9]/.test(password)) strength++;
-            
-            const strengthBar = $('#strengthBar');
-            const strengthText = $('#strengthText');
-            
-            switch(strength) {
-                case 0:
-                    text = 'ضعيفة جدًا';
-                    barClass = 'strength-weak';
-                    break;
-                case 1:
-                    text = 'ضعيفة';
-                    barClass = 'strength-weak';
-                    break;
-                case 2:
-                    text = 'متوسطة';
-                    barClass = 'strength-medium';
-                    break;
-                case 3:
-                    text = 'جيدة';
-                    barClass = 'strength-medium';
-                    break;
-                case 4:
-                    text = 'قوية';
-                    barClass = 'strength-strong';
-                    break;
-            }
-            
-            strengthBar.css('width', (strength * 25) + '%');
-            strengthBar.removeClass('strength-weak strength-medium strength-strong');
-            strengthBar.addClass(barClass);
-            strengthText.text(text);
-            
-            return strength >= 3;
+        
+        const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+        const isTaken = users.some(user => user.username === username);
+        
+        if (isTaken) {
+            $('#usernameAvailable').addClass('d-none');
+            $('#usernameTaken').removeClass('d-none');
+            return false;
+        } else {
+            $('#usernameAvailable').removeClass('d-none');
+            $('#usernameTaken').addClass('d-none');
+            return true;
         }
+    }
 
-        // التحقق من تطابق كلمات المرور
-        function checkPasswordMatch() {
-            const password = $('#regPassword').val();
-            const confirmPassword = $('#confirmPassword').val();
-            
-            if (!confirmPassword) {
-                $('#passwordMatch').addClass('d-none');
-                $('#passwordMismatch').addClass('d-none');
-                return false;
-            }
-            
-            if (password === confirmPassword) {
-                $('#passwordMatch').removeClass('d-none');
-                $('#passwordMismatch').addClass('d-none');
-                return true;
-            } else {
-                $('#passwordMatch').addClass('d-none');
-                $('#passwordMismatch').removeClass('d-none');
-                return false;
-            }
+    // التحقق من قوة كلمة المرور
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        let text = '';
+        let barClass = '';
+        
+        if (password.length >= 8) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
+        
+        const strengthBar = $('#strengthBar');
+        const strengthText = $('#strengthText');
+        
+        switch(strength) {
+            case 0:
+                text = 'ضعيفة جدًا';
+                barClass = 'strength-weak';
+                break;
+            case 1:
+                text = 'ضعيفة';
+                barClass = 'strength-weak';
+                break;
+            case 2:
+                text = 'متوسطة';
+                barClass = 'strength-medium';
+                break;
+            case 3:
+                text = 'جيدة';
+                barClass = 'strength-medium';
+                break;
+            case 4:
+                text = 'قوية';
+                barClass = 'strength-strong';
+                break;
         }
+        
+        strengthBar.css('width', (strength * 25) + '%');
+        strengthBar.removeClass('strength-weak strength-medium strength-strong');
+        strengthBar.addClass(barClass);
+        strengthText.text(text);
+        
+        return strength >= 3;
+    }
 
-        // تسجيل مستخدم جديد
-        function registerUser() {
-            const fullName = $('#fullName').val().trim();
-            const username = $('#regUsername').val().trim();
-            const email = $('#email').val().trim();
-            const phone = $('#phone').val().trim();
-            const password = $('#regPassword').val();
-            const confirmPassword = $('#confirmPassword').val();
-            const role = $('#role').val();
-            const agreeTerms = $('#agreeTerms').is(':checked');
-            
-            if (!fullName || !username || !email || !phone || !password || !confirmPassword || !role) {
-                showAuthAlert('الرجاء ملء جميع الحقول المطلوبة', 'error', 'register');
-                return;
-            }
-            
-            if (!agreeTerms) {
-                showAuthAlert('يجب الموافقة على الشروط والأحكام', 'error', 'register');
-                return;
-            }
-            
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showAuthAlert('الرجاء إدخال بريد إلكتروني صحيح', 'error', 'register');
-                return;
-            }
-            
-            if (!checkUsernameAvailability(username)) {
-                showAuthAlert('اسم المستخدم مستخدم مسبقًا', 'error', 'register');
-                return;
-            }
-            
-            if (!checkPasswordStrength(password)) {
-                showAuthAlert('كلمة المرور ضعيفة. يجب أن تحتوي على 8 أحرف على الأقل وتتضمن حروفًا كبيرة وأرقامًا', 'error', 'register');
-                return;
-            }
-            
-            if (!checkPasswordMatch()) {
-                showAuthAlert('كلمات المرور غير متطابقة', 'error', 'register');
-                return;
-            }
-            
-            const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-            
-            const newUser = {
-                id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 3,
-                username: username,
-                password: password,
-                fullName: fullName,
-                email: email,
-                phone: phone,
-                role: role,
-                createdAt: new Date().toISOString(),
-                isActive: false,
-                lastLogin: null
-            };
-            
-            users.push(newUser);
-            localStorage.setItem('systemUsers', JSON.stringify(users));
-            
-            showAuthAlert('تم إنشاء الحساب بنجاح! سيتم تنشيط حسابك بعد مراجعة الطلب من قبل المسؤول', 'success', 'register');
-            
-            setTimeout(() => {
-                $('#registerPage').hide();
-                $('#loginPage').show();
-                setupLoginPageEvents();
-            }, 2000);
+    // التحقق من تطابق كلمات المرور
+    function checkPasswordMatch() {
+        const password = $('#regPassword').val();
+        const confirmPassword = $('#confirmPassword').val();
+        
+        if (!confirmPassword) {
+            $('#passwordMatch').addClass('d-none');
+            $('#passwordMismatch').addClass('d-none');
+            return false;
         }
-
-        // تسجيل الدخول
-        async function loginUser() {
-			const username = $('#username').val().trim();
-			const password = $('#password').val().trim();
-			
-			if (!username || !password) {
-				showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
-				return;
-			}
-			
-			const result = await loginWithSupabase(username, password);
-			
-			if (!result.success) {
-				showAuthAlert(result.message || 'اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
-				return;
-			}
-			
-			if (!result.user.isActive) {
-				showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
-				return;
-			}
-			
-			const sessionData = {
-				id: result.user.id,
-				username: result.user.username,
-				fullName: result.user.fullName,
-				role: result.user.role,
-				email: result.user.email,
-				loggedInAt: new Date().toISOString()
-			};
-			
-			localStorage.setItem('currentUser', JSON.stringify(sessionData));
-			currentUser = sessionData;
-			
-			showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
-			
-			setTimeout(() => {
-				startApplication();
-			}, 1500);
-		}
-
-        // عرض رسائل المصادقة
-        function showAuthAlert(message, type, page) {
-            const alertDiv = $(`#${page}Alert`);
-            const messageSpan = $(`#${page}AlertMessage`);
-            
-            alertDiv.removeClass('d-none alert-danger alert-success alert-info');
-            alertDiv.addClass(`alert-${type === 'error' ? 'danger' : type}`);
-            
-            if (type === 'success') {
-                alertDiv.html(`
-                    <i class="fas fa-check-circle me-2"></i>
-                    ${message}
-                `);
-            } else {
-                alertDiv.html(`
-                    <i class="fas fa-exclamation-circle me-2"></i>
-                    ${message}
-                `);
-            }
+        
+        if (password === confirmPassword) {
+            $('#passwordMatch').removeClass('d-none');
+            $('#passwordMismatch').addClass('d-none');
+            return true;
+        } else {
+            $('#passwordMatch').addClass('d-none');
+            $('#passwordMismatch').removeClass('d-none');
+            return false;
         }
+    }
 
-        // التحقق من جلسة المستخدم
-        function checkUserSession() {
-            const userData = localStorage.getItem('currentUser');
-            
-            if (userData && userData !== 'null') {
-                try {
-                    currentUser = JSON.parse(userData);
-                    
-                    // التحقق من أن المستخدم لا يزال موجودًا
-                    const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
-                    const userExists = users.some(u => u.id === currentUser.id && u.username === currentUser.username);
-                    
-                    if (userExists) {
-                        startApplication();
-                    } else {
-                        localStorage.removeItem('currentUser');
-                        showWelcomePage();
-                    }
-                } catch (e) {
+    // تسجيل مستخدم جديد
+    function registerUser() {
+        const fullName = $('#fullName').val().trim();
+        const username = $('#regUsername').val().trim();
+        const email = $('#email').val().trim();
+        const phone = $('#phone').val().trim();
+        const password = $('#regPassword').val();
+        const confirmPassword = $('#confirmPassword').val();
+        const role = $('#role').val();
+        const agreeTerms = $('#agreeTerms').is(':checked');
+        
+        if (!fullName || !username || !email || !phone || !password || !confirmPassword || !role) {
+            showAuthAlert('الرجاء ملء جميع الحقول المطلوبة', 'error', 'register');
+            return;
+        }
+        
+        if (!agreeTerms) {
+            showAuthAlert('يجب الموافقة على الشروط والأحكام', 'error', 'register');
+            return;
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            showAuthAlert('الرجاء إدخال بريد إلكتروني صحيح', 'error', 'register');
+            return;
+        }
+        
+        if (!checkUsernameAvailability(username)) {
+            showAuthAlert('اسم المستخدم مستخدم مسبقًا', 'error', 'register');
+            return;
+        }
+        
+        if (!checkPasswordStrength(password)) {
+            showAuthAlert('كلمة المرور ضعيفة. يجب أن تحتوي على 8 أحرف على الأقل وتتضمن حروفًا كبيرة وأرقامًا', 'error', 'register');
+            return;
+        }
+        
+        if (!checkPasswordMatch()) {
+            showAuthAlert('كلمات المرور غير متطابقة', 'error', 'register');
+            return;
+        }
+        
+        const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+        
+        const newUser = {
+            id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 3,
+            username: username,
+            password: password,
+            fullName: fullName,
+            email: email,
+            phone: phone,
+            role: role,
+            createdAt: new Date().toISOString(),
+            isActive: false,
+            lastLogin: null
+        };
+        
+        users.push(newUser);
+        localStorage.setItem('systemUsers', JSON.stringify(users));
+        
+        showAuthAlert('تم إنشاء الحساب بنجاح! سيتم تنشيط حسابك بعد مراجعة الطلب من قبل المسؤول', 'success', 'register');
+        
+        setTimeout(() => {
+            $('#registerPage').hide();
+            $('#loginPage').show();
+            setupLoginPageEvents();
+        }, 2000);
+    }
+
+    // تسجيل الدخول
+    async function loginUser() {
+        const username = $('#username').val().trim();
+        const password = $('#password').val().trim();
+        
+        if (!username || !password) {
+            showAuthAlert('الرجاء إدخال اسم المستخدم وكلمة المرور', 'error', 'login');
+            return;
+        }
+        
+        const result = await loginWithSupabase(username, password);
+        
+        if (!result.success) {
+            showAuthAlert(result.message || 'اسم المستخدم أو كلمة المرور غير صحيحة', 'error', 'login');
+            return;
+        }
+        
+        if (!result.user.isActive) {
+            showAuthAlert('حسابك غير مفعل. يرجى التواصل مع المسؤول', 'error', 'login');
+            return;
+        }
+        
+        const sessionData = {
+            id: result.user.id,
+            username: result.user.username,
+            fullName: result.user.fullName,
+            role: result.user.role,
+            email: result.user.email,
+            loggedInAt: new Date().toISOString()
+        };
+        
+        localStorage.setItem('currentUser', JSON.stringify(sessionData));
+        currentUser = sessionData;
+        
+        showAuthAlert('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success', 'login');
+        
+        setTimeout(() => {
+            startApplication();
+        }, 1500);
+    }
+
+    // عرض رسائل المصادقة
+    function showAuthAlert(message, type, page) {
+        const alertDiv = $(`#${page}Alert`);
+        const messageSpan = $(`#${page}AlertMessage`);
+        
+        alertDiv.removeClass('d-none alert-danger alert-success alert-info');
+        alertDiv.addClass(`alert-${type === 'error' ? 'danger' : type}`);
+        
+        if (type === 'success') {
+            alertDiv.html(`
+                <i class="fas fa-check-circle me-2"></i>
+                ${message}
+            `);
+        } else {
+            alertDiv.html(`
+                <i class="fas fa-exclamation-circle me-2"></i>
+                ${message}
+            `);
+        }
+    }
+
+    // التحقق من جلسة المستخدم
+    function checkUserSession() {
+        const userData = localStorage.getItem('currentUser');
+        
+        if (userData && userData !== 'null') {
+            try {
+                currentUser = JSON.parse(userData);
+                
+                // التحقق من أن المستخدم لا يزال موجودًا
+                const users = JSON.parse(localStorage.getItem('systemUsers') || '[]');
+                const userExists = users.some(u => u.id === currentUser.id && u.username === currentUser.username);
+                
+                if (userExists) {
+                    startApplication();
+                } else {
                     localStorage.removeItem('currentUser');
                     showWelcomePage();
                 }
-            } else {
+            } catch (e) {
+                localStorage.removeItem('currentUser');
                 showWelcomePage();
             }
+        } else {
+            showWelcomePage();
         }
+    }
 
-        // عرض شاشة الترحيب
-        function showWelcomePage() {
-            $('#welcomeScreen').show();
-            $('#loginPage').hide();
-            $('#registerPage').hide();
-            $('#appContent').hide();
+    // عرض شاشة الترحيب
+    function showWelcomePage() {
+        $('#welcomeScreen').show();
+        $('#loginPage').hide();
+        $('#registerPage').hide();
+        $('#appContent').hide();
+    }
+
+    // بدء التطبيق
+    async function startApplication() {
+        $('#welcomeScreen').hide();
+        $('#loginPage').hide();
+        $('#registerPage').hide();
+        $('#appContent').show();
+        
+        await initializeApp();
+    }
+
+    // تهيئة التطبيق الرئيسي
+    async function initializeApp() {
+        // محاولة تحميل الطلبات من Supabase
+        try {
+            const requests = await loadRequestsFromSupabase();
+            if (requests && requests.length > 0) {
+                allRequests = requests;
+                filteredRequests = [...allRequests];
+            }
+        } catch (error) {
+            console.log('سيتم استخدام البيانات المحلية');
         }
+        
+        saveDataToLocalStorage();
+        populateCategoryFilters();
+        updateUserInterface();
+        renderRequestsTable();
+        updateStatistics();
+        setupMainEventListeners();
+        renderCategoryChart();
+        loadUrgentRequests();
+        
+        // تهيئة الصفحات الجديدة
+        initSearchPage();
+        initCategoriesPage();
+        initReportsPage();
+        initSettingsPage();
+        
+        const today = new Date().toISOString().split('T')[0];
+        $('#requestDate').val(today);
+        
+        checkUnreadNotifications();
+        setInterval(checkNewRequests, 30000);
+    }
 
-        // بدء التطبيق
-        function startApplication() {
-            $('#welcomeScreen').hide();
-            $('#loginPage').hide();
-            $('#registerPage').hide();
-            $('#appContent').show();
+    // تحديث واجهة المستخدم
+    function updateUserInterface() {
+        if (currentUser) {
+            $('#sidebarUserName').text(currentUser.fullName);
+            $('#sidebarUserRole').text(getRoleName(currentUser.role));
             
-            initializeApp();
-        }
-
-        // تهيئة التطبيق الرئيسي
-        function initializeApp() {
-			loadRequestsFromSupabase().then(requests => {
-			allRequests = requests;
-			filteredRequests = [...allRequests];
-            saveDataToLocalStorage();
-            populateCategoryFilters();
-            updateUserInterface();
-            renderRequestsTable();
-            updateStatistics();
-            setupMainEventListeners();
-            renderCategoryChart();
-            loadUrgentRequests();
+            // تحديث أيقونة المستخدم
+            const avatarIcon = $('#userAvatarIcon');
+            avatarIcon.removeClass('fa-user-circle');
+            avatarIcon.addClass(getUserIconByRole(currentUser.role));
             
-            // تهيئة صفحات جديدة
-            initSearchPage();
-            initCategoriesPage();
-            initReportsPage();
-            initSettingsPage();
-            
-            const today = new Date().toISOString().split('T')[0];
-            $('#requestDate').val(today);
-            
-            checkUnreadNotifications();
-            setInterval(checkNewRequests, 30000);
-        }
-
-        // تحديث واجهة المستخدم
-        function updateUserInterface() {
-            if (currentUser) {
-                $('#sidebarUserName').text(currentUser.fullName);
-                $('#sidebarUserRole').text(getRoleName(currentUser.role));
-                
-                // تحديث أيقونة المستخدم
-                const avatarIcon = $('#userAvatarIcon');
-                avatarIcon.removeClass('fa-user-circle');
-                avatarIcon.addClass(getUserIconByRole(currentUser.role));
-                
-                // إظهار/إخفاء الأزرار بناءً على الصلاحيات
-                if (currentUser.role !== 'admin') {
-                    $('#usersLink').hide();
-                }
+            // إظهار/إخفاء الأزرار بناءً على الصلاحيات
+            if (currentUser.role !== 'admin') {
+                $('#usersLink').hide();
             }
         }
+    }
 
-        // الحصول على اسم الدور
-        function getRoleName(role) {
-            const roles = {
-                'admin': 'المسؤول',
-                'assistant': 'مساعد',
-                'coordinator': 'منسق',
-                'viewer': 'مستعرض'
-            };
-            return roles[role] || 'مستخدم';
-        }
+    // الحصول على اسم الدور
+    function getRoleName(role) {
+        const roles = {
+            'admin': 'المسؤول',
+            'assistant': 'مساعد',
+            'coordinator': 'منسق',
+            'viewer': 'مستعرض'
+        };
+        return roles[role] || 'مستخدم';
+    }
 
-        // الحصول على أيقونة بناءً على الدور
-        function getUserIconByRole(role) {
-            const icons = {
-                'admin': 'fas fa-user-shield',
-                'assistant': 'fas fa-user-tie',
-                'coordinator': 'fas fa-user-cog',
-                'viewer': 'fas fa-user'
-            };
-            return icons[role] || 'fas fa-user-circle';
-        }
+    // الحصول على أيقونة بناءً على الدور
+    function getUserIconByRole(role) {
+        const icons = {
+            'admin': 'fas fa-user-shield',
+            'assistant': 'fas fa-user-tie',
+            'coordinator': 'fas fa-user-cog',
+            'viewer': 'fas fa-user'
+        };
+        return icons[role] || 'fas fa-user-circle';
+    }
 
-        // إعداد أحداث التطبيق الرئيسي
-        function setupMainEventListeners() {
-            // البحث أثناء الكتابة
-            $('#mainSearchInput').on('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    activeFilters.searchTerm = $(this).val();
-                    performSearch();
-                    if ($(this).val().length > 0) {
-                        showSearchResults($(this).val());
-                    } else {
-                        $('#searchResults').hide();
-                    }
-                }, 300);
-            });
-
-            $('#mainSearchInput').on('keypress', function(e) {
-                if (e.which === 13) {
-                    activeFilters.searchTerm = $(this).val();
-                    performSearch();
+    // إعداد أحداث التطبيق الرئيسي
+    function setupMainEventListeners() {
+        // البحث أثناء الكتابة
+        $('#mainSearchInput').on('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                activeFilters.searchTerm = $(this).val();
+                performSearch();
+                if ($(this).val().length > 0) {
+                    showSearchResults($(this).val());
+                } else {
                     $('#searchResults').hide();
                 }
-            });
+            }, 300);
+        });
 
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.search-container').length) {
-                    $('#searchResults').hide();
-                }
-            });
-
-            $('#searchType').change(function() {
-                activeFilters.searchType = $(this).val();
-                performSearch();
-            });
-
-            $('#statusFilter, #categoryFilter, #dateFilter').change(function() {
-                const filterId = $(this).attr('id');
-                const filterValue = $(this).val();
-                
-                switch(filterId) {
-                    case 'statusFilter':
-                        activeFilters.status = filterValue;
-                        break;
-                    case 'categoryFilter':
-                        activeFilters.category = filterValue;
-                        break;
-                    case 'dateFilter':
-                        activeFilters.dateFilter = filterValue;
-                        break;
-                }
-                
-                performSearch();
-            });
-
-            // فتح نموذج الطلب الجديد
-            $('#newRequestBtn, #floatingAddBtn').click(function() {
-                openNewRequestModal();
-            });
-
-            // مسح البحث
-            $('#clearSearchBtn').click(function() {
-                $('#mainSearchInput').val('');
-                activeFilters.searchTerm = '';
+        $('#mainSearchInput').on('keypress', function(e) {
+            if (e.which === 13) {
+                activeFilters.searchTerm = $(this).val();
                 performSearch();
                 $('#searchResults').hide();
-            });
+            }
+        });
 
-            // إعادة تعيين جميع الفلاتر
-            $('#resetSearchBtn').click(function() {
-                resetAllFilters();
-            });
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.search-container').length) {
+                $('#searchResults').hide();
+            }
+        });
 
-            // تحديث البيانات
-            $('#refreshBtn').click(function() {
-                refreshData();
-            });
+        $('#searchType').change(function() {
+            activeFilters.searchType = $(this).val();
+            performSearch();
+        });
 
-            // تصدير البيانات
-            $('#exportBtn').click(function() {
-                exportData();
-            });
+        $('#statusFilter, #categoryFilter, #dateFilter').change(function() {
+            const filterId = $(this).attr('id');
+            const filterValue = $(this).val();
+            
+            switch(filterId) {
+                case 'statusFilter':
+                    activeFilters.status = filterValue;
+                    break;
+                case 'categoryFilter':
+                    activeFilters.category = filterValue;
+                    break;
+                case 'dateFilter':
+                    activeFilters.dateFilter = filterValue;
+                    break;
+            }
+            
+            performSearch();
+        });
 
-            // تسجيل الخروج
-            $('#logoutBtn').click(function() {
-                logout();
-            });
+        // فتح نموذج الطلب الجديد
+        $('#newRequestBtn, #floatingAddBtn').click(function() {
+            openNewRequestModal();
+        });
 
-            // التنقل بين الصفحات
-            $('.nav-link').click(function(e) {
-                e.preventDefault();
-                $('.nav-link').removeClass('active');
-                $(this).addClass('active');
-                
-                const pageId = $(this).attr('id').replace('Link', '');
-                showPage(pageId);
-            });
-        }
+        // مسح البحث
+        $('#clearSearchBtn').click(function() {
+            $('#mainSearchInput').val('');
+            activeFilters.searchTerm = '';
+            performSearch();
+            $('#searchResults').hide();
+        });
 
+        // إعادة تعيين جميع الفلاتر
+        $('#resetSearchBtn').click(function() {
+            resetAllFilters();
+        });
+
+        // تحديث البيانات
+        $('#refreshBtn').click(function() {
+            refreshData();
+        });
+
+        // تصدير البيانات
+        $('#exportBtn').click(function() {
+            exportData();
+        });
+
+        // تسجيل الخروج
+        $('#logoutBtn').click(function() {
+            logout();
+        });
+
+        // التنقل بين الصفحات
+        $('.nav-link').click(function(e) {
+            e.preventDefault();
+            $('.nav-link').removeClass('active');
+            $(this).addClass('active');
+            
+            const pageId = $(this).attr('id').replace('Link', '');
+            showPage(pageId);
+        });
+    }
         // إعداد صفحة البحث المتقدم
         function initSearchPage() {
             populateCategorySelect('#advCategory');
@@ -3416,8 +3412,8 @@
 
         // حفظ البيانات في التخزين المحلي
         function saveDataToLocalStorage() {
-            localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
-        }
+        localStorage.setItem('citizenRequests', JSON.stringify(allRequests));
+    }
 
         // تعبئة فلاتر الفئات
         function populateCategoryFilters() {
@@ -4013,7 +4009,7 @@
         }
 
         // حفظ الطلب الجديد
-        async function saveNewRequest() {
+			async function saveNewRequest() {
 			const nationalId = $('#newNationalId').val().trim();
 			const applicantName = $('#newApplicantName').val().trim();
 			const category = $('#newCategory').val();
@@ -4065,7 +4061,6 @@
 			// إضافة للأنشطة
 			addActivity('طلب جديد', `تم إضافة طلب جديد #${savedRequest.id} بواسطة ${currentUser ? currentUser.fullName : 'المسؤول'}`);
 		}
-
         // عرض تفاصيل الطلب
         function showRequestDetails(requestId) {
             const request = allRequests.find(r => r.id === requestId);
@@ -4208,32 +4203,30 @@
         }
 
         // تحديث حالة الطلب مباشرة
-        async function updateRequestStatus(requestId, newStatus) {
-			const requestIndex = allRequests.findIndex(r => r.id === requestId);
-			if (requestIndex === -1) return;
-			
-			await updateRequestInSupabase(requestId, {
-				status: newStatus,
-				updatedAt: new Date().toISOString(),
-				updatedBy: currentUser ? currentUser.username : 'system'
-			});
-			
-			// تحديث محلياً
-			allRequests[requestIndex].status = newStatus;
-			allRequests[requestIndex].updatedAt = new Date().toISOString();
-			allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
-			
-			saveDataToLocalStorage();
-			showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name}`, 'success');
-			
-			// تحديث البيانات
-			refreshData();
-			
-			// إضافة للأنشطة
-			addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
-		}
-
-        // تعديل الطلب
+			 async function updateRequestStatus(requestId, newStatus) {
+					const requestIndex = allRequests.findIndex(r => r.id === requestId);
+					if (requestIndex === -1) return;
+					
+					await updateRequestInSupabase(requestId, {
+						status: newStatus,
+						updatedAt: new Date().toISOString(),
+						updatedBy: currentUser ? currentUser.username : 'system'
+					});
+					
+					// تحديث محلياً
+					allRequests[requestIndex].status = newStatus;
+					allRequests[requestIndex].updatedAt = new Date().toISOString();
+					allRequests[requestIndex].updatedBy = currentUser ? currentUser.username : 'system';
+					
+					saveDataToLocalStorage();
+					showNotification(`تم تحديث حالة الطلب إلى ${statuses[newStatus].name}`, 'success');
+					
+					// تحديث البيانات
+					refreshData();
+					
+					// إضافة للأنشطة
+					addActivity('تغيير حالة', `تم تغيير حالة الطلب #${requestId} إلى ${statuses[newStatus].name}`);
+				}        // تعديل الطلب
         function editRequest(requestId) {
             // في هذا المثال، سنقوم بفتح تفاصيل الطلب للتحرير
             showRequestDetails(requestId);
@@ -5472,13 +5465,13 @@ function initializeApp() {
 }
         // تعريف دالة الحصول على اسم الدور للاستخدام العام
         window.getRoleName = getRoleName;
-        window.getUserIconByRole = getUserIconByRole;
-        window.showRequestDetails = showRequestDetails;
-        window.updateRequestStatus = updateRequestStatus;
-        window.editRequest = editRequest;
-        window.selectSearchResult = selectSearchResult;
-        window.showCategoryDetails = showCategoryDetails;
-        window.showAllCategoryRequests = showAllCategoryRequests;
+    window.getUserIconByRole = getUserIconByRole;
+    window.showRequestDetails = showRequestDetails;
+    window.updateRequestStatus = updateRequestStatus;
+    window.editRequest = editRequest;
+    window.selectSearchResult = selectSearchResult;
+    window.showCategoryDetails = showCategoryDetails;
+    window.showAllCategoryRequests = showAllCategoryRequests;
 		// ============= دالات مساعدة إضافية =============
 
 		// الحصول على البيانات الافتراضية للطلبات
@@ -5526,6 +5519,7 @@ console.log('تم تحميل نظام متابعة طلبات المواطنين
         console.log('تم تحميل نظام متابعة طلبات المواطنين بنجاح');
     </script>
 	<!-- بعد مكتبات JavaScript الأخرى -->
+<!-- بعد مكتبات JavaScript الأخرى -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </body>
 </html>
