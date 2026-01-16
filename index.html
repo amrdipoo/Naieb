@@ -2117,6 +2117,7 @@
 
         // إعداد أحداث صفحة تسجيل الدخول
        // إعداد أحداث صفحة تسجيل الدخول
+// إعداد أحداث صفحة تسجيل الدخول
 function setupLoginPageEvents() {
     console.log('إعداد أحداث تسجيل الدخول');
     
@@ -2139,7 +2140,14 @@ function setupLoginPageEvents() {
         e.preventDefault();
         console.log('فورم تسجيل الدخول تم إرساله');
         
-        // التصحيح هنا: استخدام .val() بدلاً من .value
+        // الكود المضاف هنا لتفقد القيم
+        console.log('قيم الحقول للتصحيح:', {
+            username: $('#username').val(),
+            password: $('#password').val(),
+            usernameElement: $('#username'),
+            passwordElement: $('#password')
+        });
+        
         const email = $('#username').val(); 
         const password = $('#password').val();
         
@@ -5578,4 +5586,5 @@ function showWelcomePage() {
 	
 
 </body>
+
 </html>
