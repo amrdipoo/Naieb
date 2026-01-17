@@ -580,11 +580,11 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// === Navigation - Pure JavaScript (يعمل فورًا) ===
+// === Navigation - Pure JavaScript (يعمل دائمًا) ===
 function showPage(pageId) {
   // إخفاء جميع العناصر الرئيسية
-  const elementsToHide = ['welcomeScreen', 'loginPage', 'registerPage', 'appContent'];
-  elementsToHide.forEach(id => {
+  const elements = ['welcomeScreen', 'loginPage', 'registerPage', 'appContent'];
+  elements.forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -596,23 +596,24 @@ function showPage(pageId) {
   } else {
     // صفحات داخل التطبيق
     const appContent = document.getElementById('appContent');
-    if (appContent) appContent.style.display = 'block';
-
-    // إخفاء جميع الصفحات الداخلية
-    const internalPages = appContent.querySelectorAll('.page');
-    internalPages.forEach(page => page.style.display = 'none');
-
-    // إظهار الصفحة المطلوبة
-    const internalTarget = document.getElementById(pageId);
-    if (internalTarget) internalTarget.style.display = 'block';
+    if (appContent) {
+      appContent.style.display = 'block';
+      // إخفاء جميع الصفحات الداخلية
+      const internalPages = appContent.querySelectorAll('.page');
+      internalPages.forEach(page => page.style.display = 'none');
+      // إظهار الصفحة المطلوبة
+      const internalTarget = document.getElementById(pageId);
+      if (internalTarget) internalTarget.style.display = 'block';
+    }
   }
 
   // تحديث الرابط
   window.history.replaceState(null, '', `#${pageId}`);
 }
+
 // === Supabase Setup ===
-const SUPABASE_URL = 'https://gcgjzqiumgesultletws.supabase.co'; // ← استبدلها بـ Project URL من Supabase
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo'; // ← استبدلها بـ Anon Public Key من Supabase
+const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // ← استبدلها
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // ← استبدلها
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // === Security & Validation Functions ===
@@ -633,11 +634,12 @@ let categoryChart = null;
 
 // === Initialize App ===
 $(document).ready(async function() {
- });
+  await checkUserSession();
+});
 
 // === Session Management ===
 async function checkUserSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const {  { session } } = await supabase.auth.getSession();
   if (session?.user) {
     const {  userData } = await supabase
       .from('users')
@@ -656,7 +658,7 @@ async function checkUserSession() {
       return;
     }
   }
-  showWelcomePage();
+  showPage('welcomeScreen');
 }
 
 // === Auth Functions ===
@@ -729,14 +731,7 @@ async function registerUser() {
 
   const {  authData, error: authError } = await supabase.auth.signUp({
     email, password,
-   options: {
-  data: {
-    full_name: fullName,
-    username: username,
-    phone: phone,
-    role: role
-  }
-}
+    options: {  { full_name: fullName, username, phone, role } }
   });
   if (authError) {
     showAuthAlert('خطأ في التسجيل: ' + authError.message, 'error', 'register');
@@ -848,7 +843,7 @@ async function startApplication() {
   $('#profileEmail').text(currentUser.email);
   $('#settingsFullName').val(currentUser.fullName);
   $('#settingsEmail').val(currentUser.email);
-  $('#settingsPhone').val(''); // سيتم جلب الهاتف لاحقاً إذا أردت
+  $('#settingsPhone').val('');
 
   if (currentUser.role === 'admin') {
     $('#adminMenu, #adminMenu2').show();
@@ -870,9 +865,7 @@ async function startApplication() {
 }
 
 // === UI Rendering Functions ===
-function updateUserInterface() {
-  // سيتم تنفيذها عند الحاجة
-}
+function updateUserInterface() {}
 
 function renderRequestsTable() {
   const tbody = $('#requestsTableBody');
@@ -926,7 +919,7 @@ function renderCategoryChart() {
     data: {
       labels: labels,
       datasets: [{
-        data: counts,
+         counts,
         backgroundColor: colors,
         borderWidth: 1
       }]
@@ -991,12 +984,32 @@ function getRoleLabel(role) {
   return labels[role] || role;
 }
 
-
-
-function showWelcomePage() {
-  $('#welcomeScreen').show();
-  $('#loginPage, #registerPage, #appContent').hide();
+// === Placeholder functions for other pages ===
+function initSearchPage() {}
+function initCategoriesPage() {}
+function initReportsPage() {}
+function initSettingsPage() {}
+function initUsersPage() {}
+function initProfilePage() {}
+function setupMainEventListeners() {
+  $('#requestsSearch').on('input', function() {
+    const term = $(this).val().toLowerCase();
+    $('#requestsTableBody tr').filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(term) > -1);
+    });
+  });
 }
+function viewRequestDetails(id) { alert('عرض تفاصيل الطلب #' + id); }
+function updateRequestStatus(id, status) {
+  if (confirm('هل تريد تحديث حالة الطلب إلى "' + getStatusLabel(status) + '"؟')) {
+    showNotification('تم تحديث الحالة', 'success');
+    refreshDataFromSupabase();
+  }
+}
+function performAdvancedSearch() { alert('بحث متقدم - سيتم تنفيذه لاحقاً'); }
+function generateReport() { alert('توليد تقرير - سيتم تنفيذه لاحقاً'); }
+function showNewUserModal() { alert('إضافة مستخدم - سيتم تنفيذه لاحقاً'); }
+function saveSettings() { alert('حفظ الإعدادات - سيتم تنفيذه لاحقاً'); }
 
 // === Notifications ===
 function showNotification(message, type = 'info') {
@@ -1014,43 +1027,12 @@ async function logout() {
     await supabase.auth.signOut();
     localStorage.removeItem('currentUser');
     currentUser = null;
-    showWelcomePage();
+    showPage('welcomeScreen');
     showNotification('تم تسجيل الخروج بنجاح', 'success');
   }
 }
 
-// === Placeholder functions for other pages ===
-function initSearchPage() { /* سيتم تنفيذها لاحقاً */ }
-function initCategoriesPage() { /* سيتم تنفيذها لاحقاً */ }
-function initReportsPage() { /* سيتم تنفيذها لاحقاً */ }
-function initSettingsPage() { /* سيتم تنفيذها لاحقاً */ }
-function initUsersPage() { /* سيتم تنفيذها لاحقاً */ }
-function initProfilePage() { /* سيتم تنفيذها لاحقاً */ }
-function setupMainEventListeners() {
-  $('#requestsSearch').on('input', function() {
-    const term = $(this).val().toLowerCase();
-    $('#requestsTableBody tr').filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(term) > -1);
-    });
-  });
-}
-function viewRequestDetails(id) { alert('عرض تفاصيل الطلب #' + id); }
-function updateRequestStatus(id, status) {
-  if (confirm('هل تريد تحديث حالة الطلب إلى "' + getStatusLabel(status) + '"؟')) {
-    // سيتم تنفيذ التحديث عبر Supabase لاحقاً
-    showNotification('تم تحديث الحالة', 'success');
-    refreshDataFromSupabase();
-  }
-}
-function performAdvancedSearch() { alert('بحث متقدم - سيتم تنفيذه لاحقاً'); }
-function generateReport() { alert('توليد تقرير - سيتم تنفيذه لاحقاً'); }
-function showNewUserModal() { alert('إضافة مستخدم - سيتم تنفيذه لاحقاً'); }
-function saveSettings() { alert('حفظ الإعدادات - سيتم تنفيذه لاحقاً'); }
-
 console.log('تم تحميل النظام مع دعم Supabase');
 </script>
 </body>
-
 </html>
-
-
