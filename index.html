@@ -729,7 +729,7 @@ async function registerUser() {
 
   const {  authData, error: authError } = await supabase.auth.signUp({
     email, password,
-    options: {  { full_name: fullName, username, phone, role } }
+    options:  { full_name: fullName, username, phone, role }
   });
   if (authError) {
     showAuthAlert('خطأ في التسجيل: ' + authError.message, 'error', 'register');
@@ -1045,3 +1045,4 @@ console.log('تم تحميل النظام مع دعم Supabase');
 </body>
 
 </html>
+
