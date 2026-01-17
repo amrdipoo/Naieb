@@ -1,7 +1,324 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-
-<title>نظام متابعة طلبات المواطنين - عضو مجلس النواب</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة الترحيب</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #2575fc, #6a11cb);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-color: white;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .content {
+            padding: 50px 40px 40px;
+        }
+        
+        .welcome-message {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .welcome-message h2 {
+            font-size: 2.8rem;
+            color: #2575fc;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .welcome-message h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 50%;
+            transform: translateX(50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border-radius: 2px;
+        }
+        
+        .welcome-message p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #555;
+            margin-top: 25px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-box {
+            flex: 1;
+            min-width: 200px;
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 5px solid #2575fc;
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-box i {
+            font-size: 2.5rem;
+            color: #6a11cb;
+            margin-bottom: 20px;
+        }
+        
+        .feature-box h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .feature-box p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .language-switcher {
+            text-align: center;
+            margin-top: 40px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+        }
+        
+        .language-switcher button {
+            background-color: #2575fc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .language-switcher button:hover {
+            background-color: #6a11cb;
+            transform: scale(1.05);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px;
+            background-color: #f1f3f9;
+            color: #666;
+            font-size: 1rem;
+        }
+        
+        .footer a {
+            color: #2575fc;
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-message h2 {
+                font-size: 2.2rem;
+            }
+            
+            .feature-box {
+                min-width: 100%;
+            }
+        }
+    </style>
 </head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>مرحباً بكم</h1>
+            <p>في صفحتنا التفاعلية البسيطة التي تقدم لكم تجربة مميزة</p>
+        </div>
+        
+        <div class="content">
+            <div class="welcome-message">
+                <h2>أهلاً ومرحباً بكم</h2>
+                <p>يسعدنا وجودكم معنا في هذا الموقع. نهدف إلى تقديم محتوى مفيد وجذاب يناسب جميع الزوار. نحن نعمل باستمرار على تحسين تجربتكم وتقديم الأفضل لكم. نشكركم على زيارتكم ونتطلع إلى تقديم كل ما هو مفيد وقيم.</p>
+            </div>
+            
+            <div class="features">
+                <div class="feature-box">
+                    <i class="fas fa-handshake"></i>
+                    <h3>ترحيب حار</h3>
+                    <p>نقدم لكم ترحيباً حاراً ونسعى لجعل تجربتكم مميزة معنا من خلال محتوى هادف ومفيد.</p>
+                </div>
+                
+                <div class="feature-box">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>أفكار إبداعية</h3>
+                    <p>نعمل على تقديم أفكار إبداعية ومحتوى مميز يناسب جميع الفئات والاهتمامات.</p>
+                </div>
+                
+                <div class="feature-box">
+                    <i class="fas fa-heart"></i>
+                    <h3>تصميم بمحبة</h3>
+                    <p>تم تصميم هذه الصفحة بعناية ومحبة لتقديم أفضل تجربة مرئية وسهولة في الاستخدام.</p>
+                </div>
+            </div>
+            
+            <div class="language-switcher">
+                <p>اختر اللغة المفضلة:</p>
+                <button onclick="switchLanguage('ar')">العربية</button>
+                <button onclick="switchLanguage('en')">English</button>
+                <button onclick="switchLanguage('fr')">Français</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>تم إنشاء هذه الصفحة بتقنيات HTML و CSS و JavaScript البسيطة</p>
+            <p>جميع الحقوق محفوظة &copy; <span id="currentYear"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // تعيين السنة الحالية في الفوتر
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+        
+        // تبديل اللغة
+        function switchLanguage(lang) {
+            const welcomeTitle = document.querySelector('.welcome-message h2');
+            const welcomeText = document.querySelector('.welcome-message p');
+            const featureTitles = document.querySelectorAll('.feature-box h3');
+            const featureTexts = document.querySelectorAll('.feature-box p');
+            const footerText = document.querySelector('.footer p:first-child');
+            
+            if (lang === 'ar') {
+                welcomeTitle.textContent = 'أهلاً ومرحباً بكم';
+                welcomeText.textContent = 'يسعدنا وجودكم معنا في هذا الموقع. نهدف إلى تقديم محتوى مفيد وجذاب يناسب جميع الزوار. نحن نعمل باستمرار على تحسين تجربتكم وتقديم الأفضل لكم. نشكركم على زيارتكم ونتطلع إلى تقديم كل ما هو مفيد وقيم.';
+                
+                featureTitles[0].textContent = 'ترحيب حار';
+                featureTexts[0].textContent = 'نقدم لكم ترحيباً حاراً ونسعى لجعل تجربتكم مميزة معنا من خلال محتوى هادف ومفيد.';
+                
+                featureTitles[1].textContent = 'أفكار إبداعية';
+                featureTexts[1].textContent = 'نعمل على تقديم أفكار إبداعية ومحتوى مميز يناسب جميع الفئات والاهتمامات.';
+                
+                featureTitles[2].textContent = 'تصميم بمحبة';
+                featureTexts[2].textContent = 'تم تصميم هذه الصفحة بعناية ومحبة لتقديم أفضل تجربة مرئية وسهولة في الاستخدام.';
+                
+                footerText.textContent = 'تم إنشاء هذه الصفحة بتقنيات HTML و CSS و JavaScript البسيطة';
+            } 
+            else if (lang === 'en') {
+                welcomeTitle.textContent = 'Welcome to Our Website';
+                welcomeText.textContent = 'We are delighted to have you with us on this site. We aim to provide useful and attractive content suitable for all visitors. We are constantly working to improve your experience and provide the best for you. We thank you for your visit and look forward to providing everything useful and valuable.';
+                
+                featureTitles[0].textContent = 'Warm Welcome';
+                featureTexts[0].textContent = 'We offer you a warm welcome and strive to make your experience special with us through meaningful and useful content.';
+                
+                featureTitles[1].textContent = 'Creative Ideas';
+                featureTexts[1].textContent = 'We work to provide creative ideas and distinctive content suitable for all categories and interests.';
+                
+                featureTitles[2].textContent = 'Design with Love';
+                featureTexts[2].textContent = 'This page was designed with care and love to provide the best visual experience and ease of use.';
+                
+                footerText.textContent = 'This page was created using simple HTML, CSS and JavaScript technologies';
+            }
+            else if (lang === 'fr') {
+                welcomeTitle.textContent = 'Bienvenue sur Notre Site';
+                welcomeText.textContent = 'Nous sommes ravis de vous accueillir sur ce site. Nous visons à fournir un contenu utile et attractif adapté à tous les visiteurs. Nous travaillons constamment à améliorer votre expérience et à vous offrir le meilleur. Nous vous remercions de votre visite et nous nous réjouissons de vous offrir tout ce qui est utile et précieux.';
+                
+                featureTitles[0].textContent = 'Accueil Chaleureux';
+                featureTexts[0].textContent = 'Nous vous offrons un accueil chaleureux et nous efforçons de rendre votre expérience spéciale avec nous grâce à un contenu significatif et utile.';
+                
+                featureTitles[1].textContent = 'Idées Créatives';
+                featureTexts[1].textContent = 'Nous travaillons à fournir des idées créatives et un contenu distinctif adapté à toutes les catégories et intérêts.';
+                
+                featureTitles[2].textContent = 'Conception avec Amour';
+                featureTexts[2].textContent = 'Cette page a été conçue avec soin et amour pour offrir la meilleure expérience visuelle et une facilité d\'utilisation.';
+                
+                footerText.textContent = 'Cette page a été créée en utilisant des technologies HTML, CSS et JavaScript simples';
+            }
+            
+            // إضافة تأثير بسيط عند تغيير اللغة
+            welcomeTitle.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                welcomeTitle.style.transform = 'scale(1)';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
