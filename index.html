@@ -393,44 +393,105 @@ color: white !important;
 <script>
 // === Navigation ===
 function showPage(pageId) {
-  const elements = ['welcomeScreen', 'loginPage', 'registerPage', 'appContent'];
-  elements.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = 'none';
+  console.log('عرض الصفحة:', pageId); // لأغراض التصحيح
+  
+  // إخفاء جميع الصفحات الرئيسية
+  const pages = ['welcomeScreen', 'loginPage', 'registerPage'];
+  pages.forEach(id => {
+    const element = document.getElementById(id);
+    if (element) element.style.display = 'none';
   });
-  if (['welcomeScreen', 'loginPage', 'registerPage'].includes(pageId)) {
+  
+  // إذا كانت الصفحة من الصفحات الرئيسية
+  if (pages.includes(pageId)) {
     document.getElementById(pageId).style.display = 'block';
-  } else {
-    document.getElementById('appContent').style.display = 'block';
-    document.querySelectorAll('#appContent .page').forEach(p => p.style.display = 'none');
-    document.getElementById(pageId).style.display = 'block';
+    document.getElementById('appContent').style.display = 'none';
+  } 
+  // إذا كانت من صفحات التطبيق
+  else {
+    document.getElementById('appContent').style.display = 'flex';
+    
+    // إخفاء جميع صفحات التطبيق
+    document.querySelectorAll('#appContent .page').forEach(page => {
+      page.style.display = 'none';
+    });
+    
+    // عرض الصفحة المطلوبة
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+      targetPage.style.display = 'block';
+    }
   }
-  window.history.replaceState(null, '', `#${pageId}`);
 }
 
 // === Supabase Setup ===
 const SUPABASE_URL = 'https://gcgjzqiumgesultletws.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdjZ2p6cWl1bWdlc3VsdGxldHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1MTksImV4cCI6MjA4NDA0NDUxOX0.ZGQMe3J22-pdlB_zU_jKofk-tR56kWY7TK5JfDB_fJo';
+const { createClient } = supabase
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // === Authentication Functions ===
 async function handleLogin() {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
+  
   if (!email || !password) {
     showToast('يرجى ملء جميع الحقول', 'error');
     return;
   }
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    showToast('خطأ في تسجيل الدخول: ' + error.message, 'error');
-    return;
+  
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ 
+      email: email, 
+      password: password 
+    });
+    
+    if (error) {
+      showToast('خطأ في تسجيل الدخول: ' + error.message, 'error');
+      return;
+    }
+    
+    showToast('تم تسجيل الدخول بنجاح!', 'success');
+    
+    // تأكد من تحميل الملف الشخصي أولاً
+    await loadUserProfile();
+    
+    // قم بإخفاء جميع الصفحات أولاً
+    document.getElementById('welcomeScreen').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('registerPage').style.display = 'none';
+    
+    // ثم عرض المحتوى الرئيسي
+    document.getElementById('appContent').style.display = 'flex';
+    
+    // تحميل البيانات وعرض لوحة التحكم
+    await loadDashboardData();
+    showPage('dashboard');
+    
+  } catch (err) {
+    showToast('حدث خطأ غير متوقع: ' + err.message, 'error');
   }
-  showToast('تم تسجيل الدخول بنجاح!', 'success');
-  loadUserProfile();
-  showPage('dashboard');
+}
+// === Check Auth State ===
+async function checkAuthState() {
+  const { data } = await supabase.auth.getSession();
+  
+  if (data.session) {
+    // المستخدم مسجل الدخول
+    await loadUserProfile();
+    document.getElementById('appContent').style.display = 'flex';
+    await loadDashboardData();
+    showPage('dashboard');
+  } else {
+    // المستخدم غير مسجل
+    showPage('welcomeScreen');
+  }
 }
 
+// قم باستدعاء الدالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+  checkAuthState();
+});
 async function handleRegister() {
   const name = document.getElementById('registerName').value;
   const email = document.getElementById('registerEmail').value;
@@ -627,4 +688,5 @@ document.addEventListener('DOMContentLoaded', () => {
 console.log('تم تحميل النظام مع دعم Supabase');
 </script>
 </body>
+
 </html>
