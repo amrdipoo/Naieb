@@ -957,8 +957,22 @@ function getRoleLabel(role) {
 
 // === Navigation ===
 function showPage(pageId) {
-  $('.page').hide();
-  $(`#${pageId}`).show();
+  // إخفاء جميع الصفحات الرئيسية
+  $('#welcomeScreen, #loginPage, #registerPage, #appContent').hide();
+  
+  // إظهار الصفحة المطلوبة
+  if (pageId === 'welcomeScreen') {
+    $('#welcomeScreen').show();
+  } else if (pageId === 'loginPage' || pageId === 'registerPage') {
+    $(`#${pageId}`).show();
+  } else {
+    // أي صفحة داخل التطبيق
+    $('#appContent').show();
+    $('.page').hide();
+    $(`#${pageId}`).show();
+  }
+  
+  // تحديث الرابط (اختياري)
   window.history.replaceState(null, '', `#${pageId}`);
 }
 
