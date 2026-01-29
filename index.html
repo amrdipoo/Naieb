@@ -1,1873 +1,1829 @@
+
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الكنان المتحدة - نظافة وصيانة ناطحات السحاب | AlKnan AlMotahda</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>ALKNAN AL MOTAHEDA - Building Cleaning & Maintenance Excellence</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Crimson+Pro:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* إعدادات أساسية */
+        /* 
+        ====================================================================
+        QUICK CUSTOMIZATION GUIDE
+        ====================================================================
+        
+        1. HERO IMAGE: Search for "HERO IMAGE CONTROLS" (line ~150)
+           - Change image filename
+           - Adjust background-position (center, top, bottom, etc.)
+           - Adjust overlay darkness
+        
+        2. COLORS: See CSS variables below (lines 20-27)
+           - Change primary colors
+           - Adjust accent colors
+        
+        3. PROJECT IMAGES: Search for "Projects Section" in HTML (line ~1100)
+           - Replace Unsplash URLs with your image filenames
+        
+        ====================================================================
+        */
+
+        :root {
+            --primary-navy: #1a2b5c;
+            --secondary-blue: #2d4a8e;
+            --accent-teal: #3a9fb5;
+            --accent-orange: #e67e22;
+            --light-bg: #f8f9fa;
+            --dark-text: #1a1a1a;
+            --gray-text: #6c757d;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-color: #1a5f7a;
-            --secondary-color: #57c5b6;
-            --accent-color: #002b5b;
-            --light-color: #f8f9fa;
-            --dark-color: #333;
-            --danger-color: #ff6b6b;
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            --radius: 8px;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
-            background-color: #f5f7fa;
-            color: var(--dark-color);
-            line-height: 1.6;
-            transition: all 0.3s ease;
+            font-family: 'Crimson Pro', serif;
+            color: var(--dark-text);
             overflow-x: hidden;
+            line-height: 1.7;
         }
 
-        body[dir="rtl"] {
-            font-family: 'Cairo', sans-serif;
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
-        body[dir="ltr"] {
-            font-family: 'Poppins', sans-serif;
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-blue) 100%);
+            padding: 1.2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
+        .navbar.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* تنسيقات النصوص */
-        h1, h2, h3, h4 {
-            color: var(--accent-color);
-            line-height: 1.3;
-        }
-
-        p {
-            margin-bottom: 1rem;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* زر تبديل اللغة */
-        .language-switcher {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            z-index: 1001;
-            display: flex;
-            gap: 5px;
-            background: white;
-            padding: 5px;
-            border-radius: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid #eee;
-        }
-
-        body[dir="rtl"] .language-switcher {
-            left: auto;
-            right: 15px;
-        }
-
-        .lang-btn {
-            padding: 6px 12px;
-            border: none;
-            background: none;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
-        .lang-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        /* رأس الصفحة */
-        header {
-            background-color: white;
-            box-shadow: var(--shadow);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            padding: 10px 0;
-            transition: all 0.3s;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo i {
-            color: var(--primary-color);
-            font-size: 24px;
-        }
-
-        .logo h1 {
-            font-size: 20px;
-            color: var(--accent-color);
-        }
-
-        .logo span {
-            color: var(--secondary-color);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-
-        body[dir="rtl"] nav ul li {
-            margin-right: 15px;
-        }
-
-        body[dir="ltr"] nav ul li {
-            margin-left: 15px;
-        }
-
-        nav ul li a {
-            text-decoration: none;
-            color: var(--dark-color);
-            font-weight: 600;
-            transition: color 0.3s;
-            padding: 5px 8px;
-            font-size: 0.95rem;
-            border-radius: 4px;
-        }
-
-        nav ul li a:hover, nav ul li a.active {
-            color: var(--primary-color);
-            background-color: rgba(26, 95, 122, 0.05);
-        }
-
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 22px;
-            color: var(--primary-color);
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
-        }
-
-        .mobile-menu-btn:hover {
-            background-color: rgba(26, 95, 122, 0.1);
-        }
-
-        /* الشرائح */
-        .slider-section {
-            margin-top: 70px;
-            position: relative;
-            height: 70vh;
-            min-height: 400px;
-            max-height: 600px;
-            overflow: hidden;
-            border-radius: var(--radius);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .slider {
-            position: relative;
-            height: 100%;
-            width: 100%;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-        }
-
-        body[dir="rtl"] .slide {
-            flex-direction: row;
-        }
-
-        body[dir="ltr"] .slide {
-            flex-direction: row-reverse;
-        }
-
-        .slide.active {
-            opacity: 1;
-        }
-
-        .slide-content {
-            background-color: rgba(0, 43, 91, 0.85);
-            color: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            max-width: 90%;
-            z-index: 2;
-            backdrop-filter: blur(2px);
-        }
-
-        body[dir="ltr"] .slide-content {
-            text-align: left;
-        }
-
-        body[dir="rtl"] .slide-content {
-            text-align: right;
-        }
-
-        .slide-content h2 {
+        .navbar-brand {
+            font-family: 'Oswald', sans-serif;
             font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: var(--secondary-color);
+            font-weight: 700;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-left: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* Space between logo and text */
         }
 
-        .slide-content p {
-            font-size: 1rem;
-            margin-bottom: 15px;
-            line-height: 1.5;
+        .navbar-brand img {
+            height: 70px;
+            /* ← Logo size (normal and scrolled) */
+            width: auto;
+            transition: all 0.3s ease;
         }
 
-        .slide-image {
+        .navbar-brand .brand-text {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled .navbar-brand img {
+            height: 70px;
+            /* ← Stays 70px when scrolled (no shrinking) */
+        }
+
+        .navbar.scrolled .navbar-brand .brand-text {
+            font-size: 1.5rem;
+        }
+
+        /* Hide text on very small mobile screens */
+        @media (max-width: 480px) {
+            .navbar-brand .brand-text {
+                display: none;
+            }
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-orange);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        /* 
+        ==================================================
+        HERO IMAGE CONTROLS - EDIT HERE
+        ==================================================
+        To change hero image:
+        1. Replace the URL below with your image URL or filename
+        2. Adjust background-position to move image (options below)
+        3. Adjust overlay opacity in the gradient (0.95 = dark, 0.5 = light)
+        
+        Background Position Options:
+        - center (default)
+        - top, center, bottom
+        - left, center, right
+        - top left, top center, top right
+        - center left, center center, center right
+        - bottom left, bottom center, bottom right
+        - Custom: 50% 30% (X% Y%)
+        ==================================================
+        */
+        .hero {
+            position: relative;
+            height: 100vh;
+            /* EDIT THESE TWO LINES: */
+            background: linear-gradient(135deg, rgba(26, 43, 92, 0.65) 0%, rgba(45, 74, 142, 0.6) 50%, rgba(58, 159, 181, 0.55) 100%),
+                url('https://www.alknan.com/images/hero-image.jpg');
+            /* ← YOUR HERO IMAGE */
+            background-size: cover;
+            background-position: top center;
+            /* ← CHANGED TO TOP CENTER */
+            background-attachment: scroll;
+            /* Changed from 'fixed' for iOS compatibility */
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Desktop only: parallax effect */
+        @media (min-width: 1024px) {
+            .hero {
+                background-attachment: fixed;
+            }
+        }
+
+        /* Mobile optimization for iOS */
+        @media (max-width: 768px) {
+            .hero {
+                background-attachment: scroll !important;
+                background-position: center center;
+                min-height: 100vh;
+                height: auto;
+            }
+        }
+
+        /* If no image, use gradient + pattern */
+        .hero.no-image {
+            background: linear-gradient(135deg, rgba(26, 43, 92, 0.95) 0%, rgba(45, 74, 142, 0.9) 50%, rgba(58, 159, 181, 0.85) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+        }
+
+        .hero::before {
+            content: '';
             position: absolute;
             top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(230, 126, 34, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(58, 159, 181, 0.15) 0%, transparent 50%);
+            animation: gradient-shift 15s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            max-width: 1000px;
+            padding: 2rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-logo {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: slideInLeft 1s ease 0.3s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+            opacity: 0.95;
+            animation: slideInRight 1s ease 0.6s both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-description {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease 0.9s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .hero-cta {
+            animation: fadeInUp 1s ease 1.2s both;
+        }
+
+        .btn-hero {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 0;
+            background: var(--accent-orange);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            z-index: 1;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
         }
 
-        body[dir="rtl"] .slide-image {
-            right: 0;
+        .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(230, 126, 34, 0.6);
+            background: #d35400;
         }
 
-        body[dir="ltr"] .slide-image {
-            left: 0;
+        .btn-hero:hover::before {
+            left: 100%;
         }
 
-        .slider-controls {
-            position: absolute;
-            bottom: 15px;
-            right: 50%;
-            transform: translateX(50%);
-            display: flex;
-            gap: 8px;
-            z-index: 10;
+        /* Section Styling */
+        .section {
+            padding: 100px 0;
+            position: relative;
         }
 
-        .slider-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.5);
-            cursor: pointer;
-            transition: background-color 0.3s;
+        .section-dark {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-blue) 100%);
+            color: white;
         }
 
-        .slider-dot.active {
-            background-color: white;
-        }
-
-        /* نبذة عن الشركة */
-        .about-section {
-            padding: 60px 0;
-            background-color: white;
+        .section-light {
+            background: var(--light-bg);
         }
 
         .section-title {
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--accent-color);
-            font-size: 2rem;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
             position: relative;
-            padding-bottom: 15px;
+            display: inline-block;
         }
 
         .section-title::after {
             content: '';
             position: absolute;
-            bottom: 0;
-            right: 50%;
-            transform: translateX(50%);
-            width: 80px;
-            height: 3px;
-            background-color: var(--secondary-color);
+            bottom: -10px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
         }
 
-        body[dir="ltr"] .section-title::after {
-            left: 50%;
-            transform: translateX(-50%);
+        .section-subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 4rem;
+            opacity: 0.9;
         }
 
-        .about-content {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .about-text p {
-            font-size: 1.05rem;
-            line-height: 1.8;
+        /* Introduction Section */
+        .intro-content {
+            font-size: 1.15rem;
+            line-height: 1.9;
             text-align: justify;
         }
 
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 25px;
+        .intro-highlight {
+            background: linear-gradient(135deg, rgba(58, 159, 181, 0.15), rgba(230, 126, 34, 0.15));
+            padding: 2rem;
+            border-left: 5px solid var(--accent-orange);
+            margin: 2rem 0;
+            font-style: italic;
         }
 
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background-color: var(--light-color);
-            border-radius: var(--radius);
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eee;
+        /* Services Section */
+        .service-card {
+            background: white;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            height: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
-        .stat-item i {
-            font-size: 32px;
-            color: var(--primary-color);
-            margin-bottom: 8px;
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
         }
 
-        .stat-number {
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-icon {
+            font-size: 4rem;
+            color: var(--accent-orange);
+            margin-bottom: 1.5rem;
+            transition: all 0.4s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            color: var(--accent-teal);
+        }
+
+        .service-title {
             font-size: 1.8rem;
             font-weight: 700;
-            color: var(--accent-color);
-            display: block;
-            line-height: 1.2;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            color: var(--primary-navy);
         }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--dark-color);
-            margin-top: 5px;
+        .service-description {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--gray-text);
         }
 
-        .about-image img {
-            width: 100%;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            height: auto;
-            max-height: 400px;
-            object-fit: cover;
+        /* Why Us Section */
+        .why-us-feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent-orange);
+            transition: all 0.3s ease;
         }
 
-        /* معرض الأعمال */
-        .portfolio-section {
-            padding: 60px 0;
-            background-color: #f0f4f8;
+        .why-us-feature:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
         }
 
-        .portfolio-filter {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 8px;
+        .why-us-icon {
+            font-size: 2.5rem;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
         }
 
-        .filter-btn {
-            padding: 8px 16px;
-            background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            cursor: pointer;
+        .why-us-title {
+            font-size: 1.5rem;
             font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
         }
 
-        .filter-btn.active, .filter-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .portfolio-item {
-            background-color: white;
-            border-radius: var(--radius);
+        /* Projects Section */
+        .project-card {
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 5px 12px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #eee;
+            border-radius: 0;
+            height: 350px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
         }
 
-        .portfolio-item:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, transparent 100%);
+            opacity: 0.7;
+            transition: opacity 0.4s ease;
+            z-index: 1;
         }
 
-        .portfolio-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            transition: transform 0.5s;
+        .project-card:hover::before {
+            opacity: 0.9;
         }
 
-        .portfolio-item:hover .portfolio-img {
+        .project-card:hover {
             transform: scale(1.05);
         }
 
-        .portfolio-info {
-            padding: 15px;
-        }
-
-        .portfolio-info h3 {
-            margin-bottom: 8px;
-            color: var(--accent-color);
-            font-size: 1.2rem;
-        }
-
-        .portfolio-info p {
-            font-size: 0.95rem;
-            color: #666;
-            line-height: 1.5;
-        }
-
-        /* طلب الخدمة */
-        .request-section {
-            padding: 60px 0;
-            background-color: white;
-        }
-
-        .request-form {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: var(--light-color);
-            padding: 25px;
-            border-radius: var(--radius);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eee;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 600;
-            color: var(--accent-color);
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: border 0.3s;
-            background-color: white;
-        }
-
-        body[dir="rtl"] .form-control {
-            text-align: right;
-        }
-
-        body[dir="ltr"] .form-control {
-            text-align: left;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.1);
-        }
-
-        .service-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .service-option {
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 2rem;
             display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px;
-            background-color: white;
-            border-radius: 5px;
-            border: 1px solid #eee;
-        }
-
-        body[dir="rtl"] .service-option {
-            flex-direction: row-reverse;
+            flex-direction: column;
             justify-content: flex-end;
+            z-index: 2;
+            transition: all 0.4s ease;
         }
 
-        .service-option input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .service-option label {
-            margin-bottom: 0;
-            cursor: pointer;
-            font-weight: normal;
-            flex-grow: 1;
-        }
-
-        textarea.form-control {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .submit-btn {
-            background-color: var(--primary-color);
+        .project-title {
+            font-size: 1.8rem;
+            font-weight: 700;
             color: white;
-            border: none;
-            padding: 14px 28px;
-            font-size: 1rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            display: block;
-            margin: 25px auto 0;
-            width: 100%;
-            max-width: 200px;
-            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            transform: translateY(0);
+            transition: transform 0.4s ease;
         }
 
-        .submit-btn:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
+        .project-card:hover .project-title {
+            transform: translateY(-10px);
         }
 
-        .submit-btn:active {
+        .project-description {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .project-card:hover .project-description {
+            opacity: 1;
             transform: translateY(0);
         }
 
-        /* وسائل التواصل */
-        .contact-section {
-            padding: 50px 0;
-            background-color: var(--accent-color);
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-orange) 100%);
+            padding: 80px 0;
+        }
+
+        .stat-card {
+            text-align: center;
             color: white;
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Contact Section */
+        .contact-info {
+            background: white;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--accent-orange);
+            margin-right: 1.5rem;
+            width: 60px;
             text-align: center;
         }
 
-        .contact-section h2 {
+        .contact-details h5 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--primary-navy);
+        }
+
+        .contact-details p {
+            font-size: 1.05rem;
+            color: var(--gray-text);
+            margin: 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 60px 0 30px;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 700;
             color: white;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .contact-section p {
-            max-width: 600px;
-            margin: 0 auto 25px;
-            color: #ddd;
-            font-size: 1rem;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 45px;
-            height: 45px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            color: white;
-            font-size: 20px;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .social-icon:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-5px);
-            color: white;
-        }
-
-        /* تذييل الصفحة */
-        footer {
-            background-color: var(--dark-color);
-            color: white;
-            padding: 30px 0 15px;
-            text-align: center;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .footer-links a {
-            color: #ddd;
-            text-decoration: none;
-            transition: color 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .footer-links a:hover {
-            color: var(--secondary-color);
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .footer-logo i {
-            color: var(--secondary-color);
-            font-size: 24px;
-        }
-
-        .footer-logo h2 {
-            font-size: 1.5rem;
-            color: white;
-        }
-
-        .footer-logo span {
-            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
         }
 
         .footer-description {
-            max-width: 600px;
-            margin: 0 auto 25px;
-            color: #aaa;
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
         }
 
-        .copyright {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #444;
-            color: #aaa;
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-
-        .contact-info {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        /* تأثيرات إضافية */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s, transform 0.5s;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* شريط التقدم */
-        .scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background-color: var(--secondary-color);
-            z-index: 1002;
-            transition: width 0.3s;
-        }
-
-        /* زر العودة للأعلى */
-        .scroll-top-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+        .social-links a {
+            display: inline-block;
             width: 45px;
             height: 45px;
-            background-color: var(--primary-color);
+            line-height: 45px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-orange);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent-orange);
             color: white;
             border: none;
-            border-radius: 50%;
-            font-size: 20px;
+            font-size: 1.5rem;
             cursor: pointer;
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s;
-            display: flex;
-            justify-content: center;
+            display: none;
             align-items: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 5px 20px rgba(230, 126, 34, 0.4);
         }
 
-        body[dir="rtl"] .scroll-top-btn {
-            right: auto;
-            left: 20px;
+        .scroll-top:hover {
+            background: var(--accent-teal);
+            transform: translateY(-5px);
         }
 
-        .scroll-top-btn.active {
-            opacity: 1;
-            visibility: visible;
+        .scroll-top.show {
+            display: flex;
         }
 
-        .scroll-top-btn:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-3px);
-        }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-logo {
+                font-size: 3rem;
+            }
 
-        /* ========== التجاوب مع الشاشات المختلفة ========== */
-        
-        /* شاشات متوسطة (أجهزة لوحية) */
-        @media (min-width: 768px) {
-            .container {
-                padding: 0 20px;
+            .hero-subtitle {
+                font-size: 1.3rem;
             }
-            
-            .logo h1 {
-                font-size: 22px;
-            }
-            
-            .logo i {
-                font-size: 26px;
-            }
-            
-            nav ul li a {
-                font-size: 1rem;
-                padding: 6px 10px;
-            }
-            
-            body[dir="rtl"] nav ul li {
-                margin-right: 20px;
-            }
-            
-            body[dir="ltr"] nav ul li {
-                margin-left: 20px;
-            }
-            
-            .slider-section {
-                margin-top: 80px;
-                height: 65vh;
-                min-height: 450px;
-            }
-            
-            .slide {
-                padding: 0 40px;
-            }
-            
-            .slide-content {
-                padding: 25px;
-                max-width: 500px;
-            }
-            
-            .slide-content h2 {
-                font-size: 2rem;
-            }
-            
-            .slide-content p {
+
+            .hero-description {
                 font-size: 1.1rem;
             }
-            
-            .section-title {
-                font-size: 2.2rem;
-                margin-bottom: 45px;
-            }
-            
-            .about-content {
-                grid-template-columns: 1fr 1fr;
-                gap: 35px;
-            }
-            
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-            }
-            
-            .stat-item {
-                padding: 20px;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .service-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                gap: 25px;
-            }
-            
-            .submit-btn {
-                width: 200px;
-            }
-            
-            .social-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 22px;
-            }
-        }
-        
-        /* شاشات كبيرة (أجهزة كمبيوتر) */
-        @media (min-width: 992px) {
-            .container {
-                padding: 0 30px;
-            }
-            
-            header {
-                padding: 15px 0;
-            }
-            
-            .logo h1 {
-                font-size: 24px;
-            }
-            
-            .slider-section {
-                margin-top: 90px;
-                height: 70vh;
-                min-height: 500px;
-                max-height: 650px;
-            }
-            
-            .slide {
-                padding: 0 60px;
-            }
-            
-            .slide-content {
-                padding: 30px;
-                max-width: 550px;
-            }
-            
-            .slide-content h2 {
-                font-size: 2.2rem;
-            }
-            
-            .slide-content p {
-                font-size: 1.2rem;
-            }
-            
+
             .section-title {
                 font-size: 2.5rem;
             }
-            
-            .about-content {
-                gap: 50px;
+
+            .service-card {
+                margin-bottom: 2rem;
             }
-            
-            .about-text p {
+
+            .project-card {
+                margin-bottom: 2rem;
+                height: 300px;
+            }
+
+            /* Force scroll background on all mobile devices */
+            .hero,
+            .section-dark,
+            .section-light {
+                background-attachment: scroll !important;
+            }
+        }
+
+        /* Extra small devices (phones in portrait) */
+        @media (max-width: 480px) {
+            .hero-logo {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
                 font-size: 1.1rem;
             }
-            
-            .stats {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            
-            .stat-item {
-                padding: 25px 15px;
-            }
-            
-            .stat-number {
-                font-size: 2rem;
-            }
-            
-            .portfolio-grid {
-                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            }
-            
-            .request-form {
-                padding: 35px;
-            }
-            
-            .form-control {
-                padding: 14px;
-            }
-            
-            .contact-section {
-                padding: 60px 0;
-            }
-            
-            .contact-section h2 {
-                font-size: 2rem;
-            }
-            
-            footer {
-                padding: 40px 0 20px;
-            }
-            
-            .footer-links {
-                gap: 25px;
-            }
-            
-            .footer-logo h2 {
-                font-size: 1.8rem;
-            }
-        }
-        
-        /* شاشات صغيرة جداً (هواتف أفقية) */
-        @media (max-width: 576px) {
-            .language-switcher {
-                top: 10px;
-                left: 10px;
-            }
-            
-            body[dir="rtl"] .language-switcher {
-                right: 10px;
-            }
-            
-            .lang-btn {
-                padding: 5px 10px;
-                font-size: 0.8rem;
-            }
-            
-            .logo h1 {
-                font-size: 18px;
-            }
-            
-            .logo i {
-                font-size: 22px;
-            }
-            
-            .slider-section {
-                margin-top: 60px;
-                height: 60vh;
-                min-height: 350px;
-                border-radius: 0;
-            }
-            
-            .slide {
-                padding: 0 15px;
-            }
-            
-            .slide-content {
-                padding: 15px;
-                max-width: 100%;
-            }
-            
-            .slide-content h2 {
-                font-size: 1.5rem;
-            }
-            
-            .slide-content p {
-                font-size: 0.95rem;
-            }
-            
-            .section-title {
-                font-size: 1.7rem;
-                margin-bottom: 30px;
-            }
-            
-            .about-section, .portfolio-section, .request-section {
-                padding: 40px 0;
-            }
-            
-            .stat-item {
-                padding: 12px;
-            }
-            
-            .stat-item i {
-                font-size: 28px;
-            }
-            
-            .stat-number {
-                font-size: 1.5rem;
-            }
-            
-            .stat-label {
-                font-size: 0.8rem;
-            }
-            
-            .portfolio-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .portfolio-img {
-                height: 180px;
-            }
-            
-            .request-form {
-                padding: 20px;
-            }
-            
-            .contact-section {
-                padding: 40px 0;
-            }
-            
-            .contact-section h2 {
-                font-size: 1.6rem;
-            }
-            
-            .social-icons {
-                gap: 12px;
-            }
-            
-            .social-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            
-            .footer-links {
-                gap: 15px;
-                margin-bottom: 20px;
-            }
-            
-            .footer-links a {
-                font-size: 0.85rem;
-            }
-            
-            .footer-description {
-                font-size: 0.9rem;
-            }
-            
-            .copyright {
-                font-size: 0.8rem;
-            }
-            
-            .scroll-top-btn {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-                bottom: 15px;
-                right: 15px;
-            }
-            
-            body[dir="rtl"] .scroll-top-btn {
-                left: 15px;
-            }
-        }
-        
-        /* شاشات صغيرة (هواتف عمودية) */
-        @media (max-width: 400px) {
-            .stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .portfolio-filter {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .filter-btn {
-                width: 100%;
-                max-width: 200px;
-            }
-            
-            .service-options {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-        
-        /* القائمة المتحركة للشاشات الصغيرة */
-        @media (max-width: 991px) {
-            .mobile-menu-btn {
-                display: flex;
-            }
-            
-            nav {
-                position: absolute;
-                top: 100%;
-                right: 0;
-                width: 100%;
-                background-color: white;
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-                border-radius: 0 0 8px 8px;
-                overflow: hidden;
-                max-height: 0;
-                transition: max-height 0.4s ease;
-                z-index: 999;
-            }
-            
-            body[dir="ltr"] nav {
-                right: auto;
-                left: 0;
-            }
-            
-            nav.active {
-                max-height: 500px;
-                border-top: 1px solid #eee;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                padding: 10px 0;
-            }
-            
-            body[dir="rtl"] nav ul li, 
-            body[dir="ltr"] nav ul li {
-                margin: 0;
-                width: 100%;
-            }
-            
-            nav ul li a {
-                display: block;
-                padding: 12px 20px;
-                border-bottom: 1px solid #f5f5f5;
+
+            .hero-description {
                 font-size: 1rem;
             }
-            
-            nav ul li:last-child a {
-                border-bottom: none;
+
+            .btn-hero {
+                font-size: 0.9rem;
+                padding: 0.8rem 2rem;
             }
         }
+
+        /* Loading Animation */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInScale 0.6s ease both;
+        }
+
+        /* Decorative Elements */
+        .decorative-line {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            margin: 2rem auto;
+        }
+
+        /* =========================================
+        PARALLAX – WORKING TO MEET THE STANDARD
+        ========================================= */
+        
+        .parallax-standard {
+        position: relative;
+        width: 100%;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        
+        background-image: url('/images/windows.jpg');
+        background-size: cover;
+        background-position: center right;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        
+        color: #ffffff;
+        }
+        
+        .parallax-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+        135deg,
+        rgba(10, 20, 45, 0.75) 0%,
+        rgba(26, 43, 92, 0.65) 50%,
+        rgba(58, 159, 181, 0.35) 100%
+        );
+        }
+        
+        .parallax-standard .container {
+        position: relative;
+        z-index: 2;
+        }
+        
+        .parallax-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        line-height: 1.1;
+        }
+        
+        .parallax-text {
+        font-size: 1.2rem;
+        line-height: 1.9;
+        margin-top: 2rem;
+        max-width: 650px;
+        }
+        
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+        .parallax-standard {
+        background-attachment: scroll;
+        min-height: 70vh;
+        }
+        
+        .parallax-title {
+        font-size: 2.6rem;
+        }
+        }
+		/* Responsive Carousel Height */
+@media (max-width: 768px) {
+  #homeGalleryCarousel .carousel-item {
+    height: 300px !important;
+  }
+  .carousel-caption h3 {
+    font-size: 1.4rem;
+  }
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+}
     </style>
 </head>
-<body dir="rtl">
-    <!-- شريط التقدم -->
-    <div class="scroll-progress" id="scrollProgress"></div>
-    
-    <!-- زر تبديل اللغة -->
-    <div class="language-switcher">
-        <button class="lang-btn active" id="arBtn">العربية</button>
-        <button class="lang-btn" id="enBtn">English</button>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="https://www.alknan.com/images/logo.jpg" alt="ALKNAN AL MOTAHEDA">
+                <span class="brand-text">ALKNAN</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-logo">Alknan Al Motaheda</h1>
+            <p class="hero-subtitle">For Cleaning Services and Maintenance</p>
+            <p class="hero-description">We're KNAN United
+                Company<br>The Most Powerful Force in<br>Commercial High Level Building<br>Cleaning and Maintenance</p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-hero">Get Started</a>
+            </div>
+        </div>
+    </section>
+	<!-- Animated Gallery Carousel - Optimized for Page Size -->
+<section class="section section-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Our Work Gallery</h2>
+      <p class="section-subtitle">A glimpse into our excellence</p>
     </div>
 
-    <!-- زر العودة للأعلى -->
-    <button class="scroll-top-btn" id="scrollTopBtn">
-        <i class="fas fa-chevron-up"></i>
-    </button>
+    <div id="homeGalleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+      </div>
 
-    <!-- رأس الصفحة -->
-    <header>
-        <div class="container header-container">
-            <button class="mobile-menu-btn" id="mobileMenuBtn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="logo">
-                <i class="fas fa-building"></i>
-                <h1>الكنان <span>المتحده</span></h1>
-            </div>
-            <nav id="mainNav">
-                <ul>
-                    <li><a href="#home" data-ar="الرئيسية" data-en="Home" class="active">الرئيسية</a></li>
-                    <li><a href="#about" data-ar="نبذة عنا" data-en="About Us">نبذة عنا</a></li>
-                    <li><a href="#portfolio" data-ar="أعمالنا" data-en="Our Work">أعمالنا</a></li>
-                    <li><a href="#request" data-ar="طلب الخدمة" data-en="Request Service">طلب الخدمة</a></li>
-                    <li><a href="#contact" data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</a></li>
-                </ul>
-            </nav>
+      <!-- Slides with dark overlay -->
+      <div class="carousel-inner rounded shadow overflow-hidden">
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"></h3>
+            <p class="text-white"></p>
+          </div>
         </div>
-    </header>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"></h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z3.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z3.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/portfolio/alomineom.jpg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/portfolio/الدانه ابوظبي.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+      </div>
 
-    <!-- الشرائح -->
-    <section class="slider-section" id="home">
-        <div class="slider">
-            <!-- شريحة 1 - واجهة ناطحة سحاب أثناء الصيانة -->
-            <div class="slide active">
-                <img src="images\slides\z.jpeg" alt="واجهة ناطحة سحاب أثناء الصيانة" class="slide-image">
-                <div class="slide-content fade-in">
-                    <h2 data-ar="صيانة ناطحات السحاب" data-en="Skyscraper Maintenance">صيانة ناطحات السحاب</h2>
-                    <p data-ar="نقدم خدمات صيانة شاملة لواجهات ناطحات السحاب باستخدام أحدث المعدات والكوادر المتخصصة." 
-                       data-en="We provide comprehensive maintenance services for skyscraper facades using the latest equipment and specialized personnel.">
-                       نقدم خدمات صيانة شاملة لواجهات ناطحات السحاب باستخدام أحدث المعدات والكوادر المتخصصة.
-                    </p>
-                </div>
-            </div>
-            
-            <!-- شريحة 2 - صيانة واجهة ناطحة سحاب -->
-            <div class="slide">
-                <img src="images\slides\z1.jpg" alt="صيانة واجهة ناطحة سحاب" class="slide-image">
-                <div class="slide-content fade-in">
-                    <h2 data-ar="نظافة الواجهات الزجاجية" data-en="Glass Facade Cleaning">نظافة الواجهات الزجاجية</h2>
-                    <p data-ar="خدمات تنظيف الواجهات الزجاجية لناطحات السحاب بأعلى معايير الجودة والسلامة." 
-                       data-en="Glass facade cleaning services for skyscrapers with the highest quality and safety standards.">
-                       خدمات تنظيف الواجهات الزجاجية لناطحات السحاب بأعلى معايير الجودة والسلامة.
-                    </p>
-                </div>
-            </div>
-            
-            <!-- شريحة 3 - عامل صيانة على حبل -->
-            <div class="slide">
-                <img src="images\slides\z2.jpg" alt="عامل صيانة على حبل" class="slide-image">
-                <div class="slide-content fade-in">
-                    <h2 data-ar="العمل على الارتفاعات" data-en="Height Work Operations">العمل على الارتفاعات</h2>
-                    <p data-ar="كوادر مدربة للعمل على الارتفاعات الشاهقة مع الالتزام بأعلى معايير السلامة العالمية." 
-                       data-en="Trained personnel for work at extreme heights with adherence to the highest global safety standards.">
-                       كوادر مدربة للعمل على الارتفاعات الشاهقة مع الالتزام بأعلى معايير السلامة العالمية.
-                    </p>
-                </div>
-            </div>
-            
-            <!-- شريحة 4 - رافعة تنظيف واجهات ناطحات السحاب -->
-            <div class="slide">
-                <img src="images\slides\z3.jpeg" alt="رافعة تنظيف واجهات ناطحات السحاب" class="slide-image">
-                <div class="slide-content fade-in">
-                    <h2 data-ar="معدات متخصصة" data-en="Specialized Equipment">معدات متخصصة</h2>
-                    <p data-ar="نوفر أحدث الروافع والمعدات المتخصصة لتنظيف وصيانة المباني العالية." 
-                       data-en="We provide the latest lifts and specialized equipment for cleaning and maintaining tall buildings.">
-                       نوفر أحدث الروافع والمعدات المتخصصة لتنظيف وصيانة المباني العالية.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="slider-controls">
-            <div class="slider-dot active" data-slide="0"></div>
-            <div class="slider-dot" data-slide="1"></div>
-            <div class="slider-dot" data-slide="2"></div>
-            <div class="slider-dot" data-slide="3"></div>
-        </div>
-    </section>
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</section>
 
-    <!-- نبذة عن الشركة -->
-    <section class="about-section" id="about">
+    <!-- Introduction Section -->
+    <section id="about" class="section section-light">
         <div class="container">
-            <h2 class="section-title fade-in" data-ar="نبذة عن شركة الكنان المتحدة" data-en="About AlKnan AlMotahda Company">نبذة عن شركة الكنان المتحدة</h2>
-            <div class="about-content">
-                <div class="about-text fade-in">
-                    <p data-ar="شركة الكنان المتحدة هي شركة رائدة في مجال نظافة وصيانة ناطحات السحاب والمنشآت العالية. تأسست عام 2005 وتخصصت في تقديم خدمات متكاملة للواجهات الزجاجية والمعدنية للمباني الشاهقة." 
-                       data-en="AlKnan AlMotahda Company is a leading company in the field of skyscraper and high-rise structure cleaning and maintenance. Established in 2005, it specialized in providing integrated services for glass and metal facades of tall buildings.">
-                       شركة الكنان المتحدة هي شركة رائدة في مجال نظافة وصيانة ناطحات السحاب والمنشآت العالية. تأسست عام 2005 وتخصصت في تقديم خدمات متكاملة للواجهات الزجاجية والمعدنية للمباني الشاهقة.
-                    </p>
-                    <p data-ar="نتميز بفريق عمل مدرب على أعلى مستوى، يمتلك خبرات واسعة في التعامل مع التحديات التي تواجه العمل في الأماكن المرتفعة، مع الالتزام التام بمعايير السلامة العالمية." 
-                       data-en="We are distinguished by a highly trained work team with extensive experience in dealing with the challenges of working at heights, with full commitment to global safety standards.">
-                       نتميز بفريق عمل مدرب على أعلى مستوى، يمتلك خبرات واسعة في التعامل مع التحديات التي تواجه العمل في الأماكن المرتفعة، مع الالتزام التام بمعايير السلامة العالمية.
-                    </p>
-                    <p data-ar="نقدم أيضاً خدمات توريد وصيانة الروافع والمعدات الخاصة بالارتفاعات، مع ضمان الجودة والكفاءة العالية في جميع خدماتنا." 
-                       data-en="We also provide supply and maintenance services for lifts and height-specific equipment, ensuring quality and high efficiency in all our services.">
-                       نقدم أيضاً خدمات توريد وصيانة الروافع والمعدات الخاصة بالارتفاعات، مع ضمان الجودة والكفاءة العالية في جميع خدماتنا.
-                    </p>
-                    
-                    <div class="stats">
-                        <div class="stat-item fade-in">
-                            <i class="fas fa-building"></i>
-                            <span class="stat-number" id="projectsCount">0</span>
-                            <span class="stat-label" data-ar="مشروع منفذ" data-en="Completed Projects">مشروع منفذ</span>
-                        </div>
-                        <div class="stat-item fade-in" style="transition-delay: 0.1s">
-                            <i class="fas fa-users"></i>
-                            <span class="stat-number" id="clientsCount">0</span>
-                            <span class="stat-label" data-ar="عميل راضٍ" data-en="Satisfied Clients">عميل راضٍ</span>
-                        </div>
-                        <div class="stat-item fade-in" style="transition-delay: 0.2s">
-                            <i class="fas fa-hard-hat"></i>
-                            <span class="stat-number" id="workersCount">0</span>
-                            <span class="stat-label" data-ar="فني متخصص" data-en="Specialized Technician">فني متخصص</span>
-                        </div>
-                        <div class="stat-item fade-in" style="transition-delay: 0.3s">
-                            <i class="fas fa-award"></i>
-                            <span class="stat-number">15</span>
-                            <span class="stat-label" data-ar="جائزة تميز" data-en="Excellence Awards">جائزة تميز</span>
-                        </div>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title">Introduction</h2>
+                        <p class="section-subtitle">Building Excellence Since 2020</p>
                     </div>
-                </div>
-                <div class="about-image fade-in">
-                    <img src="images\portfolio\z11.jpeg" alt="فريق العمل في الكنان المتحدة مع معدات الروافع">
-                </div>
-            </div>
-        </div>
-    </section>
+                    <div class="intro-content">
+                        <div class="intro-highlight">
+                            <p class="mb-0">Knan United Company offers world class, premium, and high-end quality of
+                                cleaning services and its maintenance in Kuwait. We first understand the need for the
+                                building and then draw up the detailed plan to undertake the work. Our staff is trained
+                                to use different equipment's required for facade cleaning such as scaffolding, spider
+                                man technique (hanging rope), cradle, platforms etc.</p>
+                        </div>
 
-    <!-- معرض الأعمال -->
-    <section class="portfolio-section" id="portfolio">
-        <div class="container">
-            <h2 class="section-title fade-in" data-ar="معرض أعمالنا" data-en="Our Work Gallery">معرض أعمالنا</h2>
-            
-            <div class="portfolio-filter">
-                <button class="filter-btn active fade-in" data-filter="all" data-ar="جميع الأعمال" data-en="All Work">جميع الأعمال</button>
-                <button class="filter-btn fade-in" style="transition-delay: 0.1s" data-filter="cleaning" data-ar="نظافة الناطحات" data-en="Skyscraper Cleaning">نظافة الناطحات</button>
-                <button class="filter-btn fade-in" style="transition-delay: 0.2s" data-filter="maintenance" data-ar="صيانة الزجاج" data-en="Glass Maintenance">صيانة الزجاج</button>
-                <button class="filter-btn fade-in" style="transition-delay: 0.3s" data-filter="equipment" data-ar="توريد الروافع" data-en="Lift Supply">توريد الروافع</button>
-            </div>
-            
-            <div class="portfolio-grid">
-                <div class="portfolio-item fade-in" data-category="cleaning">
-                    <img src="images\portfolio\z12.jpeg" alt="تنظيف واجهة زجاجية لناطحة سحاب" class="portfolio-img">
-                    <div class="portfolio-info">
-                        <h3 data-ar="تنظيف برج الخليج" data-en="Cleaning Gulf Tower">تنظيف برج الخليج</h3>
-                        <p data-ar="تنظيف كامل للواجهات الزجاجية لأعلى برج في المدينة باستخدام منصات معلقة." 
-                           data-en="Complete cleaning of glass facades of the tallest tower in the city using suspended platforms.">
-                           تنظيف كامل للواجهات الزجاجية لأعلى برج في المدينة باستخدام منصات معلقة.
+                        <p>ALKNAN is one of the most respected building cleaning, electric scaffolding rental &
+                            maintenance, and general building maintenance companies in the GCC. In cooperation with our
+                            clients, we deliver pioneering projects that achieve long-term progress and economic growth
+                            thanks to the attention to the smallest details. ALKNAN is able to provide all clients with
+                            an integrated service in all their needs, along with a complete management of all internal
+                            and external maintenance and cleaning services for buildings.</p>
+
+                        <p>Since 2020, we have completed more than 110 exceptional projects in several locations in
+                            Kuwait and UAE, sparking a passion for excellence. We operate through four main services:
                         </p>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item fade-in" style="transition-delay: 0.1s" data-category="maintenance">
-                    <img src="images\portfolio\z4.jpeg" alt="صيانة واجهة ناطحة سحاب" class="portfolio-img">
-                    <div class="portfolio-info">
-                        <h3 data-ar="صيانة مركز الأعمال العالمي" data-en="World Business Center Maintenance">صيانة مركز الأعمال العالمي</h3>
-                        <p data-ar="إصلاح واستبدال الوحدات الزجاجية التالفة في المركز باستخدام حبال الصعود." 
-                           data-en="Repair and replacement of damaged glass units in the center using climbing ropes.">
-                           إصلاح واستبدال الوحدات الزجاجية التالفة في المركز باستخدام حبال الصعود.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item fade-in" style="transition-delay: 0.2s" data-category="equipment">
-                    <img src="images\portfolio\z5.jpeg" alt="رافعة تنظيف واجهات ناطحات السحاب" class="portfolio-img">
-                    <div class="portfolio-info">
-                        <h3 data-ar="توريد روافع لمدينة الأبراج" data-en="Lift Supply for Towers City">توريد روافع لمدينة الأبراج</h3>
-                        <p data-ar="توريد وتركيب 10 رافعات متخصصة للأماكن المرتفعة." 
-                           data-en="Supply and installation of 10 specialized lifts for high places.">
-                           توريد وتركيب 10 رافعات متخصصة للأماكن المرتفعة.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item fade-in" style="transition-delay: 0.3s" data-category="cleaning">
-                    <img src="images\portfolio\z6.jpeg" alt="منصة تنظيف معلقة لناطحة سحاب" class="portfolio-img">
-                    <div class="portfolio-info">
-                        <h3 data-ar="تنظيف فندق السماء" data-en="Sky Hotel Cleaning">تنظيف فندق السماء</h3>
-                        <p data-ar="تنظيف دوري للواجهات الزجاجية للفندق البالغ ارتفاعه 50 طابقاً." 
-                           data-en="Periodic cleaning of glass facades of the 50-story hotel.">
-                           تنظيف دوري للواجهات الزجاجية للفندق البالغ ارتفاعه 50 طابقاً.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item fade-in" style="transition-delay: 0.4s" data-category="maintenance">
-                    <img src="images\portfolio\z7.jpeg" alt="عامل صيانة على حبل لإصلاح الزجاج" class="portfolio-img">
-                    <div class="portfolio-info">
-                        <h3 data-ar="إصلاح زجاج برج المؤتمرات" data-en="Conference Tower Glass Repair">إصلاح زجاج برج المؤتمرات</h3>
-                        <p data-ar="إصلاح شقوق في الواجهات الزجاجية للبرج باستخدام تقنيات العمل على الحبال." 
-                           data-en="Repair of cracks in the tower's glass facades using rope access techniques.">
-                           إصلاح شقوق في الواجهات الزجاجية للبرج باستخدام تقنيات العمل على الحبال.
-                        </p>
-                    </div>
-                </div>
-                
-                <div class="portfolio-item fade-in" style="transition-delay: 0.5s" data-category="equipment">
-                    <img src="images\portfolio\z8.jpeg" alt="مقبض رافعة تنظيف زجاجي" class="portfolio-img">
-                    <div class="portfolio-info">
-                        <h3 data-ar="صيانة معدات الارتفاعات" data-en="Height Equipment Maintenance">صيانة معدات الارتفاعات</h3>
-                        <p data-ar="صيانة شاملة لجميع معدات العمل على الارتفاعات والروافع الخاصة." 
-                           data-en="Comprehensive maintenance for all height work equipment and special lifts.">
-                           صيانة شاملة لجميع معدات العمل على الارتفاعات والروافع الخاصة.
-                        </p>
+
+                        <ul class="mt-4" style="font-size: 1.1rem; line-height: 2;">
+                            <li><strong>General maintenance; rental & maintenance of electric scaffolding; external & internal</strong>
+                            </li>
+                            <li><strong>Cleanliness of projects and buildings.</strong></li>
+                            <li><strong>ALKNAN's experience in cleaning and maintenance includes large-scale, low-rise and highrise</strong>
+                            </li>
+                            <li><strong>Buildings, residential and commercial buildings. ALKNAN also has extensive experience in the</strong>
+                            </li>
+                            <li><strong>Field of electric scaffolding rental and maintenance.</strong></li>
+                        </ul>
+
+                        <p class="mt-4">Our company may seem young, but it is always looking for leadership and a
+                            constant focus on our values, the core of which are safety, quality, ethics and integrity.
+                            These values are what we believe in, what we expect, what we deliver, and what we live.</p>
+
+                        <p>With a dedication to being a socially responsible company, all of ALKNAN's operations and
+                            ethos focus on operating in a mindful manner.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- طلب الخدمة -->
-    <section class="request-section" id="request">
+    <!-- Why Us Section -->
+    <section class="section section-dark">
         <div class="container">
-            <h2 class="section-title fade-in" data-ar="طلب الخدمة أو المنتج" data-en="Request Service or Product">طلب الخدمة أو المنتج</h2>
-            <div class="request-form fade-in">
-                <form id="serviceRequestForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name" data-ar="الاسم الكامل" data-en="Full Name">الاسم الكامل</label>
-                            <input type="text" id="name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone" data-ar="رقم الهاتف" data-en="Phone Number">رقم الهاتف</label>
-                            <input type="tel" id="phone" class="form-control" required>
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title">Why Choose Us?</h2>
+                        <p class="section-subtitle">Excellence in Every Detail</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-10 mx-auto">
+                            <p style="font-size: 1.2rem; line-height: 1.9; margin-bottom: 3rem;">To provide the best
+                                quality of materials and machines to serve our business and also to the service
+                                construction sector and to provide solutions in the best time regardless of the high
+                                profit compared to the stability of our relationship with our customers who are dealing
+                                with us. To create the most efficient results of our customers and to move forward using
+                                the most innovative technologies in the sector.</p>
                         </div>
                     </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email" data-ar="البريد الإلكتروني" data-en="Email Address">البريد الإلكتروني</label>
-                            <input type="email" id="email" class="form-control" required>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <h4 class="why-us-title">Best Quality Materials</h4>
+                                <p>We provide the best quality of materials and machines to serve our business and the
+                                    service construction sector.</p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="company" data-ar="اسم الشركة (اختياري)" data-en="Company Name (Optional)">اسم الشركة (اختياري)</label>
-                            <input type="text" id="company" class="form-control">
+
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <h4 class="why-us-title">Timely Solutions</h4>
+                                <p>We provide solutions in the best time regardless of the high profit compared to the
+                                    stability of our relationship with our customers.</p>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label data-ar="نوع الخدمة المطلوبة" data-en="Required Service Type">نوع الخدمة المطلوبة</label>
-                        <div class="service-options">
-                            <div class="service-option">
-                                <input type="checkbox" id="service1" name="service" value="نظافة ناطحات السحاب">
-                                <label for="service1" data-ar="نظافة ناطحات السحاب" data-en="Skyscraper Cleaning">نظافة ناطحات السحاب</label>
+
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h4 class="why-us-title">Efficient Results</h4>
+                                <p>To create the most efficient results of our customers and to move forward using the
+                                    most innovative technologies in the sector.</p>
                             </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="service2" name="service" value="صيانة واجهات الزجاج">
-                                <label for="service2" data-ar="صيانة واجهات الزجاج" data-en="Glass Facade Maintenance">صيانة واجهات الزجاج</label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="service3" name="service" value="توريد روافع النقل">
-                                <label for="service3" data-ar="توريد روافع النقل" data-en="Lift Equipment Supply">توريد روافع النقل</label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="service4" name="service" value="صيانة المعدات">
-                                <label for="service4" data-ar="صيانة المعدات" data-en="Equipment Maintenance">صيانة المعدات</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h4 class="why-us-title">Innovation First</h4>
+                                <p>We use cutting-edge technology and innovative approaches to deliver exceptional
+                                    results for every project.</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label for="details" data-ar="تفاصيل الطلب" data-en="Request Details">تفاصيل الطلب</label>
-                        <textarea id="details" class="form-control" rows="5" placeholder="" data-ar-placeholder="يرجى تقديم تفاصيل عن الخدمة المطلوبة والمبنى والمواصفات..." data-en-placeholder="Please provide details about the required service, building, and specifications..."></textarea>
-                    </div>
-                    
-                    <button type="submit" class="submit-btn" data-ar="إرسال الطلب" data-en="Submit Request">إرسال الطلب</button>
-                </form>
+                </div>
             </div>
         </div>
     </section>
+<!-- Parallax Section : Working to Meet the Highest Standard -->
+<section class="parallax-standard">
+    <div class="parallax-overlay"></div>
 
-    <!-- وسائل التواصل -->
-    <section class="contact-section" id="contact">
-        <div class="container">
-            <h2 class="fade-in" data-ar="تواصل معنا على وسائل التواصل الاجتماعي" data-en="Contact Us on Social Media">تواصل معنا على وسائل التواصل الاجتماعي</h2>
-            <p class="fade-in" data-ar="تابعنا على منصات التواصل الاجتماعي لمعرفة آخر أعمالنا وعروضنا الخاصة" 
-               data-en="Follow us on social media platforms to know about our latest work and special offers">
-               تابعنا على منصات التواصل الاجتماعي لمعرفة آخر أعمالنا وعروضنا الخاصة
-            </p>
-            
-            <div class="social-icons">
-                <a href="#" class="social-icon fade-in">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" class="social-icon fade-in" style="transition-delay: 0.1s">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#" class="social-icon fade-in" style="transition-delay: 0.2s">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-icon fade-in" style="transition-delay: 0.3s">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-                <a href="#" class="social-icon fade-in" style="transition-delay: 0.4s">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="#" class="social-icon fade-in" style="transition-delay: 0.5s">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-            </div>
-        </div>
-    </section>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <h2 class="parallax-title">
+                    WORKING<br>
+                    TO MEET THE<br>
+                    HIGHEST<br>
+                    STANDARD
+                </h2>
 
-    <!-- تذييل الصفحة -->
-    <footer>
-        <div class="container">
-            <div class="footer-links fade-in">
-                <a href="#home" data-ar="الرئيسية" data-en="Home">الرئيسية</a>
-                <a href="#about" data-ar="نبذة عنا" data-en="About Us">نبذة عنا</a>
-                <a href="#portfolio" data-ar="أعمالنا" data-en="Our Work">أعمالنا</a>
-                <a href="#request" data-ar="طلب الخدمة" data-en="Request Service">طلب الخدمة</a>
-                <a href="#contact" data-ar="اتصل بنا" data-en="Contact Us">اتصل بنا</a>
-                <a href="#" data-ar="سياسة الخصوصية" data-en="Privacy Policy">سياسة الخصوصية</a>
-                <a href="#" data-ar="الشروط والأحكام" data-en="Terms & Conditions">الشروط والأحكام</a>
-            </div>
-            
-            <div class="footer-logo fade-in">
-                <i class="fas fa-building"></i>
-                <h2>الكنان <span>المتحده</span></h2>
-            </div>
-            
-            <p class="footer-description fade-in" 
-               data-ar="شركة متخصصة في نظافة وصيانة ناطحات السحاب والمنشآت العالية، وتوريد روافع النقل والمعدات الخاصة بالارتفاعات." 
-               data-en="A company specialized in cleaning and maintenance of skyscrapers and high-rise structures, and supplying lift equipment and height-specific equipment.">
-               شركة متخصصة في نظافة وصيانة ناطحات السحاب والمنشآت العالية، وتوريد روافع النقل والمعدات الخاصة بالارتفاعات.
-            </p>
-            
-            <div class="copyright fade-in">
-                <p data-ar="جميع الحقوق محفوظة &copy; 2023 شركة الكنان المتحدة" 
-                   data-en="All rights reserved &copy; 2023 AlKnan AlMotahda Company">
-                   جميع الحقوق محفوظة &copy; 2023 شركة الكنان المتحدة
+                <div class="decorative-line"></div>
+
+                <p class="parallax-text">
+                    As window cleaning specialists, our main vision is to ensure our clients are beyond
+                    pleased with our services. We are confident in our teams of highly professional and
+                    experienced specialists. Every employee we work with carries the same company vision
+                    to ensure our high standards are achieved every day.
                 </p>
-                <div class="contact-info">
-                    <div>هاتف: 00966123456789 | البريد الإلكتروني: info@alkayan.com</div>
-                    <div>Phone: 00966123456789 | Email: info@alkayan.com</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Services Section -->
+<section id="services" class="section section-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-subtitle">Comprehensive Solutions for Every Need</p>
+    </div>
+    <div class="row g-4">
+      <!-- High Access Cleaning -->
+      <div class="col-lg-4 col-md-6" id="high-access-cleaning">
+        <div class="card service-card">
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <h3 class="service-title">HIGH ACCESS CLEANING</h3>
+			<img src="images/services/high-access.jpg" class="card-img-top" alt="High Access Cleaning">
+            <p class="service-description">
+              At Knan United Company we have the ability to carry out
+              bespoke cradle window cleaning for your specific building, ideal for if your building
+              has a curved glass edge or is of any other irregular size or shape. We can design and
+              develop cradles to be the perfect fit for your specific building. Our cradles are built
+              to the highest quality, allowing for seamless movement when scaling the building,
+              minimising the risk of damage to the building's exterior.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spider -->
+      <div class="col-lg-4 col-md-6" id="spider">
+        <div class="card service-card">
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-user-ninja"></i>
+            </div>
+            <h3 class="service-title">SPIDERS</h3>
+			<img src="images/services/spider.jpg" class="card-img-top" alt="Spider Cleaning">
+            <p class="service-description">
+              Knan United Company spiders allow us to work in areas that
+              would be inaccessible or too expensive to get to safely. Our team of specialist
+              tradespeople, builders and engineers reach the trickiest of spots to get the job done,
+              no matter what the task.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance -->
+      <div class="col-lg-4 col-md-6" id="maintenance">
+        <div class="card service-card">
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-tools"></i>
+            </div>
+            <h3 class="service-title">MAINTENANCE CONTRACTS</h3>
+			<img src="images/services/maintenance.jpg" class="card-img-top" alt="Maintenance Contracts">
+            <p class="service-description" style="text-align: left;">
+              <strong>Construction Hoist Tower Cranes</strong><br>
+              <strong>Manlifts</strong><br>
+              <strong>Generators</strong><br>
+              <strong>Maintenance of Building Facades</strong><br><br>
+              <strong style="display: block; margin-top: 1rem;">Services:</strong>
+              • After sales service<br>
+              • Inspection and maintenance of equipments<br>
+              • Engineering studies and designs<br>
+              • Emergency maintenance and technical support<br>
+              • Service of provision and installation of spare parts<br>
+              • Services of dismantling and installation of scaffolding
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Curtain Wall -->
+      <div class="col-lg-4 col-md-6" id="curtain-wall">
+        <div class="card service-card">
+           <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-window-maximize"></i>
+            </div>
+            <h3 class="service-title">
+              ALUMINUM DIVISION<br>
+              Curtain Wall & Cladding
+            </h3>
+			 <img src="images/services/curtain-wall.jpg" class="card-img-top" alt="Curtain Wall & Cladding">
+            <p class="service-description" style="text-align: left;">
+              Installation of high-end glass facades with heat insulation, local or European sectors
+              with a variety of glass colours at the request of the customer, and high-quality
+              accessories to ensure heat, sound and water insulation.<br><br>
+              A variety of cladding in all colors is a local, Emirati or European product and
+              thicknesses ranging from 0.3 mm to 0.6 mm, with fireproof cladding available at the
+              request of the customer.<br><br>
+              <strong>
+                All steel works & aluminum steel structure - curtain wall - cladding - windows & door
+              </strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cleaning Systems -->
+      <div class="col-lg-4 col-md-6" id="cleaning-systems">
+        <div class="card service-card">
+          
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <h3 class="service-title">
+              CLEANING SYSTEMS<br>
+              BMU Machines<br>
+              & Monorail
+            </h3>
+			<img src="images/services/cleaning-systems.jpg" class="card-img-top" alt="BMU & Monorail Cleaning Systems">
+            <p class="service-description" style="text-align: left;">
+              <strong>
+                Study, design, supply and install all types and maintenance equipment according to
+                the customer's request
+              </strong><br><br>
+              <div style="display: flex; justify-content: space-around; margin: 1rem 0;">
+                <div>
+                  <i class="fas fa-tools" style="font-size: 2rem; color: var(--accent-orange);"></i><br>
+                  <strong>Building Maintenance Unit</strong>
                 </div>
+                <div>
+                  <i class="fas fa-subway" style="font-size: 2rem; color: var(--accent-teal);"></i><br>
+                  <strong>Monorail Cleaning System</strong>
+                </div>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment Rental -->
+      <div class="col-lg-4 col-md-6" id="equipment-rental">
+        <div class="card service-card">
+            <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-truck-loading"></i>
+            </div>
+            <h3 class="service-title">
+              RENTAL<br>
+              DEPARTMENT
+            </h3>
+			<img src="images/services/rental.jpg" class="card-img-top" alt="Equipment Rental">
+            <p class="service-description" style="text-align: left;">
+              <div style="margin: 1rem 0;">
+                <i class="fas fa-level-up-alt" style="font-size: 2rem; color: var(--accent-orange);"></i><br>
+                <strong>Manlift</strong>
+              </div>
+              <div style="margin: 1rem 0;">
+                <i class="fas fa-compress-arrows-alt" style="font-size: 2rem; color: var(--accent-teal);"></i><br>
+                <strong>Scissor Lift</strong>
+              </div>
+              <div style="margin: 1rem 0;">
+                <i class="fas fa-hard-hat" style="font-size: 2rem; color: var(--accent-orange);"></i><br>
+                <strong>Construction Electrical Cradle</strong>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="110">0</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="5">0</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="50">0</div>
+                        <div class="stat-label">Expert Team</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="100">0</div>
+                        <div class="stat-label">Satisfied Clients</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- Projects Section -->
+    <section id="projects" class="section section-dark">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Our Projects</h2>
+                <p class="section-subtitle">Portfolio Images Will Be Updated</p>
+            </div>
+    
+            <div class="row g-4">
+    
+                <!-- Project 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/o2.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">برج O2</h3>
+                            <p class="project-description">دبى</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/elkhor.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">ابراج الخور</h3>
+                            <p class="project-description">عجمان</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/amprgem.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">بناية امبيرجيم</h3>
+                            <p class="project-description">عجمان</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 4 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/hwarezon.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">ابراج الهوريزون</h3>
+                            <p class="project-description">عجمان</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 5 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/ابراج غلفا عجمان.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">ابراج علفا</h3>
+                            <p class="project-description">عجمان</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 6 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">Project Image</h3>
+                            <p class="project-description">To be replaced</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 7 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/منطقة عجمان الحره.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">منطقة عجمان الحره</h3>
+                            <p class="project-description">عجمان</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 8 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/الدانه ابوظبي.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">ابراج الدانة</h3>
+                            <p class="project-description">ابوظبي</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 9 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/portfolio/smok om kqen.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">ابراج الشموخ</h3>
+                            <p class="project-description">أم القوين</p>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+
+    <!-- Structure and Management Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title">STRUCTURE AND<br>MANAGEMENT</h2>
+                        <div class="decorative-line"></div>
+                    </div>
+                    <div style="font-size: 1.1rem; line-height: 1.9;">
+                        <p>Beyond sustainability and quality, people are the backbone of our business. Since we believe
+                            that quality of services are a reflection of the people who do that, we hire leaders of
+                            esteemed characters who are fair, benevolent and considerate. By attracting and retaining
+                            the best technical professionals in our field, we are able to maintain the highest standards
+                            and ethics. ALKNAN's employees experience positive attitudes, flexibility, transparency,
+                            timelines and quality workmanships.</p>
+
+                        <p>ALKNAN believes in giving employees the opportunity to develop and the freedom to make
+                            decisions to help them succeed. Beyond technical, hands-on training, we train our staff to
+                            be equipped for work and life in the 21st century. By offering our employees knowledge
+                            experience, know-how and accomplishment, it is no surprise that job satisfaction and
+                            exceptional work flow.</p>
+
+                        <p>In an ever more complex and competitive world, human capital is a key factor in maintaining
+                            our leadership; it is the key element of ALKNAN's success. In every corner and behind every
+                            project, there lies the hard work and creativity of ALKNAN team. Highly skilled professional
+                            men and women, together sharing a common objective: to build value that improves the quality
+                            of life of people. We believe in challenging ourselves and improving our skills and
+                            competencies; we believe in our people, it is through them that we can build value.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section section-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Contact Us</h2>
+                <p class="section-subtitle">Let's Build Something Great Together</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="contact-info">
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-details">
+                    <h5>Location</h5>
+                    <p>
+                        Office No. 118, Al Hawr Al Azraq, Deira, Dubai, UAE<br>
+                        
+                    </p>
+                </div>
+            </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>Phone</h5>
+                            <p>
+                                <a href="tel:+971521852561">+971 52 185 2561</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>Email</h5>
+                            <p>
+                                <a href="mailto:admin@alknan.com">admin@alknan.com</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>Website</h5>
+                            <p>
+                                <a href="https://www.alknan.com" target="_blank">www.alknan.com</a>
+                            </p>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h3 class="footer-brand">ALKNAN</h3>
+                    <p class="footer-description">Building excellence through innovation, quality, and dedication. Your
+                        trusted partner for high-level building cleaning and maintenance services.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h4 class="mb-4"
+                        style="font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                        Quick Links</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#home"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Home</a>
+                        </li>
+                        <li class="mb-2"><a href="#about"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">About
+                                Us</a></li>
+                        <li class="mb-2"><a href="#services"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Services</a>
+                        </li>
+                        <li class="mb-2"><a href="#projects"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Projects</a>
+                        </li>
+                        <li class="mb-2"><a href="#contact"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <h4 class="mb-4" style="font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                    Services
+                </h4>
+            
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="#high-access-cleaning" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            High Access Cleaning
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#spider" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Spider
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#maintenance" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Maintenance Contracts
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#curtain-wall" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Curtain Wall & Cladding
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#cleaning-systems" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Cleaning Systems (BMU & Monorail)
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#equipment-rental" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Equipment Rental
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="mb-4" style="font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                        Contact Info</h4>
+                
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                        <i class="fas fa-phone me-2" style="color: var(--accent-orange);"></i>
+                        <a href="tel:+971521852561" style="color: inherit; text-decoration: none;">
+                            +971 52 185 2561
+                        </a>
+                    </p>
+                
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                        <i class="fas fa-envelope me-2" style="color: var(--accent-orange);"></i>
+                        <a href="mailto:admin@alknan.com" style="color: inherit; text-decoration: none;">
+                            admin@alknan.com
+                        </a>
+                    </p>
+                
+                    <p style="color: rgba(255,255,255,0.7);">
+                        <i class="fas fa-map-marker-alt me-2" style="color: var(--accent-orange);"></i>
+                        Dubai, UAE
+                    </p>
+                </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ALKNAN AL MOTAHEDA. All Rights Reserved. | For Cleaning Services and Maintenance</p>
             </div>
         </div>
     </footer>
 
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // ==================== تهيئة متغيرات اللغة ====================
-        let currentLang = 'ar';
-        
-        // ==================== وظيفة تبديل اللغة ====================
-        function switchLanguage(lang) {
-            currentLang = lang;
-            
-            // تغيير اتجاه الصفحة
-            document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            
-            // تغيير زر اللغة النشط
-            document.getElementById('arBtn').classList.toggle('active', lang === 'ar');
-            document.getElementById('enBtn').classList.toggle('active', lang === 'en');
-            
-            // تغيير نص العنوان
-            document.title = lang === 'ar' 
-                ? 'الكنان المتحدة - نظافة وصيانة ناطحات السحاب' 
-                : 'AlKnan AlMotahda - Skyscraper Cleaning & Maintenance';
-            
-            // تغيير جميع النصوص التي تحتوي على بيانات اللغة
-            document.querySelectorAll('[data-ar], [data-en]').forEach(element => {
-                const text = element.getAttribute(`data-${lang}`);
-                if (text) {
-                    if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                        const placeholderAttr = element.getAttribute(`data-${lang}-placeholder`);
-                        if (placeholderAttr) {
-                            element.placeholder = placeholderAttr;
-                        }
-                    } else if (element.tagName === 'BUTTON' && !element.id.includes('Btn')) {
-                        element.textContent = text;
-                    } else if (element.tagName !== 'BUTTON' || element.classList.contains('submit-btn') || element.classList.contains('filter-btn') || element.classList.contains('lang-btn')) {
-                        element.textContent = text;
-                    }
-                }
-            });
-            
-            // تغيير شعار الشركة
-            const logoTitle = document.querySelector('.logo h1');
-            const footerLogo = document.querySelector('.footer-logo h2');
-            if (lang === 'en') {
-                logoTitle.innerHTML = 'AlKnan <span>AlMotahda</span>';
-                footerLogo.innerHTML = 'AlKnan <span>AlMotahda</span>';
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
             } else {
-                logoTitle.innerHTML = 'الكنان <span>المتحده</span>';
-                footerLogo.innerHTML = 'الكنان <span>المتحده</span>';
+                navbar.classList.remove('scrolled');
             }
-            
-            // حفظ اللغة في التخزين المحلي
-            localStorage.setItem('preferredLanguage', lang);
-        }
-        
-        // أحداث أزرار اللغة
-        document.getElementById('arBtn').addEventListener('click', () => switchLanguage('ar'));
-        document.getElementById('enBtn').addEventListener('click', () => switchLanguage('en'));
-        
-        // تحميل اللغة المفضلة من التخزين المحلي
-        const savedLang = localStorage.getItem('preferredLanguage') || 'ar';
-        switchLanguage(savedLang);
-        
-        // ==================== القائمة المتحركة للشاشات الصغيرة ====================
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mainNav = document.getElementById('mainNav');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            mainNav.classList.toggle('active');
-            mobileMenuBtn.innerHTML = mainNav.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
         });
-        
-        // إغلاق القائمة عند النقر على رابط
-        document.querySelectorAll('#mainNav a').forEach(link => {
-            link.addEventListener('click', () => {
-                mainNav.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-                
-                // تحديد الرابط النشط
-                document.querySelectorAll('#mainNav a').forEach(a => a.classList.remove('active'));
-                link.classList.add('active');
-            });
-        });
-        
-        // ==================== الشرائح المتحركة ====================
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.slider-dot');
-        let currentSlide = 0;
-        let slideInterval;
-        
-        function showSlide(index) {
-            // إخفاء جميع الشرائح
-            slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            
-            // عرض الشريحة المطلوبة
-            slides[index].classList.add('active');
-            dots[index].classList.add('active');
-            currentSlide = index;
-            
-            // إضافة تأثير الظهور للمحتوى
-            const slideContent = slides[index].querySelector('.slide-content');
-            slideContent.classList.add('visible');
-        }
-        
-        // إضافة حدث النقر للنقاط
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                showSlide(index);
-                clearInterval(slideInterval);
-                startSliderInterval();
-            });
-        });
-        
-        // بدء التشغيل التلقائي للشرائح
-        function startSliderInterval() {
-            slideInterval = setInterval(() => {
-                let nextSlide = (currentSlide + 1) % slides.length;
-                showSlide(nextSlide);
-            }, 5000);
-        }
-        
-        // بدء الشرائح
-        startSliderInterval();
-        
-        // ==================== تصفية معرض الأعمال ====================
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        const portfolioItems = document.querySelectorAll('.portfolio-item');
-        
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                const filter = btn.getAttribute('data-filter');
-                
-                portfolioItems.forEach((item, index) => {
-                    if (filter === 'all' || item.getAttribute('data-category') === filter) {
-                        item.style.display = 'block';
-                        setTimeout(() => {
-                            item.style.opacity = '1';
-                            item.style.transform = 'translateY(0)';
-                        }, index * 100);
-                    } else {
-                        item.style.opacity = '0';
-                        item.style.transform = 'translateY(20px)';
-                        setTimeout(() => {
-                            item.style.display = 'none';
-                        }, 300);
-                    }
-                });
-            });
-        });
-        
-        // ==================== عداد الإحصائيات المتحركة ====================
-        const projectsCount = document.getElementById('projectsCount');
-        const clientsCount = document.getElementById('clientsCount');
-        const workersCount = document.getElementById('workersCount');
-        
-        function animateCounter(element, target) {
-            let current = 0;
-            const increment = target / 100;
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    element.textContent = target;
-                    clearInterval(timer);
-                } else {
-                    element.textContent = Math.floor(current);
-                }
-            }, 20);
-        }
-        
-        // ==================== تأثير الظهور عند التمرير ====================
-        function checkScroll() {
-            const fadeElements = document.querySelectorAll('.fade-in');
-            
-            fadeElements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                
-                if (elementTop < windowHeight - 100) {
-                    element.classList.add('visible');
-                }
-            });
-            
-            // شريط التقدم
-            const scrollProgress = document.getElementById('scrollProgress');
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrollPercent = (scrollTop / scrollHeight) * 100;
-            scrollProgress.style.width = scrollPercent + '%';
-            
-            // زر العودة للأعلى
-            const scrollTopBtn = document.getElementById('scrollTopBtn');
-            if (scrollTop > 300) {
-                scrollTopBtn.classList.add('active');
-            } else {
-                scrollTopBtn.classList.remove('active');
-            }
-        }
-        
-        // تشغيل العدادات عندما يصل المستخدم إلى قسم "نبذة عن الشركة"
-        const observerOptions = {
-            threshold: 0.3
-        };
-        
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounter(projectsCount, 250);
-                    animateCounter(clientsCount, 180);
-                    animateCounter(workersCount, 75);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-        
-        observer.observe(document.querySelector('.about-section'));
-        
-        // ==================== نموذج طلب الخدمة ====================
-        const serviceRequestForm = document.getElementById('serviceRequestForm');
-        
-        serviceRequestForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const name = document.getElementById('name').value;
-            const phone = document.getElementById('phone').value;
-            const email = document.getElementById('email').value;
-            
-            const selectedServices = [];
-            document.querySelectorAll('input[name="service"]:checked').forEach(checkbox => {
-                selectedServices.push(checkbox.value);
-            });
-            
-            const successMsg = currentLang === 'ar' 
-                ? `شكراً ${name}، تم استلام طلبك بنجاح!\n\nسنقوم بالاتصال بك على ${phone} خلال 24 ساعة.\n\nالخدمات المطلوبة: ${selectedServices.join(', ')}`
-                : `Thank you ${name}, your request has been received successfully!\n\nWe will contact you at ${phone} within 24 hours.\n\nRequested Services: ${selectedServices.join(', ')}`;
-            
-            alert(successMsg);
-            
-            serviceRequestForm.reset();
-        });
-        
-        // ==================== التمرير السلس للروابط ====================
+
+        // Smooth scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+            anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    const headerHeight = document.querySelector('header').offsetHeight;
-                    const targetPosition = targetElement.offsetTop - headerHeight - 10;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
                     });
+                    // Close mobile menu if open
+                    const navbarCollapse = document.querySelector('.navbar-collapse');
+                    if (navbarCollapse.classList.contains('show')) {
+                        bootstrap.Collapse.getInstance(navbarCollapse).hide();
+                    }
                 }
             });
         });
-        
-        // ==================== زر العودة للأعلى ====================
-        document.getElementById('scrollTopBtn').addEventListener('click', () => {
+
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', function() {
             window.scrollTo({
                 top: 0,
                 behavior: 'smooth'
             });
         });
-        
-        // ==================== تهيئة تأثيرات الظهور ====================
-        window.addEventListener('scroll', checkScroll);
-        window.addEventListener('load', checkScroll);
-        
-        // جعل العناصر المرئية عند التحميل تظهر مباشرة
-        document.querySelectorAll('.fade-in').forEach((el, index) => {
-            if (index < 3) { // العناصر الأولى تظهر مباشرة
-                el.classList.add('visible');
-            }
-        });
-        
-        // ==================== منع إعادة تحميل الصفحة عند إرسال النموذج في الشاشات الصغيرة ====================
-        window.addEventListener('resize', function() {
-            // تحديث حجم الشرائح عند تغيير حجم النافذة
-            const sliderSection = document.querySelector('.slider-section');
-            const windowHeight = window.innerHeight;
-            sliderSection.style.height = Math.min(0.7 * windowHeight, 600) + 'px';
-        });
-        
-        // تهيئة حجم الشرائح عند التحميل
-        window.dispatchEvent(new Event('resize'));
-        
-        // ==================== تحسين تجربة اللمس للهواتف ====================
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        const slider = document.querySelector('.slider');
-        
-        slider.addEventListener('touchstart', function(event) {
-            touchStartX = event.changedTouches[0].screenX;
-        }, false);
-        
-        slider.addEventListener('touchend', function(event) {
-            touchEndX = event.changedTouches[0].screenX;
-            handleSwipe();
-        }, false);
-        
-        function handleSwipe() {
-            const swipeThreshold = 50;
-            
-            if (touchEndX < touchStartX - swipeThreshold) {
-                // سحب لليسار - الانتقال للشريحة التالية
-                let nextSlide = (currentSlide + 1) % slides.length;
-                showSlide(nextSlide);
-                clearInterval(slideInterval);
-                startSliderInterval();
-            }
-            
-            if (touchEndX > touchStartX + swipeThreshold) {
-                // سحب لليمين - الانتقال للشريحة السابقة
-                let prevSlide = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
-                showSlide(prevSlide);
-                clearInterval(slideInterval);
-                startSliderInterval();
-            }
+
+        // Counter animation
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current) + '+';
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target + '+';
+                }
+            };
+
+            updateCounter();
         }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('counter')) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe counters
+        document.querySelectorAll('.counter').forEach(counter => {
+            observer.observe(counter);
+        });
+
+        // Add animation class to elements on scroll
+        const fadeElements = document.querySelectorAll('.service-card, .project-card, .why-us-feature');
+        const fadeObserver = new IntersectionObserver(function(entries) {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                    fadeObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        fadeElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            fadeObserver.observe(element);
+        });
+
+        // Hover effects for footer links
+        document.querySelectorAll('footer a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.color = 'var(--accent-orange)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.color = '';
+            });
+        });
     </script>
+
 </body>
+
 </html>
