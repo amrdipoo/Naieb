@@ -1,0 +1,1829 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALKNAN AL MOTAHEDA - Building Cleaning & Maintenance Excellence</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Crimson+Pro:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* 
+        ====================================================================
+        QUICK CUSTOMIZATION GUIDE
+        ====================================================================
+        
+        1. HERO IMAGE: Search for "HERO IMAGE CONTROLS" (line ~150)
+           - Change image filename
+           - Adjust background-position (center, top, bottom, etc.)
+           - Adjust overlay darkness
+        
+        2. COLORS: See CSS variables below (lines 20-27)
+           - Change primary colors
+           - Adjust accent colors
+        
+        3. PROJECT IMAGES: Search for "Projects Section" in HTML (line ~1100)
+           - Replace Unsplash URLs with your image filenames
+        
+        ====================================================================
+        */
+
+        :root {
+            --primary-navy: #1a2b5c;
+            --secondary-blue: #2d4a8e;
+            --accent-teal: #3a9fb5;
+            --accent-orange: #e67e22;
+            --light-bg: #f8f9fa;
+            --dark-text: #1a1a1a;
+            --gray-text: #6c757d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            color: var(--dark-text);
+            overflow-x: hidden;
+            line-height: 1.7;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-blue) 100%);
+            padding: 1.2rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 0.8rem 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar-brand {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            padding-left: 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            /* Space between logo and text */
+        }
+
+        .navbar-brand img {
+            height: 70px;
+            /* ← Logo size (normal and scrolled) */
+            width: auto;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand .brand-text {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled .navbar-brand img {
+            height: 70px;
+            /* ← Stays 70px when scrolled (no shrinking) */
+        }
+
+        .navbar.scrolled .navbar-brand .brand-text {
+            font-size: 1.5rem;
+        }
+
+        /* Hide text on very small mobile screens */
+        @media (max-width: 480px) {
+            .navbar-brand .brand-text {
+                display: none;
+            }
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9) !important;
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0 0.5rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-orange);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        /* 
+        ==================================================
+        HERO IMAGE CONTROLS - EDIT HERE
+        ==================================================
+        To change hero image:
+        1. Replace the URL below with your image URL or filename
+        2. Adjust background-position to move image (options below)
+        3. Adjust overlay opacity in the gradient (0.95 = dark, 0.5 = light)
+        
+        Background Position Options:
+        - center (default)
+        - top, center, bottom
+        - left, center, right
+        - top left, top center, top right
+        - center left, center center, center right
+        - bottom left, bottom center, bottom right
+        - Custom: 50% 30% (X% Y%)
+        ==================================================
+        */
+        .hero {
+            position: relative;
+            height: 100vh;
+            /* EDIT THESE TWO LINES: */
+            background: linear-gradient(135deg, rgba(26, 43, 92, 0.65) 0%, rgba(45, 74, 142, 0.6) 50%, rgba(58, 159, 181, 0.55) 100%),
+                url('images/services/z25.jpg');
+            /* ← YOUR HERO IMAGE */
+            background-size: cover;
+            background-position: top center;
+            /* ← CHANGED TO TOP CENTER */
+            background-attachment: scroll;
+            /* Changed from 'fixed' for iOS compatibility */
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Desktop only: parallax effect */
+        @media (min-width: 1024px) {
+            .hero {
+                background-attachment: fixed;
+            }
+        }
+
+        /* Mobile optimization for iOS */
+        @media (max-width: 768px) {
+            .hero {
+                background-attachment: scroll !important;
+                background-position: center center;
+                min-height: 100vh;
+                height: auto;
+            }
+        }
+
+        /* If no image, use gradient + pattern */
+        .hero.no-image {
+            background: linear-gradient(135deg, rgba(26, 43, 92, 0.95) 0%, rgba(45, 74, 142, 0.9) 50%, rgba(58, 159, 181, 0.85) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse"><path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(230, 126, 34, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(58, 159, 181, 0.15) 0%, transparent 50%);
+            animation: gradient-shift 15s ease infinite;
+        }
+
+        @keyframes gradient-shift {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            max-width: 1000px;
+            padding: 2rem;
+            animation: fadeInUp 1s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-logo {
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: slideInLeft 1s ease 0.3s both;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            letter-spacing: 2px;
+            opacity: 0.95;
+            animation: slideInRight 1s ease 0.6s both;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-description {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            line-height: 1.8;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s ease 0.9s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .hero-cta {
+            animation: fadeInUp 1s ease 1.2s both;
+        }
+
+        .btn-hero {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 1rem 3rem;
+            border: none;
+            border-radius: 0;
+            background: var(--accent-orange);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4);
+        }
+
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-hero:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(230, 126, 34, 0.6);
+            background: #d35400;
+        }
+
+        .btn-hero:hover::before {
+            left: 100%;
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-dark {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, var(--secondary-blue) 100%);
+            color: white;
+        }
+
+        .section-light {
+            background: var(--light-bg);
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+        }
+
+        .section-subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-bottom: 4rem;
+            opacity: 0.9;
+        }
+
+        /* Introduction Section */
+        .intro-content {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            text-align: justify;
+        }
+
+        .intro-highlight {
+            background: linear-gradient(135deg, rgba(58, 159, 181, 0.15), rgba(230, 126, 34, 0.15));
+            padding: 2rem;
+            border-left: 5px solid var(--accent-orange);
+            margin: 2rem 0;
+            font-style: italic;
+        }
+
+        /* Services Section */
+        .service-card {
+            background: white;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            height: 100%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-icon {
+            font-size: 4rem;
+            color: var(--accent-orange);
+            margin-bottom: 1.5rem;
+            transition: all 0.4s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.1) rotate(5deg);
+            color: var(--accent-teal);
+        }
+
+        .service-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+            color: var(--primary-navy);
+        }
+
+        .service-description {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--gray-text);
+        }
+
+        /* Why Us Section */
+        .why-us-feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--accent-orange);
+            transition: all 0.3s ease;
+        }
+
+        .why-us-feature:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+
+        .why-us-icon {
+            font-size: 2.5rem;
+            color: var(--accent-orange);
+            margin-bottom: 1rem;
+        }
+
+        .why-us-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Projects Section */
+        .project-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0;
+            height: 350px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary-navy) 0%, transparent 100%);
+            opacity: 0.7;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .project-card:hover::before {
+            opacity: 0.9;
+        }
+
+        .project-card:hover {
+            transform: scale(1.05);
+        }
+
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            z-index: 2;
+            transition: all 0.4s ease;
+        }
+
+        .project-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            transform: translateY(0);
+            transition: transform 0.4s ease;
+        }
+
+        .project-card:hover .project-title {
+            transform: translateY(-10px);
+        }
+
+        .project-description {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .project-card:hover .project-description {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-orange) 100%);
+            padding: 80px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-label {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Contact Section */
+        .contact-info {
+            background: white;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .contact-icon {
+            font-size: 2.5rem;
+            color: var(--accent-orange);
+            margin-right: 1.5rem;
+            width: 60px;
+            text-align: center;
+        }
+
+        .contact-details h5 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--primary-navy);
+        }
+
+        .contact-details p {
+            font-size: 1.05rem;
+            color: var(--gray-text);
+            margin: 0;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 60px 0 30px;
+        }
+
+        .footer-brand {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            line-height: 45px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .social-links a:hover {
+            background: var(--accent-orange);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        /* Scroll to Top Button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--accent-orange);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 5px 20px rgba(230, 126, 34, 0.4);
+        }
+
+        .scroll-top:hover {
+            background: var(--accent-teal);
+            transform: translateY(-5px);
+        }
+
+        .scroll-top.show {
+            display: flex;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-logo {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .hero-description {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .service-card {
+                margin-bottom: 2rem;
+            }
+
+            .project-card {
+                margin-bottom: 2rem;
+                height: 300px;
+            }
+
+            /* Force scroll background on all mobile devices */
+            .hero,
+            .section-dark,
+            .section-light {
+                background-attachment: scroll !important;
+            }
+        }
+
+        /* Extra small devices (phones in portrait) */
+        @media (max-width: 480px) {
+            .hero-logo {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .btn-hero {
+                font-size: 0.9rem;
+                padding: 0.8rem 2rem;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInScale 0.6s ease both;
+        }
+
+        /* Decorative Elements */
+        .decorative-line {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-teal));
+            margin: 2rem auto;
+        }
+
+        /* =========================================
+        PARALLAX – WORKING TO MEET THE STANDARD
+        ========================================= */
+        
+        .parallax-standard {
+        position: relative;
+        width: 100%;
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        
+        background-image: url('/images/windows.jpg');
+        background-size: cover;
+        background-position: center right;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        
+        color: #ffffff;
+        }
+        
+        .parallax-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+        135deg,
+        rgba(10, 20, 45, 0.75) 0%,
+        rgba(26, 43, 92, 0.65) 50%,
+        rgba(58, 159, 181, 0.35) 100%
+        );
+        }
+        
+        .parallax-standard .container {
+        position: relative;
+        z-index: 2;
+        }
+        
+        .parallax-title {
+        font-family: 'Oswald', sans-serif;
+        font-size: 4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        line-height: 1.1;
+        }
+        
+        .parallax-text {
+        font-size: 1.2rem;
+        line-height: 1.9;
+        margin-top: 2rem;
+        max-width: 650px;
+        }
+        
+        /* Mobile optimization */
+        @media (max-width: 768px) {
+        .parallax-standard {
+        background-attachment: scroll;
+        min-height: 70vh;
+        }
+        
+        .parallax-title {
+        font-size: 2.6rem;
+        }
+        }
+		/* Responsive Carousel Height */
+@media (max-width: 768px) {
+  #homeGalleryCarousel .carousel-item {
+    height: 300px !important;
+  }
+  .carousel-caption h3 {
+    font-size: 1.4rem;
+  }
+  .carousel-caption p {
+    font-size: 1rem;
+  }
+}
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="\images\slides\z.jpeg" alt="ALKNAN AL MOTAHEDA">
+                <span class="brand-text">ALKNAN</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#projects">Projects</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-logo">Alknan Al Motaheda</h1>
+            <p class="hero-subtitle">For Cleaning Services and Maintenance</p>
+            <p class="hero-description">We're KNAN United
+                Company<br>The Most Powerful Force in<br>Commercial High Level Building<br>Cleaning and Maintenance</p>
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-hero">Get Started</a>
+            </div>
+        </div>
+    </section>
+	<!-- Animated Gallery Carousel - Optimized for Page Size -->
+<section class="section section-light">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Our Work Gallery</h2>
+      <p class="section-subtitle">A glimpse into our excellence</p>
+    </div>
+
+    <div id="homeGalleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+      <!-- Indicators -->
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+        <button type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+      </div>
+
+      <!-- Slides with dark overlay -->
+      <div class="carousel-inner rounded shadow overflow-hidden">
+        <div class="carousel-item active" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"></h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z1.jpg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"></h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z2.jpg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z3.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z4.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+        <div class="carousel-item" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)), url('images/slides/z5.jpeg') center/cover; height: 400px;">
+          <div class="carousel-caption d-flex flex-column justify-content-end h-100 pb-4">
+            <h3 class="text-white fw-bold"> </h3>
+            <p class="text-white"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#homeGalleryCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+    <!-- Introduction Section -->
+    <section id="about" class="section section-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title">Introduction</h2>
+                        <p class="section-subtitle">Building Excellence Since 2020</p>
+                    </div>
+                    <div class="intro-content">
+                        <div class="intro-highlight">
+                            <p class="mb-0">Knan United Company offers world class, premium, and high-end quality of
+                                cleaning services and its maintenance in Kuwait. We first understand the need for the
+                                building and then draw up the detailed plan to undertake the work. Our staff is trained
+                                to use different equipment's required for facade cleaning such as scaffolding, spider
+                                man technique (hanging rope), cradle, platforms etc.</p>
+                        </div>
+
+                        <p>ALKNAN is one of the most respected building cleaning, electric scaffolding rental &
+                            maintenance, and general building maintenance companies in the GCC. In cooperation with our
+                            clients, we deliver pioneering projects that achieve long-term progress and economic growth
+                            thanks to the attention to the smallest details. ALKNAN is able to provide all clients with
+                            an integrated service in all their needs, along with a complete management of all internal
+                            and external maintenance and cleaning services for buildings.</p>
+
+                        <p>Since 2020, we have completed more than 110 exceptional projects in several locations in
+                            Kuwait and UAE, sparking a passion for excellence. We operate through four main services:
+                        </p>
+
+                        <ul class="mt-4" style="font-size: 1.1rem; line-height: 2;">
+                            <li><strong>General maintenance; rental & maintenance of electric scaffolding; external & internal</strong>
+                            </li>
+                            <li><strong>Cleanliness of projects and buildings.</strong></li>
+                            <li><strong>ALKNAN's experience in cleaning and maintenance includes large-scale, low-rise and highrise</strong>
+                            </li>
+                            <li><strong>Buildings, residential and commercial buildings. ALKNAN also has extensive experience in the</strong>
+                            </li>
+                            <li><strong>Field of electric scaffolding rental and maintenance.</strong></li>
+                        </ul>
+
+                        <p class="mt-4">Our company may seem young, but it is always looking for leadership and a
+                            constant focus on our values, the core of which are safety, quality, ethics and integrity.
+                            These values are what we believe in, what we expect, what we deliver, and what we live.</p>
+
+                        <p>With a dedication to being a socially responsible company, all of ALKNAN's operations and
+                            ethos focus on operating in a mindful manner.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Us Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title">Why Choose Us?</h2>
+                        <p class="section-subtitle">Excellence in Every Detail</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-10 mx-auto">
+                            <p style="font-size: 1.2rem; line-height: 1.9; margin-bottom: 3rem;">To provide the best
+                                quality of materials and machines to serve our business and also to the service
+                                construction sector and to provide solutions in the best time regardless of the high
+                                profit compared to the stability of our relationship with our customers who are dealing
+                                with us. To create the most efficient results of our customers and to move forward using
+                                the most innovative technologies in the sector.</p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-award"></i>
+                                </div>
+                                <h4 class="why-us-title">Best Quality Materials</h4>
+                                <p>We provide the best quality of materials and machines to serve our business and the
+                                    service construction sector.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <h4 class="why-us-title">Timely Solutions</h4>
+                                <p>We provide solutions in the best time regardless of the high profit compared to the
+                                    stability of our relationship with our customers.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h4 class="why-us-title">Efficient Results</h4>
+                                <p>To create the most efficient results of our customers and to move forward using the
+                                    most innovative technologies in the sector.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="why-us-feature">
+                                <div class="why-us-icon">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h4 class="why-us-title">Innovation First</h4>
+                                <p>We use cutting-edge technology and innovative approaches to deliver exceptional
+                                    results for every project.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<!-- Parallax Section : Working to Meet the Highest Standard -->
+<section class="parallax-standard">
+    <div class="parallax-overlay"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7">
+                <h2 class="parallax-title">
+                    WORKING<br>
+                    TO MEET THE<br>
+                    HIGHEST<br>
+                    STANDARD
+                </h2>
+
+                <div class="decorative-line"></div>
+
+                <p class="parallax-text">
+                    As window cleaning specialists, our main vision is to ensure our clients are beyond
+                    pleased with our services. We are confident in our teams of highly professional and
+                    experienced specialists. Every employee we work with carries the same company vision
+                    to ensure our high standards are achieved every day.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Services Section -->
+<section id="services" class="section section-light">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">Our Services</h2>
+      <p class="section-subtitle">Comprehensive Solutions for Every Need</p>
+    </div>
+    <div class="row g-4">
+      <!-- High Access Cleaning -->
+      <div class="col-lg-4 col-md-6" id="high-access-cleaning">
+        <div class="card service-card">
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-building"></i>
+            </div>
+            <h3 class="service-title">HIGH ACCESS CLEANING</h3>
+			<img src="images/services/high-access.jpg" class="card-img-top" alt="High Access Cleaning">
+            <p class="service-description">
+              At Knan United Company we have the ability to carry out
+              bespoke cradle window cleaning for your specific building, ideal for if your building
+              has a curved glass edge or is of any other irregular size or shape. We can design and
+              develop cradles to be the perfect fit for your specific building. Our cradles are built
+              to the highest quality, allowing for seamless movement when scaling the building,
+              minimising the risk of damage to the building's exterior.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Spider -->
+      <div class="col-lg-4 col-md-6" id="spider">
+        <div class="card service-card">
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-user-ninja"></i>
+            </div>
+            <h3 class="service-title">SPIDERS</h3>
+			<img src="images/services/spider.jpg" class="card-img-top" alt="Spider Cleaning">
+            <p class="service-description">
+              Knan United Company spiders allow us to work in areas that
+              would be inaccessible or too expensive to get to safely. Our team of specialist
+              tradespeople, builders and engineers reach the trickiest of spots to get the job done,
+              no matter what the task.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance -->
+      <div class="col-lg-4 col-md-6" id="maintenance">
+        <div class="card service-card">
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-tools"></i>
+            </div>
+            <h3 class="service-title">MAINTENANCE CONTRACTS</h3>
+			<img src="images/services/maintenance.jpg" class="card-img-top" alt="Maintenance Contracts">
+            <p class="service-description" style="text-align: left;">
+              <strong>Construction Hoist Tower Cranes</strong><br>
+              <strong>Manlifts</strong><br>
+              <strong>Generators</strong><br>
+              <strong>Maintenance of Building Facades</strong><br><br>
+              <strong style="display: block; margin-top: 1rem;">Services:</strong>
+              • After sales service<br>
+              • Inspection and maintenance of equipments<br>
+              • Engineering studies and designs<br>
+              • Emergency maintenance and technical support<br>
+              • Service of provision and installation of spare parts<br>
+              • Services of dismantling and installation of scaffolding
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Curtain Wall -->
+      <div class="col-lg-4 col-md-6" id="curtain-wall">
+        <div class="card service-card">
+           <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-window-maximize"></i>
+            </div>
+            <h3 class="service-title">
+              ALUMINUM DIVISION<br>
+              Curtain Wall & Cladding
+            </h3>
+			 <img src="images\services\cradle1.jpeg" class="card-img-top" alt="Curtain Wall & Cladding">
+            <p class="service-description" style="text-align: left;">
+              Installation of high-end glass facades with heat insulation, local or European sectors
+              with a variety of glass colours at the request of the customer, and high-quality
+              accessories to ensure heat, sound and water insulation.<br><br>
+              A variety of cladding in all colors is a local, Emirati or European product and
+              thicknesses ranging from 0.3 mm to 0.6 mm, with fireproof cladding available at the
+              request of the customer.<br><br>
+              <strong>
+                All steel works & aluminum steel structure - curtain wall - cladding - windows & door
+              </strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cleaning Systems -->
+      <div class="col-lg-4 col-md-6" id="cleaning-systems">
+        <div class="card service-card">
+          
+          <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <h3 class="service-title">
+              CLEANING SYSTEMS<br>
+              BMU Machines<br>
+              & Monorail
+            </h3>
+			<img src="images\services\monoril.jpg" class="card-img-top" alt="BMU & Monorail Cleaning Systems">
+            <p class="service-description" style="text-align: left;">
+              <strong>
+                Study, design, supply and install all types and maintenance equipment according to
+                the customer's request
+              </strong><br><br>
+              <div style="display: flex; justify-content: space-around; margin: 1rem 0;">
+                <div>
+                  <i class="fas fa-tools" style="font-size: 2rem; color: var(--accent-orange);"></i><br>
+                  <strong>Building Maintenance Unit</strong>
+                </div>
+                <div>
+                  <i class="fas fa-subway" style="font-size: 2rem; color: var(--accent-teal);"></i><br>
+                  <strong>Monorail Cleaning System</strong>
+                </div>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Equipment Rental -->
+      <div class="col-lg-4 col-md-6" id="equipment-rental">
+        <div class="card service-card">
+            <div class="card-body text-center p-4">
+            <div class="service-icon">
+              <i class="fas fa-truck-loading"></i>
+            </div>
+            <h3 class="service-title">
+              RENTAL<br>
+              DEPARTMENT
+            </h3>
+			<img src="images/services/rental.jpg" class="card-img-top" alt="Equipment Rental">
+            <p class="service-description" style="text-align: left;">
+              <div style="margin: 1rem 0;">
+                <i class="fas fa-level-up-alt" style="font-size: 2rem; color: var(--accent-orange);"></i><br>
+                <strong>Manlift</strong>
+              </div>
+              <div style="margin: 1rem 0;">
+                <i class="fas fa-compress-arrows-alt" style="font-size: 2rem; color: var(--accent-teal);"></i><br>
+                <strong>Scissor Lift</strong>
+              </div>
+              <div style="margin: 1rem 0;">
+                <i class="fas fa-hard-hat" style="font-size: 2rem; color: var(--accent-orange);"></i><br>
+                <strong>Construction Electrical Cradle</strong>
+              </div>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="110">0</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6 mb-4 mb-md-0">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="5">0</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="50">0</div>
+                        <div class="stat-label">Expert Team</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="stat-card">
+                        <div class="stat-number counter" data-target="100">0</div>
+                        <div class="stat-label">Satisfied Clients</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    <!-- Projects Section -->
+    <section id="projects" class="section section-dark">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Our Projects</h2>
+                <p class="section-subtitle">Portfolio Images Will Be Updated</p>
+            </div>
+    
+            <div class="row g-4">
+    
+                <!-- Project 1 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/o2.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">O2 Tawer</h3>
+                            <p class="project-description">Dubai</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 2 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/elkhor.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">AlKhor Tawer</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 3 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/amprgem.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">Amperjem Tawer</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 4 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/hwarezon.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">Horizon Towers</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 5 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/bindaha tawer.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">Bin Dahah Tawer</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 6 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/Ajman Free Zone.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">Ajman Free Zone</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 7 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/AlDanatawer.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">Al Dana tawer</h3>
+                            <p class="project-description">Abu Dhabi</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 8 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/alfa tawer.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">alfa tawer</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Project 9 -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="project-card" style="background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6)),
+                         url('images/Client/C2&C3.jpeg') center/cover;">
+                        <div class="project-overlay">
+                            <h3 class="project-title">C2&C3 Tawer</h3>
+                            <p class="project-description">Ajman</p>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+
+    <!-- Structure and Management Section -->
+    <section class="section section-dark">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-10 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="section-title">STRUCTURE AND<br>MANAGEMENT</h2>
+                        <div class="decorative-line"></div>
+                    </div>
+                    <div style="font-size: 1.1rem; line-height: 1.9;">
+                        <p>Beyond sustainability and quality, people are the backbone of our business. Since we believe
+                            that quality of services are a reflection of the people who do that, we hire leaders of
+                            esteemed characters who are fair, benevolent and considerate. By attracting and retaining
+                            the best technical professionals in our field, we are able to maintain the highest standards
+                            and ethics. ALKNAN's employees experience positive attitudes, flexibility, transparency,
+                            timelines and quality workmanships.</p>
+
+                        <p>ALKNAN believes in giving employees the opportunity to develop and the freedom to make
+                            decisions to help them succeed. Beyond technical, hands-on training, we train our staff to
+                            be equipped for work and life in the 21st century. By offering our employees knowledge
+                            experience, know-how and accomplishment, it is no surprise that job satisfaction and
+                            exceptional work flow.</p>
+
+                        <p>In an ever more complex and competitive world, human capital is a key factor in maintaining
+                            our leadership; it is the key element of ALKNAN's success. In every corner and behind every
+                            project, there lies the hard work and creativity of ALKNAN team. Highly skilled professional
+                            men and women, together sharing a common objective: to build value that improves the quality
+                            of life of people. We believe in challenging ourselves and improving our skills and
+                            competencies; we believe in our people, it is through them that we can build value.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section section-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Contact Us</h2>
+                <p class="section-subtitle">Let's Build Something Great Together</p>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="contact-info">
+            <div class="contact-item">
+                <div class="contact-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <div class="contact-details">
+                    <h5>Location</h5>
+                    <p>
+                        Office No. 118, Al Hawr Al Azraq, Deira, Dubai, UAE<br>
+                        
+                    </p>
+                </div>
+            </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>Phone</h5>
+                            <p>
+                                <a href="tel:+971521852561">+971 52 185 2561</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>Email</h5>
+                            <p>
+                                <a href="mailto:admin@alknan.com">admin@alknan.com</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="contact-details">
+                            <h5>Website</h5>
+                            <p>
+                                <a href="https://www.alknan.com" target="_blank">www.alknan.com</a>
+                            </p>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h3 class="footer-brand">ALKNAN</h3>
+                    <p class="footer-description">Building excellence through innovation, quality, and dedication. Your
+                        trusted partner for high-level building cleaning and maintenance services.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h4 class="mb-4"
+                        style="font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                        Quick Links</h4>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#home"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Home</a>
+                        </li>
+                        <li class="mb-2"><a href="#about"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">About
+                                Us</a></li>
+                        <li class="mb-2"><a href="#services"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Services</a>
+                        </li>
+                        <li class="mb-2"><a href="#projects"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Projects</a>
+                        </li>
+                        <li class="mb-2"><a href="#contact"
+                                style="color: rgba(255,255,255,0.7); text-decoration: none; transition: color 0.3s;">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <h4 class="mb-4" style="font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                    Services
+                </h4>
+            
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <a href="#high-access-cleaning" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            High Access Cleaning
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#spider" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Spider
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#maintenance" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Maintenance Contracts
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#curtain-wall" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Curtain Wall & Cladding
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#cleaning-systems" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Cleaning Systems (BMU & Monorail)
+                        </a>
+                    </li>
+            
+                    <li class="mb-2">
+                        <a href="#equipment-rental" style="color: rgba(255,255,255,0.7); text-decoration: none;">
+                            Equipment Rental
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="mb-4" style="font-size: 1.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                        Contact Info</h4>
+                
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                        <i class="fas fa-phone me-2" style="color: var(--accent-orange);"></i>
+                        <a href="tel:+971521852561" style="color: inherit; text-decoration: none;">
+                            +971 52 185 2561
+                        </a>
+                    </p>
+                
+                    <p style="color: rgba(255,255,255,0.7); margin-bottom: 1rem;">
+                        <i class="fas fa-envelope me-2" style="color: var(--accent-orange);"></i>
+                        <a href="mailto:admin@alknan.com" style="color: inherit; text-decoration: none;">
+                            admin@alknan.com
+                        </a>
+                    </p>
+                
+                    <p style="color: rgba(255,255,255,0.7);">
+                        <i class="fas fa-map-marker-alt me-2" style="color: var(--accent-orange);"></i>
+                        Dubai, UAE
+                    </p>
+                </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ALKNAN AL MOTAHEDA. All Rights Reserved. | For Cleaning Services and Maintenance</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close mobile menu if open
+                    const navbarCollapse = document.querySelector('.navbar-collapse');
+                    if (navbarCollapse.classList.contains('show')) {
+                        bootstrap.Collapse.getInstance(navbarCollapse).hide();
+                    }
+                }
+            });
+        });
+
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Counter animation
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current) + '+';
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target + '+';
+                }
+            };
+
+            updateCounter();
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('counter')) {
+                        animateCounter(entry.target);
+                        observer.unobserve(entry.target);
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observe counters
+        document.querySelectorAll('.counter').forEach(counter => {
+            observer.observe(counter);
+        });
+
+        // Add animation class to elements on scroll
+        const fadeElements = document.querySelectorAll('.service-card, .project-card, .why-us-feature');
+        const fadeObserver = new IntersectionObserver(function(entries) {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }, index * 100);
+                    fadeObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        fadeElements.forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(30px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            fadeObserver.observe(element);
+        });
+
+        // Hover effects for footer links
+        document.querySelectorAll('footer a').forEach(link => {
+            link.addEventListener('mouseenter', function() {
+                this.style.color = 'var(--accent-orange)';
+            });
+            link.addEventListener('mouseleave', function() {
+                this.style.color = '';
+            });
+        });
+    </script>
+
+</body>
+
+</html>
